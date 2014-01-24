@@ -11,6 +11,7 @@
 //declarations
 char ** tokenize(char*);
 extern pid_t parent_ID;
+extern int biggestParent;
 int main(int argc, char** argv){
 
 	//Setting the signal interrupt to its default function. 
@@ -28,7 +29,7 @@ int main(int argc, char** argv){
 	char **cmds = (char **)malloc(1000 * sizeof(char *));
 
 	int printDollar = 1;
-
+    biggestParent = 1;
 	char input[MAXLINE];
 	char** tokens;
 

@@ -1,7 +1,7 @@
 #include "header.h"
 
 extern pid_t child_process_ID;
-
+extern int biggestParent;
 
 int execute(char** tokens){
    if(tokens==NULL){
@@ -19,12 +19,15 @@ int execute(char** tokens){
     
     else if(strcmp(tokens[0],RUN) == 0){
        child_process_ID = fork();
+
        if (child_process_ID== -1) {
            perror("fork failed");
        }
        else if(child_process_ID==0){
        //    printf("Inside Child\n");
-          run(tokens);
+          biggestParent =0;
+           parent_ID = getpid(); 
+           run(tokens);
        }
        else{
         //   printf("forked\n");
@@ -40,6 +43,7 @@ int execute(char** tokens){
            perror("fork failed");
        }
        else if(child_process_ID==0){
+          biggestParent =0;
          //  printf("Inside Child\n");
            otherCommands(tokens);
        }
@@ -58,8 +62,9 @@ int otherCommands(char** tokens){
     //printf("Get pid %d \n", getpid());
     int status = execvp(tokens[0],tokens);
     if(status==-1){
-        
+      
        pid_t ppid = getppid();
+       printf("command not found\n");
        kill(ppid, SIGUSR1);
     }
     return 1; 

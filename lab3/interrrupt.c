@@ -1,12 +1,12 @@
 #include "header.h"
 
-
+extern int biggestParent;
 void SIGINT_handler(int sig){
     if(getpid() == parent_ID){
         //printf("Killed Process with PID %d \n",child_process_ID);
         if(child_process_ID != -1){
           // printf("Killed Process with PID %d \n",child_process_ID);
-           kill(child_process_ID,SIGTERM); 
+           kill(child_process_ID,SIGKILL); 
         }
         else{
         }
@@ -18,9 +18,14 @@ void SIGINT_handler(int sig){
 }
 void SIGUSR1_handler(int sig){
     if(child_process_ID != -1){
-        kill(child_process_ID,SIGTERM); 
-    } 
-    printf("command not found\n");
+      //  printf("parent pid  %d Killed Process with PID %d \n",parent_ID,child_process_ID);
+        kill(child_process_ID,SIGKILL);
+        pid_t par = getppid();
+        if(!biggestParent){
+            kill(par,SIGUSR1);
+        }
+    }
+
    // fflush(stdout);
   //  printf("%d \n" ,getpid());
     return;

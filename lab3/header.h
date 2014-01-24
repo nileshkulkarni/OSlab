@@ -23,6 +23,8 @@ int otherCommands(char **tokens);
 void SIGINT_handler(int sig);
 void SIGUSR1_handler(int sig);
 
+
+int biggestParent;
 pid_t parent_ID;
 pid_t child_process_ID;
 

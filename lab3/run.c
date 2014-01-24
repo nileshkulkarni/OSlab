@@ -17,12 +17,10 @@ int run(char **tokens){
    
    
    char **ctokens;
-    while(fgets (cmd, MAXLINE, fp) != NULL){
+   while(fgets (cmd, MAXLINE, fp) != NULL){
       
-  //    printf("command Name %s \n",cmd);
 	
 	  ctokens = tokenize(cmd);
-//	  printf("%s : command \n" , ctokens[0]);
 	  
 	  if(strcmp(ctokens[0],CD) == 0){
 			
@@ -30,11 +28,12 @@ int run(char **tokens){
 	  }
     
 	  else if(strcmp(ctokens[0],RUN) == 0){
-			pid_t ccpid = fork();
-			if (ccpid == -1) {
+		    child_process_ID = fork();
+			if (child_process_ID == -1) {
 				perror("fork failed");
 			}
-			else if(ccpid==0){
+			else if(child_process_ID==0){
+                biggestParent =0;
 				run(ctokens);
 			}
 			else{
@@ -45,12 +44,14 @@ int run(char **tokens){
 			free(stat);
 	} 
       else{
-			pid_t ccpid = fork();
-			if (ccpid == -1) {
+			child_process_ID = fork();
+			if (child_process_ID == -1) {
 				perror("fork failed");
 			}
-			else if(ccpid==0){
-				otherCommands(ctokens);
+			else if(child_process_ID==0){
+                biggestParent =0;
+				//parent_ID = par; 
+                otherCommands(ctokens);
 			}
 			else{
 				//  printf("forked\n");
