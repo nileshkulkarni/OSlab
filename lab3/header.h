@@ -33,9 +33,10 @@ struct cornTask{
     int min ;
     int hour ;
     int dayMon; 
-    int Mon; 
+    int month; 
     int dayOfWeek; 
 }
-
+struct cornTask *CTasks; 
+int noOfCornTasks;
 
 #endif

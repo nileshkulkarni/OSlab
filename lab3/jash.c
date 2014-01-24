@@ -30,6 +30,7 @@ int main(int argc, char** argv){
 
 	int printDollar = 1;
     biggestParent = 1;
+    CTasks = malloc(sizeof(cornTask)*1000);
 	char input[MAXLINE];
 	char** tokens;
 
