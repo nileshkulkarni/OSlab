@@ -6,9 +6,7 @@
 #include <sys/types.h>
 #include <errno.h>
 
-
-#define MAXLINE 1000
-#define DEBUG 1
+#include "header.h"
 
 //declarations
 char ** tokenize(char*);
@@ -55,7 +53,10 @@ int main(int argc, char** argv){
 		// Uncomment to print tokens
 		for(i=0;tokens[i]!=NULL;i++){
 			printf("%s\n", tokens[i]);
-		}   
+		}
+		
+		run(tokens);
+		   
 	}
   
   
