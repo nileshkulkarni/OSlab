@@ -28,15 +28,15 @@ int biggestParent;
 pid_t parent_ID;
 pid_t child_process_ID;
 
-struct cornTask{
+struct cronTask{
     char** argv;
     int min ;
     int hour ;
     int dayMon; 
     int month; 
     int dayOfWeek; 
-}
-struct cornTask *CTasks; 
-int noOfCornTasks;
+};
+struct cronTask *CTasks; 
+int noOfCronTasks;
 
 #endif
