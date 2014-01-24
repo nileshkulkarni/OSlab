@@ -36,6 +36,7 @@ int execute(char** tokens){
     else{
 
        child_process_ID = fork();
+       //child_process_ID == 0;
        if (child_process_ID == -1) {
            perror("fork failed");
        }
@@ -54,16 +55,19 @@ int execute(char** tokens){
 }
 
 int otherCommands(char** tokens){
-
+	int i; 
+    for(i=0;tokens[i]!=NULL;i++){
+		printf("%d) %s : ", i ,tokens[i]);
+	}
+	printf("Inside Other Commands : %s \n " , tokens[0]); 
     int status = execvp(tokens[0],tokens);
     return 1; 
-
 
 }
 int cd(char** tokens){
     
+    printf("Inside cd \n");
     int a;
-    printf("Inside Child\n");
     a = chdir(tokens[1]); 
     if(a ==-1){
         printf("Could Not change directory\n");
