@@ -28,4 +28,14 @@ int biggestParent;
 pid_t parent_ID;
 pid_t child_process_ID;
 
+struct cornTask{
+    char** argv;
+    int min ;
+    int hour ;
+    int dayMon; 
+    int Mon; 
+    int dayOfWeek; 
+}
+
+
 #endif
