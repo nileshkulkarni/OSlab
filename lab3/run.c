@@ -22,11 +22,12 @@ int run(char **tokens){
       printf("%s",cmd);
       ctokens = tokenize(cmd);
 	  if(strcmp(ctokens[0],CD) == 0){
-			cd(ctokens);
+			
+            cd(ctokens);
 	  }
     
 	 else if(strcmp(ctokens[0],RUN) == 0){
-        run(ctokens);
+            run(ctokens);
      }
      
     else{

@@ -5,7 +5,8 @@
 #include <sys/wait.h>
 #include <stdio.h>
 #include <stdlib.h>
-
+#include <sys/types.h>
+#include <signal.h>
 
 #define MAXLINE 1000
 #define DEBUG 1
@@ -19,8 +20,9 @@ int run(char **tokens);
 int execute(char** tokens);
 int cd(char** tokens);
 int otherCommands(char **tokens);
+void SIGINT_handler(int sig);
 
-
+pid_t parent_ID;
 pid_t child_process_ID;
 
 #endif

@@ -10,11 +10,14 @@
 
 //declarations
 char ** tokenize(char*);
-
+extern pid_t parent_ID;
 int main(int argc, char** argv){
 
 	//Setting the signal interrupt to its default function. 
-	signal(SIGINT, SIG_DFL);
+	if(signal(SIGINT, SIGINT_handler) == SIG_ERR){
+        printf("SIGINT install error\n");
+        exit(1);
+    }
 
 	//Allocating space to store the previous commands.
 	int numCmds = 0;
@@ -29,7 +32,7 @@ int main(int argc, char** argv){
 	int i;
 
 	FILE* stream = stdin;
-
+    parent_ID = getpid();
 	while(notEOF) { 
 		if (printDollar == 1){ 
 			printf("$ "); // the prompt
