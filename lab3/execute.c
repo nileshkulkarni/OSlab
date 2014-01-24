@@ -55,13 +55,14 @@ int execute(char** tokens){
 
 int otherCommands(char** tokens){
 
+    printf("Get pid %d \n", getpid());
+    while(1);
     int status = execvp(tokens[0],tokens);
     return 1; 
 
 
 }
 int cd(char** tokens){
-    
     int a;
     printf("Inside Child\n");
     a = chdir(tokens[1]); 

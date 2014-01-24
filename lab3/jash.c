@@ -33,7 +33,9 @@ int main(int argc, char** argv){
 
 	FILE* stream = stdin;
     parent_ID = getpid();
-	while(notEOF) { 
+	child_process_ID = -1;
+    printf("jash id %d\n",parent_ID);
+    while(notEOF) { 
 		if (printDollar == 1){ 
 			printf("$ "); // the prompt
 			fflush(stdin);
@@ -59,7 +61,8 @@ int main(int argc, char** argv){
 			printf("%s\n", tokens[i]);
 		}
 		
-		  
+		if(tokens == NULL)
+            continue;
         execute(tokens);
 	}
   
