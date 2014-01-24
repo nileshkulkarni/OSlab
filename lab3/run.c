@@ -19,13 +19,14 @@ int run(char **tokens){
    char **ctokens;
     while(fgets (cmd, MAXLINE, fp) != NULL){
       
-      printf("command Name %s \n",cmd);
+  //    printf("command Name %s \n",cmd);
 	
 	  ctokens = tokenize(cmd);
 //	  printf("%s : command \n" , ctokens[0]);
 	  
 	  if(strcmp(ctokens[0],CD) == 0){
-			cd(ctokens);
+			
+            cd(ctokens);
 	  }
     
 	  else if(strcmp(ctokens[0],RUN) == 0){
@@ -42,8 +43,7 @@ int run(char **tokens){
 			int *stat = malloc(sizeof(int));
 			wait(stat);
 			free(stat);
-	}
-     
+	} 
       else{
 			pid_t ccpid = fork();
 			if (ccpid == -1) {

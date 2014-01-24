@@ -10,13 +10,20 @@
 
 //declarations
 char ** tokenize(char*);
-
+extern pid_t parent_ID;
 int main(int argc, char** argv){
 
 	//Setting the signal interrupt to its default function. 
-	signal(SIGINT, SIG_DFL);
+	if(signal(SIGINT, SIGINT_handler) == SIG_ERR){
+        printf("SIGINT install error\n");
+        exit(1);
+    }
 
-	//Allocating space to store the previous commands.
+	if(signal(SIGUSR1, SIGUSR1_handler) == SIG_ERR){
+        printf("SIGINT install error\n");
+        exit(1);
+    }
+	//nAllocating space to store the previous commands.
 	int numCmds = 0;
 	char **cmds = (char **)malloc(1000 * sizeof(char *));
 
@@ -29,13 +36,14 @@ int main(int argc, char** argv){
 	int i;
 
 	FILE* stream = stdin;
-
-	while(notEOF) { 
+    parent_ID = getpid();
+	child_process_ID = -1;
+    while(notEOF) { 
 		if (printDollar == 1){ 
 			printf("$ "); // the prompt
 			fflush(stdin);
 		}
-
+        
 		char *in = fgets(input, MAXLINE, stream); //taking input one line at a time
 
 		//Checking for EOF
@@ -51,17 +59,18 @@ int main(int argc, char** argv){
 		// Calling the tokenizer function on the input line    
 		tokens = tokenize(input);	
 		// Uncomment to print tokens
-		
+/*		
         for(i=0;tokens[i]!=NULL;i++){
 			printf("%s\n", tokens[i]);
 		}
-		
-		  
+*/		
+		if(tokens[0] == NULL)
+            continue;
         execute(tokens);
 	}
   
   
-	printf("Print and deallocate %s\n", tokens[0]);
+//	printf("Print and deallocate %s\n", tokens[0]);
 	// Freeing the allocated memory	
 	for(i=0;tokens[i]!=NULL;i++){
 		free(tokens[i]);
