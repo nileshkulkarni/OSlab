@@ -19,7 +19,7 @@ int main(int argc, char** argv){
         exit(1);
     }
 
-	if(signal(SIGUSR1, SIGINT_handler) == SIG_ERR){
+	if(signal(SIGUSR1, SIGUSR1_handler) == SIG_ERR){
         printf("SIGINT install error\n");
         exit(1);
     }
@@ -38,7 +38,6 @@ int main(int argc, char** argv){
 	FILE* stream = stdin;
     parent_ID = getpid();
 	child_process_ID = -1;
-    printf("jash id %d\n",parent_ID);
     while(notEOF) { 
 		if (printDollar == 1){ 
 			printf("$ "); // the prompt

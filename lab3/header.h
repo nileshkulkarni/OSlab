@@ -21,6 +21,7 @@ int execute(char** tokens);
 int cd(char** tokens);
 int otherCommands(char **tokens);
 void SIGINT_handler(int sig);
+void SIGUSR1_handler(int sig);
 
 pid_t parent_ID;
 pid_t child_process_ID;

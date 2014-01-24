@@ -2,7 +2,6 @@
 
 
 void SIGINT_handler(int sig){
-    //printf("inside interrupt %d \n",parent_ID);
     if(getpid() == parent_ID){
         //printf("Killed Process with PID %d \n",child_process_ID);
         if(child_process_ID != -1){
@@ -18,12 +17,11 @@ void SIGINT_handler(int sig){
     return;
 }
 void SIGUSR1_handler(int sig){
-    //printf("inside interrupt %d \n",parent_ID);
     if(child_process_ID != -1){
         kill(child_process_ID,SIGTERM); 
     } 
-    printf("\n$ ");
-    fflush(stdout);
+    printf("command not found\n ");
+   // fflush(stdout);
   //  printf("%d \n" ,getpid());
     return;
 }

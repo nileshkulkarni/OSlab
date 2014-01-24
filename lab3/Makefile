@@ -1,4 +1,4 @@
 
 
 shell: run.c execute.c interrrupt.c jash.c
-	gcc run.c execute.c interrrupt.c jash.c -w -o shell
+	gcc run.c execute.c interrrupt.c jash.c -w -o jash
