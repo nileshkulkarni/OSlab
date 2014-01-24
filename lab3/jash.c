@@ -51,12 +51,13 @@ int main(int argc, char** argv){
 		// Calling the tokenizer function on the input line    
 		tokens = tokenize(input);	
 		// Uncomment to print tokens
-		for(i=0;tokens[i]!=NULL;i++){
+		
+        for(i=0;tokens[i]!=NULL;i++){
 			printf("%s\n", tokens[i]);
 		}
 		
-		run(tokens);
-		   
+		  
+        execute(tokens);
 	}
   
   
