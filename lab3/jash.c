@@ -12,6 +12,8 @@
 char ** tokenize(char*);
 extern pid_t parent_ID;
 extern int biggestParent;
+extern struct cronTask *CTasks; 
+extern int noOfCronTasks; 
 int main(int argc, char** argv){
 
 	//Setting the signal interrupt to its default function. 
@@ -30,7 +32,7 @@ int main(int argc, char** argv){
 
 	int printDollar = 1;
     biggestParent = 1;
-    CTasks = malloc(sizeof(cornTask)*1000);
+    CTasks = malloc(sizeof(struct cronTask) *1000);
 	char input[MAXLINE];
 	char** tokens;
 

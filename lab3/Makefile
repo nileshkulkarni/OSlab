@@ -1,7 +1,7 @@
 
 
 shell: run.c execute.c interrrupt.c jash.c
-	@gcc run.c execute.c interrrupt.c jash.c -w -o jash
+	@gcc run.c execute.c interrrupt.c jash.c cron.c -w -o jash -std=c99
 
 clean: 
 	@rm jash 
