@@ -5,6 +5,7 @@
 #include <signal.h>
 #include <sys/types.h>
 #include <errno.h>
+
 #include "header.h"
 
 //declarations
@@ -54,6 +55,8 @@ int main(int argc, char** argv){
         for(i=0;tokens[i]!=NULL;i++){
 			printf("%s\n", tokens[i]);
 		}
+		
+		  
         execute(tokens);
 	}
   

@@ -24,7 +24,7 @@ int execute(char** tokens){
        }
        else if(child_process_ID==0){
            printf("Inside Child\n");
-   //        run(tokens);
+          run(tokens);
        }
        else{
            printf("forked\n");
