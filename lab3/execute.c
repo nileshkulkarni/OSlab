@@ -9,12 +9,12 @@ int read_cron_file(char *file){
 	
 //	printf("1: %s \n", file);
 	
-	pid_t ccpid = fork();
+	child_process_ID= fork();
 	
 	char cmd[MAXLINE];
 	char **tokens;
 	
-	if(ccpid == 0){
+	if(child_process_ID == 0){
 		
 		biggestParent = 0;
 		FILE *fp = fopen(file,"r"); // read mode
@@ -81,7 +81,7 @@ int read_cron_file(char *file){
 			/*
 			if(CTasks[noOfCronTasks].argv == NULL)
 			     CTasks[noOfCronTasks].argv = malloc(sizeof(char*)*10);
-			   
+			  
 			     for (int i=0;i<10;i++){
 					 CTasks[noOfCronTasks].argv[i] = malloc(sizeof(char) * 1000);
 					 

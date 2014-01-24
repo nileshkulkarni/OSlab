@@ -2,6 +2,7 @@
 
 extern int biggestParent;
 void SIGINT_handler(int sig){
+    printf("Comes here \n");
     if(getpid() == parent_ID){
         //printf("Killed Process with PID %d \n",child_process_ID);
         if(child_process_ID != -1){
@@ -18,7 +19,7 @@ void SIGINT_handler(int sig){
 }
 void SIGUSR1_handler(int sig){
     if(child_process_ID != -1){
-      //  printf("parent pid  %d Killed Process with PID %d \n",parent_ID,child_process_ID);
+        printf("parent pid  %d Killed Process with PID %d \n",parent_ID,child_process_ID);
         kill(child_process_ID,SIGKILL);
         pid_t par = getppid();
         if(!biggestParent){

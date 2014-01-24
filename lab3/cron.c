@@ -1,5 +1,4 @@
 #include "header.h"
-
 #include <unistd.h>
 #include <sys/wait.h>
 #include <stdio.h>
@@ -7,34 +6,33 @@
 #include <sys/types.h>
 #include <signal.h>
 #include <time.h>
+#define ALARM_TIME 60
 
-
-#define task CTasks[i]
+//#define task CTasks[i]
 
 extern struct cronTask *CTasks;
 extern int noOfCronTasks;
-int flag = 0;
+volatile sig_atomic_t flag = 0;
 int prevTime;
 void SIGALARM_Handler(int sig){
-	printf("Pet Dog \n");
+   signal(SIGALRM, SIG_IGN);
     flag=1;
-    alarm(1);
+    alarm(ALARM_TIME);
+   signal(SIGALRM, SIGALARM_Handler);
+    
 }
 
 int cron(){
-    
-    //while(1){
-		
-	//printf("heee %d \n" , flag);
+    while(1){
         if(flag==1){
-            printf("Start Checking %d\n" , noOfCronTasks);
-            /*int i;
+            int i;
             for(i =0;i<noOfCronTasks;i++){
-                analyse(i);
-            }*/
+                analyse(CTasks[i]);
+            }
+        
             flag=0;
         } 
-    //}
+    } 
     return 1;
 
 }
@@ -43,12 +41,7 @@ void runComm(char** argv){
     execute(argv);
     return;
 }
-int analyse(int i){
-	
-	printf("here111 : \n");
-  	//printf("%s %s\n" , CTasks[i].argv[0] , CTasks[i].argv[1]);
-				
-	
+int analyse(struct cronTask task){
   time_t t = time(NULL);
   struct tm tm = *localtime(&t);
    
@@ -63,8 +56,6 @@ int analyse(int i){
                }
        }
     }
-    
-  // runComm(task.argv); 
                         
 }
 
@@ -74,8 +65,8 @@ int doCronTasks(){
          printf("SIGINT install error\n");
          exit(1);
     }
-   // printf("kaam chalu \n");
-    alarm(1);
+    alarm(ALARM_TIME);
+    flag=0;
     cron();
     return 0;
 }
