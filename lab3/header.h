@@ -19,5 +19,5 @@ pid_t child_process_ID;
 
 int execute(char** tokens);
 int cd(char** tokens);
-
+int otherCommands(char **tokens);
 #endif
