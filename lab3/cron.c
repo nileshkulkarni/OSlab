@@ -14,7 +14,7 @@ int prevTime;
 void SIGALARM_Handler(int sig){
 
     flag=1;
-    alarm(3);
+    alarm(1);
 }
 
 int cron(){
@@ -61,7 +61,7 @@ int doCornTasks(){
          printf("SIGINT install error\n");
          exit(1);
     }
-    alarm(60);
+    alarm(1);
     cron();
     return 0;
 }
