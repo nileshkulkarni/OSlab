@@ -2,6 +2,7 @@
 
 extern pid_t child_process_ID;
 
+
 int execute(char** tokens){
    if(tokens==NULL){
         printf("Recieved a Null argument\n");
@@ -17,29 +18,55 @@ int execute(char** tokens){
     }
     
     else if(strcmp(tokens[0],RUN) == 0){
-        run(tokens);
+       child_process_ID = fork();
+       if (child_process_ID== -1) {
+           perror("fork failed");
+       }
+       else if(child_process_ID==0){
+           printf("Inside Child\n");
+          run(tokens);
+       }
+       else{
+           printf("forked\n");
+       }
+       int *stat = malloc(sizeof(int));
+       wait(stat);
+       free(stat);
     }
     else{
- //       otherCommands(tokens);
+
+       child_process_ID = fork();
+       if (child_process_ID == -1) {
+           perror("fork failed");
+       }
+       else if(child_process_ID==0){
+           printf("Inside Child\n");
+           otherCommands(tokens);
+       }
+       else{
+           printf("forked\n");
+       }
+       int *stat = malloc(sizeof(int));
+       wait(stat);
+       free(stat);
     }
+    child_process_ID = -1;
 }
 
+int otherCommands(char** tokens){
 
+    int status = execvp(tokens[0],tokens);
+    return 1; 
+
+
+}
 int cd(char** tokens){
     
-    pid_t pid = fork();
-    if (pid == -1) {
-        perror("fork failed");
+    int a;
+    printf("Inside Child\n");
+    a = chdir(tokens[1]); 
+    if(a ==-1){
+        printf("Could Not change directory\n");
     }
-    else if(pid==0){
-        int a;
-        printf("Inside Child\n");
-        a = chdir(tokens[1]); 
-        if(a ==-1){
-            printf("Could Not change directory\n");
-        }
-    }
-    else{
-        printf("inside parent %d \n",child_process_ID);
-    }
+    return 1;
 }
