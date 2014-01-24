@@ -33,6 +33,8 @@ int execute(char** tokens){
        wait(stat);
        free(stat);
     }
+
+       
     else{
 
        child_process_ID = fork();
@@ -57,11 +59,14 @@ int execute(char** tokens){
 int otherCommands(char** tokens){
 
     int status = execvp(tokens[0],tokens);
-    if(status==-1){
-        
+    
+    if(status==-1){ 
+       
        pid_t ppid = getppid();
        kill(ppid, SIGUSR1);
+    
     }
+    
     return 1; 
 
 }
