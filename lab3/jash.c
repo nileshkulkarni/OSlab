@@ -80,6 +80,9 @@ int main(int argc, char** argv){
             if(strcmp(tokens[0] , PARALLEL) == 0){
 				parallel(input+strlen(PARALLEL));
 			}
+			else if(strcmp(tokens[0] , CRON) == 0){
+				read_cron_file(tokens[1]);
+			}
 			else        
 				execute(tokens);
 		}

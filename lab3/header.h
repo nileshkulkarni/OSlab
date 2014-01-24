@@ -15,6 +15,7 @@
 #define CD "cd"
 #define RUN "run"
 #define PARALLEL "parallel"
+#define CRON "cron"
 
 int run(char **tokens);
 int execute(char** tokens);
