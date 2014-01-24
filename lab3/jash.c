@@ -59,7 +59,11 @@ int main(int argc, char** argv){
 		strcpy(cmds[numCmds++], input); 
 
 		// Calling the tokenizer function on the input line    
-		tokens = tokenize(input);	
+		
+		
+		tokens = tokenize(input);
+		
+			
 		// Uncomment to print tokens
 /*		
         for(i=0;tokens[i]!=NULL;i++){
@@ -68,7 +72,17 @@ int main(int argc, char** argv){
 */		
 		if(tokens[0] == NULL)
             continue;
-        execute(tokens);
+            
+            
+        else{ 
+            if(strcmp(tokens[0] , PARALLEL) == 0){
+				parallel(input+strlen(PARALLEL));
+			}
+			else        
+				execute(tokens);
+		}
+		
+		
 	}
   
   
