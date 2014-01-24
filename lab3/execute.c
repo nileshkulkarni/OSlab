@@ -23,11 +23,11 @@ int execute(char** tokens){
            perror("fork failed");
        }
        else if(child_process_ID==0){
-           printf("Inside Child\n");
+       //    printf("Inside Child\n");
           run(tokens);
        }
        else{
-           printf("forked\n");
+        //   printf("forked\n");
        }
        int *stat = malloc(sizeof(int));
        wait(stat);
@@ -40,11 +40,11 @@ int execute(char** tokens){
            perror("fork failed");
        }
        else if(child_process_ID==0){
-           printf("Inside Child\n");
+         //  printf("Inside Child\n");
            otherCommands(tokens);
        }
        else{
-           printf("forked\n");
+         //  printf("forked\n");
        }
        int *stat = malloc(sizeof(int));
        wait(stat);
@@ -55,19 +55,22 @@ int execute(char** tokens){
 
 int otherCommands(char** tokens){
 
-    printf("Get pid %d \n", getpid());
-    while(1);
+    //printf("Get pid %d \n", getpid());
     int status = execvp(tokens[0],tokens);
+    if(status==-1){
+        
+       pid_t ppid = getppid();
+       kill(ppid, SIGUSR1);
+    }
     return 1; 
 
 
 }
 int cd(char** tokens){
     int a;
-    printf("Inside Child\n");
     a = chdir(tokens[1]); 
     if(a ==-1){
-        printf("Could Not change directory\n");
+        printf("Could Not change directory, No such directory\n");
     }
     return 1;
 }

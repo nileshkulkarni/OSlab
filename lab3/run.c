@@ -19,7 +19,7 @@ int run(char **tokens){
    char **ctokens;
     while(fgets (cmd, MAXLINE, fp) != NULL){
       
-      printf("command Name %s \n",cmd);
+  //    printf("command Name %s \n",cmd);
 	
 	  ctokens = tokenize(cmd);
 //	  printf("%s : command \n" , ctokens[0]);

@@ -10,9 +10,20 @@ void SIGINT_handler(int sig){
            kill(child_process_ID,SIGTERM); 
         }
         else{
-          //  printf("$ ^C\n");
         }
     }
+    printf("\n$ ");
+    fflush(stdout);
+  //  printf("%d \n" ,getpid());
+    return;
+}
+void SIGUSR1_handler(int sig){
+    //printf("inside interrupt %d \n",parent_ID);
+    if(child_process_ID != -1){
+        kill(child_process_ID,SIGTERM); 
+    } 
+    printf("\n$ ");
+    fflush(stdout);
   //  printf("%d \n" ,getpid());
     return;
 }
