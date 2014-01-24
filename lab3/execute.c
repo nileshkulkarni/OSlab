@@ -4,6 +4,109 @@ extern pid_t child_process_ID;
 extern int biggestParent;
 
 	
+int read_cron_file(char *file){
+	
+	
+//	printf("1: %s \n", file);
+	
+	pid_t ccpid = fork();
+	
+	char cmd[MAXLINE];
+	char **tokens;
+	
+	if(ccpid == 0){
+		
+		biggestParent = 0;
+		FILE *fp = fopen(file,"r"); // read mode
+		
+	//	printf("10: %s \n ", file);
+	
+		
+		if( fp == NULL ){
+			printf("Could not find the batch file %s \n" , file);
+			return -1;
+		}
+
+		noOfCronTasks = 0;
+
+		
+		
+	//	printf("11: %s \n ", file);
+	
+		
+		while(fgets (cmd, MAXLINE, fp) != NULL){
+			
+		//	printf("2: %s \n ", file);
+	
+			
+			tokens = tokenize(cmd);
+			
+			int temp;
+			if(tokens[0][0] == '*')
+				CTasks[noOfCronTasks].min = -1;
+			else
+				CTasks[noOfCronTasks].min = atoi(tokens[0]);
+				
+				
+			if(tokens[1][0] == '*')
+				CTasks[noOfCronTasks].hour = -1;
+			else
+				CTasks[noOfCronTasks].hour = atoi(tokens[1]);
+					
+			if(tokens[2][0] == '*')
+				CTasks[noOfCronTasks].dayMon = -1;
+			else
+				CTasks[noOfCronTasks].dayMon = atoi(tokens[2]);
+				
+				
+		    if(tokens[3][0] == '*')
+				CTasks[noOfCronTasks].month = -1;
+			else
+				CTasks[noOfCronTasks].month = atoi(tokens[3]);	
+				
+			if(tokens[4][0] == '*')
+				CTasks[noOfCronTasks].dayOfWeek = -1;
+			else
+				CTasks[noOfCronTasks].dayOfWeek = atoi(tokens[4]);			
+					
+			
+			
+			
+			
+			CTasks[noOfCronTasks].argv = &(tokens[5]);
+			
+		//	printf("%s %s\n" , CTasks[noOfCronTasks].argv[0] , CTasks[noOfCronTasks].argv[1]);
+			
+			noOfCronTasks ++;
+			/*
+			if(CTasks[noOfCronTasks].argv == NULL)
+			     CTasks[noOfCronTasks].argv = malloc(sizeof(char*)*10);
+			   
+			     for (int i=0;i<10;i++){
+					 CTasks[noOfCronTasks].argv[i] = malloc(sizeof(char) * 1000);
+					 
+				 }
+		//	strcpy(CTasks[noOfCronTasks].argv[ , tokens[5]);    
+			*/     
+			
+		}
+		
+		
+	//	printf("4: %s \n", file);
+	
+		doCronTasks();
+	}
+}
+	
+	
+	
+	
+	
+	
+	
+
+
+	
 int parallel(char* inputs){
 	
 	
@@ -69,9 +172,6 @@ int execute2(char** tokens){
        else{
         //   printf("forked\n");
        }
-//      int *stat = malloc(sizeof(int));
-//       wait(stat);
-//       free(stat);
     }
 
        
