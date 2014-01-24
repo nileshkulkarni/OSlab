@@ -20,7 +20,7 @@ void SIGUSR1_handler(int sig){
     if(child_process_ID != -1){
         kill(child_process_ID,SIGTERM); 
     } 
-    printf("command not found\n ");
+    printf("command not found\n");
    // fflush(stdout);
   //  printf("%d \n" ,getpid());
     return;
