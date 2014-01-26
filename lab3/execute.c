@@ -235,7 +235,10 @@ int execute(char** tokens){
         //   printf("forked\n");
        }
        int *stat = malloc(sizeof(int));
-       wait(stat);
+       while(1){
+           wait(stat);
+           if(WIFEXITED(*stat)) break;
+       } 
        free(stat);
     }
 
@@ -256,7 +259,10 @@ int execute(char** tokens){
          //  printf("forked\n");
        }
        int *stat = malloc(sizeof(int));
-       wait(stat);
+       while(1){
+           wait(stat);
+           if(WIFEXITED(*stat)) break;
+       } 
        free(stat);
     }
     child_process_ID = -1;
