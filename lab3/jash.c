@@ -42,20 +42,20 @@ int main(int argc, char** argv){
 	FILE* stream = stdin;
     parent_ID = getpid();
 	child_process_ID = -1;
-    while(notEOF) { 
+   while(notEOF) { 
 		if (printDollar == 1){ 
 			printf("$ "); // the prompt
 			fflush(stdin);
 		}
-        
+      
 		char *in = fgets(input, MAXLINE, stream); //taking input one line at a time
 
 		//Checking for EOF
-		if (in == NULL){
+/*		if (in == NULL){
 			if (DEBUG) printf("EOF found\n");
 			exit(0);
 		}
-
+*/
 		//add the command to the command list.
 		cmds[numCmds] = (char *)malloc(sizeof(input));
 		strcpy(cmds[numCmds++], input); 
