@@ -60,10 +60,10 @@ int main(int argc, char** argv){
 		}
       
 		char *in = fgets(input, MAXLINE, stream); //taking input one line at a time
-
+        //printf("***** %s ***\n" ,in);
 		//Checking for EOF
 		if (in == NULL){
-			printf("Child process id %d\n",child_process_ID); 
+			//printf("Child process id %d\n",child_process_ID); 
             if(ctrlCFlag == 1){
                 if (DEBUG) printf("EOF found\n");
                 if(child_process_ID != -1){ 
@@ -91,7 +91,7 @@ int main(int argc, char** argv){
             }
                 
             //exit(0);
-			
+		    continue;	
 		}
 
 		//add the command to the command list.
@@ -99,7 +99,6 @@ int main(int argc, char** argv){
 		strcpy(cmds[numCmds++], input); 
 
 		// Calling the tokenizer function on the input line    
-		
 		
 		tokens = tokenize(input);
 		
@@ -136,7 +135,7 @@ int main(int argc, char** argv){
 			else if(strcmp(tokens[0] , CRON) == 0){
 				read_cron_file(tokens[1]);
 			    printf("Child process id %d\n",child_process_ID); 
-
+                fflush(stdin);
 			}
 			else        
 				execute(tokens);

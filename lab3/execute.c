@@ -5,11 +5,11 @@ extern int biggestParent;
 extern int parallelRunning;
 extern pid_t parallelGID;
 int read_cron_file(char *file){
-	child_process_ID= fork();
+  child_process_ID= fork();
 	
 	char cmd[MAXLINE];
 	char **tokens;
-	
+//    child_process_ID =0;	
 	if(child_process_ID == 0){
 		biggestParent = 0;
 		FILE *fp = fopen(file,"r"); // read mode
@@ -74,7 +74,7 @@ int read_cron_file(char *file){
 		doCronTasks();
 	}
     else{
-        printf("Cron Task is set , %d \n",child_process_ID);
+        //printf("Cron Task is set , %d \n",child_process_ID);
     }
 }
 	
