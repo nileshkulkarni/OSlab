@@ -96,6 +96,7 @@ int main(int argc, char** argv){
 				if(parallelRunning){
 					waitpid(-parallelGID,status,0);
 					parallelGID = 1000;
+					parallelRunning=0;
 				}
 			}
 			else if(strcmp(tokens[0] , CRON) == 0){
