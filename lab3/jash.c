@@ -5,8 +5,15 @@
 #include <signal.h>
 #include <sys/types.h>
 #include <errno.h>
-
+#include <sys/wait.h>	
 #include "header.h"
+
+#define _POSIX_SOURCE
+
+#include <unistd.h>
+
+
+
 
 //declarations
 char ** tokenize(char*);
@@ -14,6 +21,9 @@ extern pid_t parent_ID;
 extern int biggestParent;
 extern struct cronTask *CTasks; 
 extern int noOfCronTasks; 
+pid_t parallelGID;
+int parallelRunning;
+
 int main(int argc, char** argv){
 
 	//Setting the signal interrupt to its default function. 
@@ -29,9 +39,10 @@ int main(int argc, char** argv){
 	//nAllocating space to store the previous commands.
 	int numCmds = 0;
 	char **cmds = (char **)malloc(1000 * sizeof(char *));
-
+	parallelRunning = 0;
 	int printDollar = 1;
     biggestParent = 1;
+    parallelGID = 100;
     CTasks = malloc(sizeof(struct cronTask) *1000);
 	char input[MAXLINE];
 	char** tokens;
@@ -72,6 +83,8 @@ int main(int argc, char** argv){
 			printf("%s\n", tokens[i]);
 		}
 */		
+		
+
 		if(tokens[0] == NULL)
             continue;
             
@@ -79,6 +92,11 @@ int main(int argc, char** argv){
         else{ 
             if(strcmp(tokens[0] , PARALLEL) == 0){
 				parallel(input+strlen(PARALLEL));
+				int *status = malloc (sizeof(int));
+				if(parallelRunning){
+					waitpid(-parallelGID,status,0);
+					parallelGID = 1000;
+				}
 			}
 			else if(strcmp(tokens[0] , CRON) == 0){
 				read_cron_file(tokens[1]);
@@ -86,6 +104,7 @@ int main(int argc, char** argv){
 			else        
 				execute(tokens);
 		}
+		
 		
 		
 	}

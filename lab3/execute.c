@@ -2,25 +2,17 @@
 
 extern pid_t child_process_ID;
 extern int biggestParent;
-
-	
+extern int parallelRunning;
+extern pid_t parallelGID;
 int read_cron_file(char *file){
-	
-	
-//	printf("1: %s \n", file);
-	
 	child_process_ID= fork();
 	
 	char cmd[MAXLINE];
 	char **tokens;
 	
 	if(child_process_ID == 0){
-		
 		biggestParent = 0;
 		FILE *fp = fopen(file,"r"); // read mode
-		
-	//	printf("10: %s \n ", file);
-	
 		
 		if( fp == NULL ){
 			printf("Could not find the batch file %s \n" , file);
@@ -29,15 +21,7 @@ int read_cron_file(char *file){
 
 		noOfCronTasks = 0;
 
-		
-		
-	//	printf("11: %s \n ", file);
-	
-		
 		while(fgets (cmd, MAXLINE, fp) != NULL){
-			
-		//	printf("2: %s \n ", file);
-	
 			
 			tokens = tokenize(cmd);
 			
@@ -58,7 +42,6 @@ int read_cron_file(char *file){
 			else
 				CTasks[noOfCronTasks].dayMon = atoi(tokens[2]);
 				
-				
 		    if(tokens[3][0] == '*')
 				CTasks[noOfCronTasks].month = -1;
 			else
@@ -68,15 +51,9 @@ int read_cron_file(char *file){
 				CTasks[noOfCronTasks].dayOfWeek = -1;
 			else
 				CTasks[noOfCronTasks].dayOfWeek = atoi(tokens[4]);			
-					
 			
-			
-			
-			
-			CTasks[noOfCronTasks].argv = &(tokens[5]);
-			
+			CTasks[noOfCronTasks].argv = &(tokens[5]);			
 		//	printf("%s %s\n" , CTasks[noOfCronTasks].argv[0] , CTasks[noOfCronTasks].argv[1]);
-			
 			noOfCronTasks ++;
 			/*
 			if(CTasks[noOfCronTasks].argv == NULL)
@@ -109,7 +86,8 @@ int read_cron_file(char *file){
 	
 int parallel(char* inputs){
 	
-	
+	parallelRunning= 1;
+   
 	char *input = (char *)malloc(MAXLINE * sizeof(char));
 	strcpy(input , inputs);
 	
@@ -134,7 +112,9 @@ int parallel(char* inputs){
         execute2(ctokens); 
         cmd = strtok(NULL , ":");
 	 }
+	 
     while((biggestParent==1) && (cmd != NULL) && (strcmp(cmd , "") != 0) && (strcmp(cmd , "\n") != 0));
+    
     free(ctokens);
     free(cmd1);	
 }
@@ -144,6 +124,7 @@ int parallel(char* inputs){
 
 
 int execute2(char** tokens){
+   
    if(tokens==NULL){
         printf("Recieved a Null argument\n");
         return;
@@ -183,11 +164,14 @@ int execute2(char** tokens){
            perror("fork failed");
        }
        else if(child_process_ID==0){
+		   
           biggestParent =0;
          //  printf("Inside Child\n");
            otherCommands(tokens);
        }
        else{
+		   //parallelPids[noOfParallel++] = child_process_ID;
+		   setpgid(child_process_ID,parallelGID);
          //  printf("forked\n");
        }
 //       int *stat = malloc(sizeof(int));
