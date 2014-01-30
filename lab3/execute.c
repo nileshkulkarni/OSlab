@@ -20,9 +20,7 @@ int read_cron_file(char *file){
 		}
 
 		noOfCronTasks = 0;
-
-		while(fgets (cmd, MAXLINE, fp) != NULL){
-			
+while(fgets (cmd, MAXLINE, fp) != NULL){ 
 			tokens = tokenize(cmd);
 			
 			int temp;
@@ -74,6 +72,12 @@ int read_cron_file(char *file){
 		doCronTasks();
 	}
     else{
+       int *stat = malloc(sizeof(int));
+       while(1){
+           wait(stat);
+           if(WIFEXITED(*stat)) break;
+       } 
+       free(stat);
         //printf("Cron Task is set , %d \n",child_process_ID);
     }
 }
