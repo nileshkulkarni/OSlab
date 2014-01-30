@@ -63,13 +63,16 @@ int main(int argc, char** argv){
 
 		//Checking for EOF
 		if (in == NULL){
-			if(ctrlCFlag == 1){
+			printf("Child process id %d\n",child_process_ID); 
+            if(ctrlCFlag == 1){
                 if (DEBUG) printf("EOF found\n");
                 if(child_process_ID != -1){ 
                     int* status = malloc(sizeof(int));
                     kill(child_process_ID,9);
                     wait(status);
                     free(status);
+
+                    child_process_ID = -1;
                 }
                 else{
                     exit(0);
@@ -132,6 +135,8 @@ int main(int argc, char** argv){
 		
 			else if(strcmp(tokens[0] , CRON) == 0){
 				read_cron_file(tokens[1]);
+			    printf("Child process id %d\n",child_process_ID); 
+
 			}
 			else        
 				execute(tokens);

@@ -73,6 +73,9 @@ int read_cron_file(char *file){
 	
 		doCronTasks();
 	}
+    else{
+        printf("Cron Task is set , %d \n",child_process_ID);
+    }
 }
 	
 	
