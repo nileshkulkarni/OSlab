@@ -65,6 +65,7 @@ int main(int argc, char** argv){
 /*		if (in == NULL){
 			if (DEBUG) printf("EOF found\n");
 			exit(0);
+			
 		}
 */
 		//add the command to the command list.
@@ -99,6 +100,13 @@ int main(int argc, char** argv){
 					parallelRunning=0;
 				}
 			}
+			else if(strcmp(tokens[0] , EXIT) == 0){
+				if(child_process_ID!=-1){
+					kill(child_process_ID,9);
+				}
+				kill(0,9);
+			}
+		
 			else if(strcmp(tokens[0] , CRON) == 0){
 				read_cron_file(tokens[1]);
 			}
