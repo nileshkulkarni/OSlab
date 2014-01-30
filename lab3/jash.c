@@ -23,7 +23,7 @@ extern struct cronTask *CTasks;
 extern int noOfCronTasks; 
 pid_t parallelGID;
 int parallelRunning;
-
+int ctrlCFlag=0;
 int main(int argc, char** argv){
 
 	//Setting the signal interrupt to its default function. 
@@ -62,12 +62,35 @@ int main(int argc, char** argv){
 		char *in = fgets(input, MAXLINE, stream); //taking input one line at a time
 
 		//Checking for EOF
-/*		if (in == NULL){
-			if (DEBUG) printf("EOF found\n");
-			exit(0);
+		if (in == NULL){
+			if(ctrlCFlag == 1){
+                if (DEBUG) printf("EOF found\n");
+                if(child_process_ID != -1){ 
+                    int* status = malloc(sizeof(int));
+                    kill(child_process_ID,9);
+                    wait(status);
+                    free(status);
+                }
+                else{
+                    exit(0);
+                }
+                ctrlCFlag =0;
+            }
+            else{
+                
+                if(child_process_ID != -1){ 
+                    kill(child_process_ID,9);
+                    int* status = malloc(sizeof(int));
+                    wait(status);
+                    free(status);
+                }
+                exit(0);
+            }
+                
+            //exit(0);
 			
 		}
-*/
+
 		//add the command to the command list.
 		cmds[numCmds] = (char *)malloc(sizeof(input));
 		strcpy(cmds[numCmds++], input); 

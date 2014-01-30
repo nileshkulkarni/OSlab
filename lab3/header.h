@@ -9,7 +9,7 @@
 #include <signal.h>
 
 #define MAXLINE 1000
-#define DEBUG 1
+#define DEBUG 0
 
 
 #define CD "cd"

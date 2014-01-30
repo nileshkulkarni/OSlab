@@ -1,9 +1,10 @@
 #include "header.h"
-
+extern int ctrlCFlag;
 
 extern int biggestParent;
 void SIGINT_handler(int sig){
-	if(signal(SIGINT, SIGINT_handler) == SIG_ERR){
+	ctrlCFlag = 1;
+    if(signal(SIGINT, SIGINT_handler) == SIG_ERR){
         printf("SIGINT install error\n");
         exit(1);
     }
