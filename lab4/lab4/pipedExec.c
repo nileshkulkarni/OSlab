@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include<sys/types.h>
 #include <sys/wait.h>
-
+/* this function check is the given command has any in built jash commands */
 int checkJash(char* data){
 
     char** tokens = tokenize(data);
@@ -16,6 +16,7 @@ int checkJash(char* data){
     return 0;
 }
 
+/* returns operator index */
 
 
 opIndex(char *ch){
@@ -25,7 +26,7 @@ opIndex(char *ch){
 	if(strcmp(ch , ">>") == 0) return 1;
 	
 }
-
+/* spawns processes for piped execution of commands */
 void pipedExec(command commands){
     int child1;
     int child2;
@@ -92,7 +93,7 @@ void pipedExec(command commands){
 
 }
 
-
+/* handle io redirection commands given to jash */
 void IORedirection(command commands){
 	
 //	printf("No of Tokens: %d \n  ",commands.nTokens);

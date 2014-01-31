@@ -2,3 +2,26 @@ compile:
     $make
 run 
     ./jash
+
+
+
+Terminal Support:
+
+**************************************************************************
+All basic commands supported by the linux shell in their raw from:
+    Sample test_cases: 
+        ls
+        pwd
+        mkdir random
+**************************************************************************
+    Cron tasks
+    
+    sample cron file contains:
+     
+    * * * * * ls
+
+    command to be run on jash:
+    cron cron.in
+
+**************************************************************************
+    
