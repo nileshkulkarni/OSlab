@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include<sys/types.h>
 #include <sys/wait.h>
-void pipedExec(command commands,int noOfCommands){
+void pipedExec(command commands){
     int i=0;
     int inPipe ;
     int outPipe;
@@ -61,15 +61,47 @@ void pipedExec(command commands,int noOfCommands){
 }
 
 
-void IORedirection(struct command *command){
-
+void IORedirection(command &commands){
     int i=0;
     int inPipe ;
     int outPipe;
     int prevOutpipe;
     
-    int *pipefd =malloc(sizeof(int)*2);     
-        
+    int *pipefd =malloc(sizeof(int)*2);    
 
+    child_process_ID = fork();
+    if(child_process_ID==0){
+        int j=0;
+        for(j=0;j<commands.nTokens;j++){
+            if((strcmp(commands.tokens[j],">")==0)){
 
+                j++;
+                if(j<commands.nTokens){
+                    
+                    int newfd = open(commands.tokens[j],'w')
+                    dup2(newfd,1);
+                }
+            }
+            
+            if((strcmp(commands.tokens[j],"<")==0)){
+
+                j++;
+                if(j<commands.nTokens){
+                    
+                    int newfd = open(commands.tokens[j],'r')
+                    dup2(newfd,0);
+                }
+            }
+        }
+        execute3(tokenize(commands.tokens[0]))
+    }
+    else{
+       int *stat = malloc(sizeof(int));
+       while(1){
+           wait(stat);
+           if(WIFEXITED(*stat)) break;
+       } 
+       free(stat);
+       child_process_ID=-1;
+    }
 }
