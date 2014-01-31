@@ -15,6 +15,17 @@ int checkJash(char* data){
     }
     return 0;
 }
+
+
+
+opIndex(char *ch){
+	
+	if(strcmp(ch , "<") == 0) return 0;
+	if(strcmp(ch , ">") == 0) return 1;
+	if(strcmp(ch , ">>") == 0) return 1;
+	
+}
+
 void pipedExec(command commands){
     int child1;
     int child2;
@@ -78,35 +89,53 @@ void pipedExec(command commands){
         wait(&st);
         child_process_ID = -1;
     }
+
 }
 
 
 void IORedirection(command commands){
 	
-	printf("comes here : %d \n  ",commands.nTokens);
+//	printf("No of Tokens: %d \n  ",commands.nTokens);
 	
     int i=0;
     int inPipe ;
     int outPipe;
     int prevOutpipe;
     
-    int *pipefd =malloc(sizeof(int)*2);    
+    
+    int count[3];
+    for(int h=0;h<3;h++)
+		count[h] = 0;
+    
+    
+    int j;
+    for(j=0;j<commands.nTokens;j++){
+			
+			if((strcmp(commands.tokens[j],">")==0) ||(strcmp(commands.tokens[j],"<")==0) || (strcmp(commands.tokens[j],">>")==0)){
+				count[opIndex(commands.tokens[j])]++;
+				if(count[opIndex(commands.tokens[j])] > 1){
+						printf("Error : more than 1 \"%s\" Redirections \n" , commands.tokens[j]);
+						return;
+				}	
+			}
+	}		
+    
+    
+    
+    
+    
+    int pipefd[2];   
 
     child_process_ID = fork();
     if(child_process_ID==0){
-        int j=0;
         for(j=0;j<commands.nTokens;j++){
-            if((strcmp(commands.tokens[j],">")==0)){
+			
+	       if((strcmp(commands.tokens[j],">")==0)){
 
                 j++;
                 if(j<commands.nTokens){
-                    
-                    //int newfd = open("a.txt",'w');
-                    
                     commands.tokens[j][strlen(commands.tokens[j]) - 1] = '\0';
-                    
                     int newfd  = open(commands.tokens[j], O_CREAT|O_TRUNC|O_WRONLY, 0644);
-                    printf("here ** %s **" , commands.tokens[j]);
                     dup2(newfd,1);
                 }
             }
@@ -121,9 +150,24 @@ void IORedirection(command commands){
                     dup2(newfd,0);
                 }
             }
+            
+            
+          if((strcmp(commands.tokens[j],">>")==0)){
+
+                j++;
+                if(j<commands.nTokens){
+                   commands.tokens[j][strlen(commands.tokens[j]) - 1] = '\0';
+                   int newfd  = open(commands.tokens[j], O_CREAT|O_APPEND|O_WRONLY , 0644);
+                    //int newfd = open(commands.tokens[j],'r');
+                    dup2(newfd,1);
+                }
+            }
+            
         }
         execute3(tokenize(commands.tokens[0]));
     }
+    
+    
     else{
        int *stat = malloc(sizeof(int));
        while(1){
