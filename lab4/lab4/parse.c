@@ -17,7 +17,7 @@ command  parse(char *comm){
    
     while(comm[i] != '\0'){
 		
-		printf("** %c *** %d\n" , comm[i] , tokenNo);
+//		printf("** %c *** %d\n" , comm[i] , tokenNo);
 		
 		if(comm[i] == '>' || comm[i] == '<' || comm[i] == '|'){
 			

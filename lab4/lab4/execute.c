@@ -20,7 +20,7 @@ int read_cron_file(char *file){
 		}
 
 		noOfCronTasks = 0;
-while(fgets (cmd, MAXLINE, fp) != NULL){ 
+    while(fgets (cmd, MAXLINE, fp) != NULL){ 
 			tokens = tokenize(cmd);
 			
 			int temp;
@@ -191,6 +191,7 @@ int execute2(char** tokens){
 
 
 int execute3(char** tokens){ // this function is written for piped execution
+    //printf("Here in 888 othercommands\n");
    if(tokens==NULL){
         printf("Recieved a Null argument\n");
         return;
@@ -214,8 +215,11 @@ int execute3(char** tokens){ // this function is written for piped execution
         biggestParent =0;
         parent_ID = getpid(); 
         otherCommands(tokens);
+    
     }
-    child_process_ID = -1;
+    
+    exit(1);
+    //printf("Here fksdljin othercommands\n");
 }
 
 
@@ -304,6 +308,7 @@ int execute(char** tokens){
 
 
 int otherCommands(char** tokens){
+    
     int status = execvp(tokens[0],tokens);
     
     if(status==-1){

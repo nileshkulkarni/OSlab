@@ -5,63 +5,58 @@
 
 
 void pipedExec(command commands){
-  
+    int child1;
+    int child2;
     int noOfCommands = commands.nTokens;
     int i=0;
     int inPipe ;
     int outPipe;
     int prevOutpipe;
     int j=0; 
-    int *pipefd =malloc(sizeof(int)*2);     
-    if(commands.nTokens ==1){
-        execute(tokenize(commands.tokens[0]));
-        return; 
-    }
-    for(i=0,j=0;i<noOfCommands-1;i++,j++){
+    child_process_ID = fork();
+    if(child_process_ID ==0){
 
-        if(strcmp(commands.tokens[j],"|") !=0){
-           printf("Error in command \n");
-            return; 
-
+        int pipefd[2];
+        if(commands.nTokens != 3){
+            printf("Wrong piping directive\n");
+            return;     
         }
-        if (pipe(pipefd)) {
-            perror("pipe");
-	        exit(127);
-        
+        if(pipe(pipefd)){
+            perror("pipe\n");
         }
-        inPipe = pipefd[0];
-        outPipe = pipefd[1];
-        
         child_process_ID = fork();
-        if(child_process_ID ==-1){
-                printf("fork error");
-                exit(1);
-                break;
+         
+        if(child_process_ID==-1){
+            printf("Fork error");
         }
-        else if(child_process_ID ==0){
-                if(i ==0){
-                    close(inPipe);
-                    dup2(outPipe,1);
-                    execute3(tokenize(commands.tokens[i]));
-                    break;
-                }
-                else{
-                    close(inPipe);
-                    dup2(prevOutpipe,0);
-                    dup2(outPipe,1); 
-                    execute3(tokenize(commands.tokens[i]));
-                    break;
-                }
-        } 
+        else if(child_process_ID==0){
+            //child process
+            close(pipefd[0]);  /* the other side of the pipe */
+            dup2(pipefd[1], 1);  /* automatically closes previous fd 1 */
+            close(pipefd[1]);  /* cleanup */
+            execute3(tokenize(commands.tokens[0]));  
+            exit(0);
+            return;
+        }
         else{
-                prevOutpipe = inPipe;
-                continue;
+            //inside parent 
+            
+                close(pipefd[1]);  /* the other side of the pipe */
+                dup2(pipefd[0], 0);  /* automatically closes previous fd 1 */
+                close(pipefd[0]);
+                execute3(tokenize(commands.tokens[2]));  
+                int st;
+                wait(&st);
+                exit(0);
+                return;    
+
         }
-        
     }
-    dup2(prevOutpipe,0);
-    close(inPipe);
-    execute3(tokenize(commands.tokens[i]));
+    else{
+        int st;
+        wait(&st);
+        child_process_ID = -1;
+    }
 }
 
 

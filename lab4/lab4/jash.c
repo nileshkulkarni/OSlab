@@ -102,7 +102,7 @@ int main(int argc, char** argv){
 
 
 		command comm = parse(input);
-		printf("c1 is (%d , %s , %s , %s) \n", comm.nTokens , comm.tokens[0] , comm.tokens[1] , comm.tokens[2]);
+//		printf("c1 is (%d , %s , %s , %s) \n", comm.nTokens , comm.tokens[0] , comm.tokens[1] , comm.tokens[2]);
 	//	continue;
 		
 		
