@@ -145,7 +145,7 @@ void IORedirection(command commands){
                 j++;
                 if(j<commands.nTokens){
                    commands.tokens[j][strlen(commands.tokens[j]) - 1] = '\0';
-                   int newfd  = open(commands.tokens[j], O_CREAT|O_TRUNC|O_WRONLY, 0644);
+                   int newfd  = open(commands.tokens[j], O_RDONLY, 0644);
                     //int newfd = open(commands.tokens[j],'r');
                     dup2(newfd,0);
                 }
@@ -165,6 +165,7 @@ void IORedirection(command commands){
             
         }
         execute3(tokenize(commands.tokens[0]));
+        exit(0);
     }
     
     

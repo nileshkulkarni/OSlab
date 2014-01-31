@@ -17,6 +17,10 @@
 
 //declarations
 char ** tokenize(char*);
+
+//char ** history;
+//int nhistory;
+
 extern pid_t parent_ID;
 extern int biggestParent;
 extern struct cronTask *CTasks; 
@@ -28,8 +32,9 @@ int parallelRunning;
 int ctrlCFlag=0;
 int main(int argc, char** argv){
 
-	
-	
+	//history =(char **) malloc(MAXLINE*sizeof(char*));
+	//int nhistory = 0;
+ 	
 	//Setting the signal interrupt to its default function. 
 	if(signal(SIGINT, SIGINT_handler) == SIG_ERR){
         printf("SIGINT install error\n");
@@ -106,6 +111,14 @@ int main(int argc, char** argv){
 		strcpy(cmds[numCmds++], input); 
 
 		// Calling the tokenizer function on the input line   
+		
+/*		
+		if(strlen(input) > 0){
+			history[nhistory] = (char *)malloc(1000*sizeof(char));
+			strcpy(history[nhistory - 1] , input);
+			nhistory++; 
+		}
+*/
 		
 		command temp = parse(input); 
 		

@@ -219,7 +219,7 @@ int execute3(char** tokens){ // this function is written for piped execution
     
     }
     
-    exit(1);
+   // exit(1);
     //printf("Here fksdljin othercommands\n");
 }
 
