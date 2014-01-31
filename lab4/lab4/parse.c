@@ -17,9 +17,17 @@ command  parse(char *comm){
    
     while(comm[i] != '\0'){
 		
-		printf("** %c *** %d\n" , comm[i] , tokenNo);
+		//printf("** %c *** %d\n" , comm[i] , tokenNo);
 		
-		if(comm[i] == '>' || comm[i] == '<' || comm[i] == '|'){
+		
+	   if((flag==1 || flag==3) && comm[i] == ' '){
+		   flag = 3;
+		   i++;
+		   continue;
+	   }
+		
+		
+		if(comm[i] == '>' || comm[i] == '<' || comm[i] == '|' || comm[i] == '&'){
 			
 			if(flag == 2){
 				ret.nTokens ++;
@@ -35,7 +43,7 @@ command  parse(char *comm){
 		
 		
 		else{ 
-			if(flag == 1){
+			if(flag == 1 || flag == 3){
 				ret.nTokens ++;
 				if((tokenIndex != -1) && (tokenNo != -1)){
 					tokens[tokenNo][++tokenIndex]  = '\0';
