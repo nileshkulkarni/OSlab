@@ -102,7 +102,7 @@ int main(int argc, char** argv){
 
 
 		command comm = parse(input);
-	//	printf("c1 is (%d , %s , %s , %s , %s , %s) \n", c1.nTokens , c1.tokens[0] , c1.tokens[1] , c1.tokens[2] , c1.tokens[3] , c1.tokens[4]);
+		printf("c1 is (%d , %s , %s , %s) \n", comm.nTokens , comm.tokens[0] , comm.tokens[1] , comm.tokens[2]);
 	//	continue;
 		
 		
@@ -112,9 +112,9 @@ int main(int argc, char** argv){
 			if(strcmp(comm.tokens[1] , "|") == 0)
 				pipedExec(comm);
 			else if((strcmp(comm.tokens[1] , "<") == 0)
-					&& (strcmp(comm.tokens[1] , ">") == 0)
-					&& (strcmp(comm.tokens[1] , "<<") == 0)
-					&& (strcmp(comm.tokens[1] , ">>") == 0))
+					|| (strcmp(comm.tokens[1] , ">") == 0)
+					|| (strcmp(comm.tokens[1] , "<<") == 0)
+					|| (strcmp(comm.tokens[1] , ">>") == 0))
 				IORedirection(comm);
 				
 			continue;	

@@ -4,11 +4,9 @@
 #include <sys/wait.h>
 
 
-
 void pipedExec(command commands){
-    
-    int noOfCommands = Commands.nTokens;
-    
+  
+    int noOfCommands = commands.nTokens;
     int i=0;
     int inPipe ;
     int outPipe;
@@ -21,7 +19,7 @@ void pipedExec(command commands){
     }
     for(i=0,j=0;i<noOfCommands-1;i++,j++){
 
-        if(strcmp(commands[j],"|") !=0){
+        if(strcmp(commands.tokens[j],"|") !=0){
            printf("Error in command \n");
             return; 
 
@@ -44,14 +42,14 @@ void pipedExec(command commands){
                 if(i ==0){
                     close(inPipe);
                     dup2(outPipe,1);
-                    execute3(tokenize(commands->tokens[i]));
+                    execute3(tokenize(commands.tokens[i]));
                     break;
                 }
                 else{
                     close(inPipe);
                     dup2(prevOutpipe,0);
                     dup2(outPipe,1); 
-                    execute3(tokenize(commands->tokens[i]));
+                    execute3(tokenize(commands.tokens[i]));
                     break;
                 }
         } 
@@ -63,19 +61,60 @@ void pipedExec(command commands){
     }
     dup2(prevOutpipe,0);
     close(inPipe);
-    execute3(tokenize(commands->tokens[i]));
+    execute3(tokenize(commands.tokens[i]));
 }
 
 
-void IORedirection(struct command *command){
-
+void IORedirection(command commands){
+	
+	printf("comes here : %d \n  ",commands.nTokens);
+	
     int i=0;
     int inPipe ;
     int outPipe;
     int prevOutpipe;
     
-    int *pipefd =malloc(sizeof(int)*2);     
-        
+    int *pipefd =malloc(sizeof(int)*2);    
 
+    child_process_ID = fork();
+    if(child_process_ID==0){
+        int j=0;
+        for(j=0;j<commands.nTokens;j++){
+            if((strcmp(commands.tokens[j],">")==0)){
 
+                j++;
+                if(j<commands.nTokens){
+                    
+                    //int newfd = open("a.txt",'w');
+                    
+                    commands.tokens[j][strlen(commands.tokens[j]) - 1] = '\0';
+                    
+                    int newfd  = open(commands.tokens[j], O_CREAT|O_TRUNC|O_WRONLY, 0644);
+                    printf("here ** %s **" , commands.tokens[j]);
+                    dup2(newfd,1);
+                }
+            }
+            
+            if((strcmp(commands.tokens[j],"<")==0)){
+
+                j++;
+                if(j<commands.nTokens){
+                   commands.tokens[j][strlen(commands.tokens[j]) - 1] = '\0';
+                   int newfd  = open(commands.tokens[j], O_CREAT|O_TRUNC|O_WRONLY, 0644);
+                    //int newfd = open(commands.tokens[j],'r');
+                    dup2(newfd,0);
+                }
+            }
+        }
+        execute3(tokenize(commands.tokens[0]));
+    }
+    else{
+       int *stat = malloc(sizeof(int));
+       while(1){
+           wait(stat);
+           if(WIFEXITED(*stat)) break;
+       } 
+       free(stat);
+       child_process_ID=-1;
+    }
 }

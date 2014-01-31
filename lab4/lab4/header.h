@@ -1,6 +1,7 @@
 #ifndef _HEADER_H
 #define _HEADER_H
 
+#include <fcntl.h>
 #include <unistd.h>
 #include <sys/wait.h>
 #include <stdio.h>
