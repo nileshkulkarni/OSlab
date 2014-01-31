@@ -78,6 +78,7 @@ int read_cron_file(char *file){
            if(WIFEXITED(*stat)) break;
        } 
        free(stat);
+       child_process_ID =-1;
         //printf("Cron Task is set , %d \n",child_process_ID);
     }
 }

@@ -270,7 +270,6 @@ void jashExec(char *input){
 		
 			else if(strcmp(tokens[0] , CRON) == 0){
 				read_cron_file(tokens[1]);
-			  //  printf("Child process id %d\n",child_process_ID); 
                 fflush(stdin);
 			}
 			else        
