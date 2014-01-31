@@ -109,7 +109,7 @@ int main(int argc, char** argv){
 		
 		if(comm.nTokens > 1){
 			
-			if(strcmp(comm.tokens[1] , "|")
+			if(strcmp(comm.tokens[1] , "|") == 0)
 				pipedExec(comm);
 			else if((strcmp(comm.tokens[1] , "<") == 0)
 					&& (strcmp(comm.tokens[1] , ">") == 0)
@@ -122,7 +122,6 @@ int main(int argc, char** argv){
 		
 		
 		tokens = tokenize(input);
-		
 			
 		// Uncomment to print tokens
 /*		
