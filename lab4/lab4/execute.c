@@ -315,7 +315,8 @@ int otherCommands(char** tokens){
 
        pid_t ppid = getppid();
        printf("command not found\n");
-       kill(ppid, SIGUSR1);
+	   exit(0);
+   //    kill(ppid, SIGUSR1);
     
     }
     
