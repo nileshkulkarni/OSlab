@@ -4,6 +4,15 @@ extern pid_t child_process_ID;
 extern int biggestParent;
 extern int parallelRunning;
 extern pid_t parallelGID;
+
+
+
+/**
+ * Reads from a cron file , processes the input and 
+ * calls appropriate functions.
+ * 
+ */
+
 int read_cron_file(char *file){
   child_process_ID= fork();
 	
@@ -89,7 +98,16 @@ int read_cron_file(char *file){
 	
 	
 	
-
+/**
+ * 
+ *Dedicated function for the parallel command.
+ * 
+ *Spawns child processes for the commands.
+ * 
+ * Takes a character string as it's input arguments.  
+ * 
+ * 
+ */
 
 	
 int parallel(char* inputs){
@@ -129,7 +147,10 @@ int parallel(char* inputs){
 
 
 
-
+/**
+ * Helper function of Parallel
+ * 
+ */ 
 
 int execute2(char** tokens){
    
@@ -190,9 +211,8 @@ int execute2(char** tokens){
 }
 
 
-
-int execute3(char** tokens){ // this function is written for piped execution
-    //printf("Here in 888 othercommands\n");
+// this function is written for piped execution
+int execute3(char** tokens){ 
    if(tokens==NULL){
         printf("Recieved a Null argument\n");
         return;

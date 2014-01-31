@@ -18,8 +18,6 @@
 //declarations
 char ** tokenize(char*);
 
-//char ** history;
-//int nhistory;
 
 extern pid_t parent_ID;
 extern int biggestParent;
@@ -212,6 +210,14 @@ char ** tokenize(char* input){
 
 
 
+
+
+/**
+ * Processes a command input , decides which function to call
+ * 
+ * Takes a character string as it's argument
+ * 
+ */ 
 
 
 

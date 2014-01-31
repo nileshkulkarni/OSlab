@@ -4,10 +4,15 @@ extern pid_t backgroundGID;
 
 
 
+
+/**
+ * 
+ *Spawns background processes and groups thems under the backgroundGID 
+ * 
+ */
+
+
 void backgroundSpawn(char *input){
-	
-	
-	
 	
 	int h = strlen(input) - 1;
 	

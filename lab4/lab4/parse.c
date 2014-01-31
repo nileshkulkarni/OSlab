@@ -1,6 +1,15 @@
 #include "header.h"
 
 
+/**
+ * 
+ * Parses the input command(comm) w.r.t. tokens viz "< , > , >> , &"
+ * 
+ * Returns a command struct object containing the seperated tokens
+ * 
+ */ 
+
+
 command  parse(char *comm){
 
 	int i=0;

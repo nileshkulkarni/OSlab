@@ -2,3 +2,21 @@ compile:
     $make
 run 
     ./jash
+
+
+
+
+PARALLEL : 
+	parallel ls:::pwd::mkdir random
+	
+
+PIPE	:
+	ls -a|wc -l
+
+	
+I/O Redirection :
+	ls >files.out
+	pwd >>files.out
+	g++ test.cpp
+	./a.out < test.in
+	ls >files.out >file1.out (Erroneous command)
