@@ -23,10 +23,13 @@ extern struct cronTask *CTasks;
 extern int noOfCronTasks; 
 pid_t parallelGID;
 pid_t backgroundGID;
+int backgroundRunning;
 int parallelRunning;
 int ctrlCFlag=0;
 int main(int argc, char** argv){
 
+	
+	
 	//Setting the signal interrupt to its default function. 
 	if(signal(SIGINT, SIGINT_handler) == SIG_ERR){
         printf("SIGINT install error\n");
@@ -44,6 +47,7 @@ int main(int argc, char** argv){
 	int printDollar = 1;
     biggestParent = 1;
     parallelGID = 100;
+    backgroundGID = 101;
     CTasks = malloc(sizeof(struct cronTask) *1000);
 	char input[MAXLINE];
 	char** tokens;
@@ -203,7 +207,7 @@ char ** tokenize(char* input){
 void jashExec(char *input){
 
 		command comm = parse(input);
-		//printf("c1 is (%d , %s, %s , %s, %s) \n", comm.nTokens , comm.tokens[0] , comm.tokens[1] , comm.tokens[2],comm.tokens[3]);
+	//	printf("c1 is (%d , %s, %s , %s, %s) \n", comm.nTokens , comm.tokens[0] , comm.tokens[1] , comm.tokens[2],comm.tokens[3]);
 		
 		if(comm.nTokens > 1){
 			
@@ -247,14 +251,13 @@ void jashExec(char *input){
 				if(child_process_ID!=-1){
 					kill(child_process_ID,9);
 				}
-				
 				kill(-backgroundGID , 9);
 				kill(0,9);
 			}
 		
 			else if(strcmp(tokens[0] , CRON) == 0){
 				read_cron_file(tokens[1]);
-			    printf("Child process id %d\n",child_process_ID); 
+			  //  printf("Child process id %d\n",child_process_ID); 
                 fflush(stdin);
 			}
 			else        

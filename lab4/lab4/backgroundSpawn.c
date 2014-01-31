@@ -7,13 +7,17 @@ extern pid_t backgroundGID;
 void backgroundSpawn(char *input){
 	
 	
+	
+	
 	int h = strlen(input) - 1;
 	
 	while(input[h] != '&'){
 		h--;
 	}
 	
-	input[h] = '\0';
+	input[h] = '\n';
+	input[h+1] = '\0';
+	
 	
 	pid_t bgpi = fork();   //background process id
 	
@@ -28,6 +32,7 @@ void backgroundSpawn(char *input){
 	
 	if(bgpi == 0){	
 		jashExec(input);
+		printf("Background Process %d has ended . \n" , getpid()); 
 		exit(0);
 	}
 	

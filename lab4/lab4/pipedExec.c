@@ -40,7 +40,7 @@ void pipedExec(command commands){
 
         int pipefd[2];
         if(commands.nTokens != 3){
-            printf("Wrong piping directive\n");
+            fprintf(stderr , "Wrong piping directive\n");
             return;     
         }
        
@@ -54,12 +54,12 @@ void pipedExec(command commands){
         }
         
         if(pipe(pipefd)){
-            perror("pipe\n");
+            fprintf(stderr , "Could not perform a Pipe\n");    
         }
         child_process_ID = fork();
          
         if(child_process_ID==-1){
-            printf("Fork error");
+            fprintf(stderr , "Fork error\n");
         }
         else if(child_process_ID==0){
             //child process
