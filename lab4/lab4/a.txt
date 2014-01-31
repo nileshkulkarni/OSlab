@@ -1,1 +1,25 @@
-/home/vipul/Sem6/OSlab/OSlab/lab4/lab4
+ a 
+a 
+a.a
+alarm.c
+al.c
+a.txt
+bash2.l
+bash.l
+b.txt
+cron.c
+cron.in
+execute.c
+header.h
+interrrupt.c
+jash
+jash.c
+jash.in
+Lab3.pdf
+Makefile
+parse.c
+pipedExec.c
+README
+run.c
+vipul
+yy.txt

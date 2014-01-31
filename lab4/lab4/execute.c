@@ -212,7 +212,8 @@ int execute3(char** tokens){ // this function is written for piped execution
     }
     else{
         biggestParent =0;
-        parent_ID = getpid(); 
+        parent_ID = getpid();
+         
         otherCommands(tokens);
     }
     child_process_ID = -1;
