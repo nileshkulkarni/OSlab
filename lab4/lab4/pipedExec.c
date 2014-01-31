@@ -3,7 +3,18 @@
 #include<sys/types.h>
 #include <sys/wait.h>
 
+int checkJash(char* data){
 
+    char** tokens = tokenize(data);
+    int i=0;
+    while(tokens[i]!=NULL){
+        if((strcmp(tokens[i],CD)==0) || (strcmp(tokens[i],RUN)==0) ||(strcmp(tokens[i],CRON)==0)){
+           return 1; 
+        }
+        i++;
+    }
+    return 0;
+}
 void pipedExec(command commands){
     int child1;
     int child2;
@@ -21,6 +32,16 @@ void pipedExec(command commands){
             printf("Wrong piping directive\n");
             return;     
         }
+       
+        if(checkJash(commands.tokens[0])){
+            printf("Erroneous Command here, recieved a cd run or cron\n");
+            return ;
+        }
+        if(checkJash(commands.tokens[2])){
+            printf("Erroneous Command here, recieved a cd run or cron\n");
+            return;
+        }
+        
         if(pipe(pipefd)){
             perror("pipe\n");
         }
