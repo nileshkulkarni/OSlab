@@ -2,6 +2,7 @@
 extern int ctrlCFlag;
 
 extern int biggestParent;
+/* interrrup handler for sig int */
 void SIGINT_handler(int sig){
 	ctrlCFlag = 1;
     if(signal(SIGINT, SIGINT_handler) == SIG_ERR){
@@ -22,6 +23,7 @@ void SIGINT_handler(int sig){
     fflush(stdout);
     return;
 }
+/* interrrup handler for sig usr1 */
 void SIGUSR1_handler(int sig){
 	if(signal(SIGUSR1, SIGUSR1_handler) == SIG_ERR){
         printf("SIGINT install error\n");

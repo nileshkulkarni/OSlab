@@ -6,13 +6,25 @@ run
 
 
 
+Terminal Support:
+
+**************************************************************************
+All basic commands supported by the linux shell in their raw from:
+    Sample test_cases: 
+        ls
+        pwd
+        mkdir random
+**************************************************************************
+
+
 PARALLEL : 
 	parallel ls:::pwd::mkdir random
 	
-
+**************************************************************************
 PIPE	:
 	ls -a|wc -l
 
+**************************************************************************
 	
 I/O Redirection :
 	ls >files.out
@@ -20,3 +32,20 @@ I/O Redirection :
 	g++ test.cpp
 	./a.out < test.in
 	ls >files.out >file1.out (Erroneous command)
+ 
+**************************************************************************
+ 
+Cron tasks :
+     
+	sample cron file contains:
+     
+    * * * * * ls
+
+    command to be run on jash:
+    cron cron.in
+
+**************************************************************************
+Background Processes :
+	
+	gedit &
+		

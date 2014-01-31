@@ -14,6 +14,7 @@ extern struct cronTask *CTasks;
 extern int noOfCronTasks;
 volatile sig_atomic_t flag = 0;
 int prevTime;
+/* interrupt handler for alarm */
 void SIGALARM_Handler(int sig){
    signal(SIGALRM, SIG_IGN);
     flag=1;
@@ -22,6 +23,7 @@ void SIGALARM_Handler(int sig){
     
 }
 
+/* routine which keeps on checking if it is time for an event to be executed*/
 int cron(){
     while(1){
         if(flag==1){
@@ -36,11 +38,12 @@ int cron(){
     return 1;
 
 }
-
+/* executes  timed commands by spawning processes in jash */
 void runComm(char** argv){
     execute(argv);
     return;
 }
+/* checks for time and event regex*/
 int analyse(struct cronTask task){
   time_t t = time(NULL);
   struct tm tm = *localtime(&t);
@@ -58,7 +61,7 @@ int analyse(struct cronTask task){
     }
                         
 }
-
+/* called from main to do cron tasks */
 int doCronTasks(){
 
     if(signal(SIGALRM, SIGALARM_Handler) == SIG_ERR){
