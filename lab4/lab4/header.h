@@ -18,12 +18,14 @@
 #define PARALLEL "parallel"
 #define CRON "cron"
 #define EXIT "exit"
+
 int run(char **tokens);
 int execute(char** tokens);
 int cd(char** tokens);
 int otherCommands(char **tokens);
 void SIGINT_handler(int sig);
 void SIGUSR1_handler(int sig);
+void backgroundSpawn(char *input);
 
 
 

@@ -311,7 +311,6 @@ int execute(char** tokens){
 int otherCommands(char** tokens){
     
     int status = execvp(tokens[0],tokens);
-    
     if(status==-1){
 
        pid_t ppid = getppid();

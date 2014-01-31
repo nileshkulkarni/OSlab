@@ -17,7 +17,7 @@ command  parse(char *comm){
    
     while(comm[i] != '\0'){
 		
-		//printf("** %c *** %d\n" , comm[i] , tokenNo);
+	//	printf("**%c **** %d *** %d\n" , comm[i] , i , tokenNo);
 		
 		
 	   if((flag==1 || flag==3) && comm[i] == ' '){
@@ -38,7 +38,8 @@ command  parse(char *comm){
 				tokenIndex = -1;
 				tokens[++tokenNo] = (char *)malloc(1000*sizeof(char));
 				flag = 1;
-			}	
+			}
+			
 		 }
 		
 		
@@ -56,8 +57,12 @@ command  parse(char *comm){
 			
 			
 			tokens[tokenNo][++tokenIndex] = comm[i];
+			if(comm[i] == '&') break;
 			i++;
 	}
+	
+	
+	
 	tokens[tokenNo][++tokenIndex]  = '\0';
 	ret.tokens = tokens;
 	return ret;	

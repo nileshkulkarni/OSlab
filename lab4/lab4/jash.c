@@ -22,6 +22,7 @@ extern int biggestParent;
 extern struct cronTask *CTasks; 
 extern int noOfCronTasks; 
 pid_t parallelGID;
+pid_t backgroundGID;
 int parallelRunning;
 int ctrlCFlag=0;
 int main(int argc, char** argv){
@@ -75,6 +76,7 @@ int main(int argc, char** argv){
                     child_process_ID = -1;
                 }
                 else{
+					kill(-backgroundGID , 9);
                     exit(0);
                 }
                 ctrlCFlag =0;
@@ -87,6 +89,7 @@ int main(int argc, char** argv){
                     wait(status);
                     free(status);
                 }
+                kill(-backgroundGID , 9);
                 exit(0);
             }
                 
@@ -98,70 +101,19 @@ int main(int argc, char** argv){
 		cmds[numCmds] = (char *)malloc(sizeof(input));
 		strcpy(cmds[numCmds++], input); 
 
-		// Calling the tokenizer function on the input line    
-
-
-		command comm = parse(input);
-		printf("c1 is (%d , %s, %s , %s, %s) \n", comm.nTokens , comm.tokens[0] , comm.tokens[1] , comm.tokens[2],comm.tokens[3]);
-	//	continue;
+		// Calling the tokenizer function on the input line   
 		
+		command temp = parse(input); 
 		
+		if(temp.nTokens == 0) continue;
 		
-		if(comm.nTokens > 1){
-			
-			if(strcmp(comm.tokens[1] , "|") == 0)
-				pipedExec(comm);
-			else if((strcmp(comm.tokens[1] , "<") == 0)
-					|| (strcmp(comm.tokens[1] , ">") == 0)
-					|| (strcmp(comm.tokens[1] , "<<") == 0)
-					|| (strcmp(comm.tokens[1] , ">>") == 0))
-				IORedirection(comm);
-				
-			continue;	
-	   }
-		
-		
-		tokens = tokenize(input);
-			
-		// Uncomment to print tokens
-/*		
-        for(i=0;tokens[i]!=NULL;i++){
-			printf("%s\n", tokens[i]);
+		if(strcmp(temp.tokens[temp.nTokens - 1] , "&")==0){
+			//	printf("hey here \n");
+				backgroundSpawn(input);
+				continue;
 		}
-*/		
-		
 
-		if(tokens[0] == NULL)
-            continue;
-            
-            
-        else{ 
-            if(strcmp(tokens[0] , PARALLEL) == 0){
-				parallel(input+strlen(PARALLEL));
-				int *status = malloc (sizeof(int));
-				if(parallelRunning){
-					waitpid(-parallelGID,status,0);
-					parallelGID = 1000;
-					parallelRunning=0;
-				}
-			}
-			else if(strcmp(tokens[0] , EXIT) == 0){
-				if(child_process_ID!=-1){
-					kill(child_process_ID,9);
-				}
-				kill(0,9);
-			}
-		
-			else if(strcmp(tokens[0] , CRON) == 0){
-				read_cron_file(tokens[1]);
-			    printf("Child process id %d\n",child_process_ID); 
-                fflush(stdin);
-			}
-			else        
-				execute(tokens);
-		}
-		
-		
+		jashExec(input);	
 		
 	}
   
@@ -227,4 +179,90 @@ char ** tokenize(char* input){
 	}
 	
 	return tokens;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+void jashExec(char *input){
+
+		command comm = parse(input);
+		//printf("c1 is (%d , %s, %s , %s, %s) \n", comm.nTokens , comm.tokens[0] , comm.tokens[1] , comm.tokens[2],comm.tokens[3]);
+		
+		if(comm.nTokens > 1){
+			
+			if(strcmp(comm.tokens[1] , "|") == 0)
+				pipedExec(comm);
+			else if((strcmp(comm.tokens[1] , "<") == 0)
+					|| (strcmp(comm.tokens[1] , ">") == 0)
+					|| (strcmp(comm.tokens[1] , "<<") == 0)
+					|| (strcmp(comm.tokens[1] , ">>") == 0))
+				IORedirection(comm);
+				
+			return;	
+	   }
+		
+		
+		char **tokens = tokenize(input);
+			
+		// Uncomment to print tokens
+/*		
+        for(i=0;tokens[i]!=NULL;i++){
+			printf("%s\n", tokens[i]);
+		}
+*/		
+		
+
+		if(tokens[0] == NULL)
+            return;
+            
+            
+        else{ 
+            if(strcmp(tokens[0] , PARALLEL) == 0){
+				parallel(input+strlen(PARALLEL));
+				int *status = malloc (sizeof(int));
+				if(parallelRunning){
+					waitpid(-parallelGID,status,0);
+					parallelGID = 1000;
+					parallelRunning=0;
+				}
+			}
+			else if(strcmp(tokens[0] , EXIT) == 0){
+				if(child_process_ID!=-1){
+					kill(child_process_ID,9);
+				}
+				
+				kill(-backgroundGID , 9);
+				kill(0,9);
+			}
+		
+			else if(strcmp(tokens[0] , CRON) == 0){
+				read_cron_file(tokens[1]);
+			    printf("Child process id %d\n",child_process_ID); 
+                fflush(stdin);
+			}
+			else        
+				execute(tokens);
+		}
+	int i;	
+	for(i=0;tokens[i]!=NULL;i++){
+		free(tokens[i]);
+	}
+	free(tokens);
 }
