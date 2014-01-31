@@ -99,8 +99,15 @@ int main(int argc, char** argv){
 		strcpy(cmds[numCmds++], input); 
 
 		// Calling the tokenizer function on the input line    
-		
-		tokens = tokenize(input);
+	    command comm= parse(input);
+	    if(comm.nTokens != 1){
+
+            
+
+
+            continue;
+        }
+        tokens = tokenize(input);
 		
 			
 		// Uncomment to print tokens

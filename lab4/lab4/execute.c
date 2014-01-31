@@ -190,6 +190,34 @@ int execute2(char** tokens){
 
 
 
+int execute3(char** tokens){ // this function is written for piped execution
+   if(tokens==NULL){
+        printf("Recieved a Null argument\n");
+        return;
+   }
+   
+    if(tokens[0] ==NULL){
+        printf("Command Received a Null\n");
+    }
+    
+    if(strcmp(tokens[0],CD) == 0){
+        cd(tokens);
+    }
+    
+    else if(strcmp(tokens[0],RUN) == 0){
+
+          biggestParent =0;
+          parent_ID = getpid(); 
+          run(tokens);
+    }
+    else{
+        biggestParent =0;
+        parent_ID = getpid(); 
+        otherCommands(tokens);
+    }
+    child_process_ID = -1;
+}
+
 
 
 
