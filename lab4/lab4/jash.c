@@ -99,6 +99,27 @@ int main(int argc, char** argv){
 		strcpy(cmds[numCmds++], input); 
 
 		// Calling the tokenizer function on the input line    
+
+
+		command comm = parse(input);
+	//	printf("c1 is (%d , %s , %s , %s , %s , %s) \n", c1.nTokens , c1.tokens[0] , c1.tokens[1] , c1.tokens[2] , c1.tokens[3] , c1.tokens[4]);
+	//	continue;
+		
+		
+		
+		if(comm.nTokens > 1){
+			
+			if(strcmp(comm.tokens[1] , "|")
+				pipedExec(comm);
+			else if((strcmp(comm.tokens[1] , "<") == 0)
+					&& (strcmp(comm.tokens[1] , ">") == 0)
+					&& (strcmp(comm.tokens[1] , "<<") == 0)
+					&& (strcmp(comm.tokens[1] , ">>") == 0))
+				IORedirection(comm);
+				
+			continue;	
+	   }
+		
 		
 		tokens = tokenize(input);
 		
