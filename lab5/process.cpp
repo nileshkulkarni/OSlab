@@ -19,7 +19,7 @@ int Process::getPid(){
     return P.p_id; 
 
 }
-void Process::updateToNextCpu(int cpuDone){
+int Process::updateToNextCpu(int cpuDone){
     printf("Came here updateToNextCpu \n") ;
     if(cpuDone == 0){
         //schedule to next iteration
@@ -33,12 +33,18 @@ void Process::updateToNextCpu(int cpuDone){
                 if(current_process_phase < (P.phases).size()){
                     // move to next phase 
                     time_left_on_cpu =  P.phases[current_process_phase].cpu_time; 
+                    return 1;
+                }
+                else{
+                    return 0;                     
+
                 }
             }
             else{
                 //continue with the same process phase
                 //do an IO and schedule a CPU_burst 
                 time_left_on_cpu = P.phases[current_process_phase].cpu_time;
+                return 1;
             }
     }
 }

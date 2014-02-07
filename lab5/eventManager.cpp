@@ -8,20 +8,31 @@ EventManager::EventManager(){
 void EventManager::start(){
 
     while(1){
+        Event *e; 
         printf("Clock is  %d \n\n ",clockS.time());
-        Event *e = event_queue.top().eventPtr;
-       // printf("Event Queue size  %d  ",event_queue.size());
+        if(event_queue.size()){
+
+            e= event_queue.top().eventPtr;
+            printf("Event e time is  %d, event type is %d\n",e->time,e->eventType);
+        }
+        else{
+            e=NULL;
+
+        }
+        printf("Event Queue size  %d \n ",event_queue.size());
         //printf("Event e time is  %d, event type is %d\n",e->time,e->eventType);
         printf("CPU Stop event time is %d\n" , cpuStopEvent->time);
         if(event_queue.size()==0 && cpuStopEvent->eventType ==DEFAULT){
 
             printf("Done !\n");
+            break;
         }
         else if(cpuStopEvent->eventType ==DEFAULT){
             printf("No processs  to run on CPU?\n");    
 
         }
         else if(event_queue.size() ==0){
+        //else if(){
             
             clockS.time(cpuStopEvent->time);
             printf("About to remove a process with pid e ==NULL %d\n", cpuStopEvent->p->getPid()); 
@@ -45,16 +56,17 @@ void EventManager::start(){
             newEvent->eventType = CPU_EXEC;
             newEvent->time = clockS.time();  
             newEvent->p = e->p;
-            (newEvent->p)->updateToNextCpu(0); 
+            if((newEvent->p)->updateToNextCpu(0)){ 
             printf("Adding event \n");
             eventManager.addEvent(newEvent);
             newEvent->print();
+            }
             // added a new process to the event handler for execution
         }
         else if(e->eventType == CPU_EXEC){
                 clockS.time(e->time);
                 event_queue.pop();
-               // cpuStopEvent->time = clockS.time() + (e->p)->time_left_on_cpu;
+               //kk cpuStopEvent->time = clockS.time() + (e->p)->time_left_on_cpu;
                // cpuStopEvent->p = e->p;
                  
                 sch.add_process(e->p);
@@ -68,8 +80,8 @@ void EventManager::start(){
                 newEvent->eventType = CPU_EXEC;
                 newEvent->time = clockS.time() + (e->p)->getIOTime(); 
                 newEvent->p = e->p;
-                (newEvent->p)->updateToNextCpu(0); 
-                eventManager.addEvent(newEvent);
+                if((newEvent->p)->updateToNextCpu(0)); 
+                    eventManager.addEvent(newEvent);
         }
         else if(e->eventType == COMPLETE){
                 clockS.time(e->time);

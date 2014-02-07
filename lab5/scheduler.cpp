@@ -31,7 +31,12 @@ void Scheduler::removeCurrentProcess(){
             // create a new event to mark completion on IO for the process;
             updateIOEvent(p1); // this will add a new IO event in the scheduler
             cpu_queue.pop();
-            p1 = cpu_queue.top().processPtr; // this the new process which is going to execute on the cpu    
+            if(cpu_queue.size()){
+                p1 = cpu_queue.top().processPtr; // this the new process which is going to execute on the cpu    
+            }
+            else
+                p1 =NULL;
+            
             if(p1 != NULL){
                 cpuStopEvent->time =  clockS.time() + p1->time_left_on_cpu;
                 cpuStopEvent->p = p1;

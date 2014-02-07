@@ -18,7 +18,7 @@ class Process{
         
         Process(struct process);
         
-        void updateToNextCpu(int);
+        int updateToNextCpu(int);
         int getIOTime();
         int getPid();
 };

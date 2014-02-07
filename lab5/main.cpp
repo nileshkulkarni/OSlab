@@ -12,9 +12,9 @@ struct scheduler my_scheduler;
 int main(){
     process_proc_file();
     cout<<"Size of process list  "<<process_list.size()<<"\n";
-    cout<<(process_list[1].phases[1]).io_time<<endl;
+    //cout<<(process_list[1].phases[1]).io_time<<endl;
     process_scheduler_file();
-    cout<<my_scheduler.levels[1].time_slice<<endl;
+    //cout<<my_scheduler.levels[1].time_slice<<endl;
     for(int i =0;i<process_list.size();i++){
         Event *e = new Event();
         
