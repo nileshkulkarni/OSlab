@@ -16,7 +16,8 @@ void Scheduler::updateIOEvent(Process * p){
 
             e->p =p;
             printf("Added IO event here\n");
-            eventManager.addEvent(e); 
+            eventManager.addEvent(e);
+            currProcess = NULL;
 
 
 }
@@ -40,7 +41,8 @@ void Scheduler::removeCurrentProcess(){
             if(p1 != NULL){
                 cpuStopEvent->time =  clockS.time() + p1->time_left_on_cpu;
                 cpuStopEvent->p = p1;
-                cpuStopEvent->eventType =CPU_STOP;    
+                cpuStopEvent->eventType =CPU_STOP;   
+                currProcess = p1;
             }
             else{
                 cpuStopEvent->eventType = DEFAULT;
@@ -101,7 +103,8 @@ void Scheduler::updateProcessQueue(){
     else{
         printf("Process with higher priority in the queue \n");
         currProcess->time_left_on_cpu = clockS.time()-currProcess->time_start_on_cpu ; 
-        currProcess->prempted_cpu = 1; 
+        currProcess->prempted_cpu = 1;
+
         p1->time_start_on_cpu = clockS.time();
         p1->updateToNextCpu(0); // this will update the time left on cpu
         cpuStopEvent->time = clockS.time() + p1->time_left_on_cpu;  

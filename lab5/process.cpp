@@ -36,6 +36,7 @@ int Process::updateToNextCpu(int cpuDone){
                     return 1;
                 }
                 else{
+                    printf("current_process_phase %d\n ", current_process_phase);
                     return 0;                     
 
                 }
@@ -44,6 +45,7 @@ int Process::updateToNextCpu(int cpuDone){
                 //continue with the same process phase
                 //do an IO and schedule a CPU_burst 
                 time_left_on_cpu = P.phases[current_process_phase].cpu_time;
+                printf("Updating to the current iteration %d\n",current_iteration_no);
                 return 1;
             }
     }

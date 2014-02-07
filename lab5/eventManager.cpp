@@ -21,7 +21,7 @@ void EventManager::start(){
         }
         printf("Event Queue size  %d \n ",event_queue.size());
         //printf("Event e time is  %d, event type is %d\n",e->time,e->eventType);
-        printf("CPU Stop event time is %d\n" , cpuStopEvent->time);
+        printf("CPU Stop event time is %d, and type is %d" , cpuStopEvent->time, cpuStopEvent->eventType);
         if(event_queue.size()==0 && cpuStopEvent->eventType ==DEFAULT){
 
             printf("Done !\n");
@@ -78,10 +78,14 @@ void EventManager::start(){
                 event_queue.pop();
                 Event *newEvent = new Event();
                 newEvent->eventType = CPU_EXEC;
-                newEvent->time = clockS.time() + (e->p)->getIOTime(); 
+                newEvent->time = clockS.time(); 
                 newEvent->p = e->p;
-                if((newEvent->p)->updateToNextCpu(0)); 
+                printf("IO _COMPELTE \n");
+                if((newEvent->p)->updateToNextCpu(0)){ 
+                    printf("update for next cpu satisfied\n");
                     eventManager.addEvent(newEvent);
+                    printf("event_queue size  is  %d ", event_queue.size());
+                }
         }
         else if(e->eventType == COMPLETE){
                 clockS.time(e->time);
