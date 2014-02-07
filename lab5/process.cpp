@@ -27,6 +27,7 @@ void Process::updateToNextCpu(int cpuDone){
             current_iteration_no++ ;
             if(current_iteration_no == P.phases[current_process_phase].iterations){
                 //this process phase completed, go to the next process phase.
+                printf("Updating to the next phase %d\n",this->getPid());
                 current_process_phase++;
                 current_iteration_no =0;
                 if(current_process_phase < (P.phases).size()){

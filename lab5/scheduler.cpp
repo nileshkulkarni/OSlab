@@ -65,13 +65,17 @@ void Scheduler::updateProcessQueue(){
         printf("We have a new process to execute, Adding a new process as current process \n");
         
         currProcess = p1;
+        cpuStopEvent->time =  clockS.time() + p1->time_left_on_cpu;
+        cpuStopEvent->p = p1;
+        cpuStopEvent->eventType =CPU_STOP;    
 
     }
     
     else if(currProcess->getPid() == p1->getPid()){
-        printf("No process updates Require, No process at higher priority \n");
+        printf("No process updates Require, No process at higher priority \n");/*
         if(clockS.time()==cpuStopEvent->time){
             // stop executing the currentProcess
+            printf("Adding IO event\n");
             // create a new event to mark completion on IO for the process;
             updateIOEvent(p1); // this will add a new IO event in the scheduler
             cpu_queue.pop();
@@ -82,9 +86,12 @@ void Scheduler::updateProcessQueue(){
                 cpuStopEvent->eventType =CPU_STOP;    
             }
             else{
+                printf("fhdskfh\n");
                 cpuStopEvent->eventType = DEFAULT;
             }
         }
+        */
+        
     }
     else{
         printf("Process with higher priority in the queue \n");

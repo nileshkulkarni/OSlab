@@ -10,17 +10,31 @@ void EventManager::start(){
     while(1){
         printf("Clock is  %d \n\n ",clockS.time());
         Event *e = event_queue.top().eventPtr;
-        printf("Event Queue size  %d  ",event_queue.size());
-        printf("Event e time is  %d, event type is %d\n",e->time,e->eventType);
-        
-        if(cpuStopEvent->eventType ==DEFAULT){
+       // printf("Event Queue size  %d  ",event_queue.size());
+        //printf("Event e time is  %d, event type is %d\n",e->time,e->eventType);
+        printf("CPU Stop event time is %d\n" , cpuStopEvent->time);
+        if(event_queue.size()==0 && cpuStopEvent->eventType ==DEFAULT){
+
+            printf("Done !\n");
+        }
+        else if(cpuStopEvent->eventType ==DEFAULT){
             printf("No processs  to run on CPU?\n");    
 
         }
+        else if(event_queue.size() ==0){
+            
+            clockS.time(cpuStopEvent->time);
+            printf("About to remove a process with pid e ==NULL %d\n", cpuStopEvent->p->getPid()); 
+            sch.removeCurrentProcess();
+            continue;
+        }
+
         else if(cpuStopEvent->time < e->time){
             //stop the current process executing on the cpu
             clockS.time(cpuStopEvent->time);
+            printf("About to remove a process with pid %d\n", cpuStopEvent->p->getPid()); 
             sch.removeCurrentProcess();
+
             // scheduler will push for an IO_COMPLETE Event for the process  
             continue;
         }
@@ -40,8 +54,8 @@ void EventManager::start(){
         else if(e->eventType == CPU_EXEC){
                 clockS.time(e->time);
                 event_queue.pop();
-                cpuStopEvent->time = clockS.time() + (e->p)->time_left_on_cpu;
-                cpuStopEvent->p = e->p;
+               // cpuStopEvent->time = clockS.time() + (e->p)->time_left_on_cpu;
+               // cpuStopEvent->p = e->p;
                  
                 sch.add_process(e->p);
 
