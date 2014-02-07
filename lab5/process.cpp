@@ -1,7 +1,8 @@
 #include "process.h"
 
 Process::Process(struct process p){
-	P.p_id = p.p_id;
+	
+    P.p_id = p.p_id;
 	P.start_priority = p.start_priority;
 	P.admission = p.admission;
 	P.phases=p.phases;
@@ -19,7 +20,7 @@ int Process::getPid(){
 
 }
 void Process::updateToNextCpu(int cpuDone){
-   
+    printf("Came here updateToNextCpu \n") ;
     if(cpuDone == 0){
         //schedule to next iteration
             int IO_time = P.phases[current_process_phase].io_time; 

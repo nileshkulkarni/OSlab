@@ -8,16 +8,16 @@ using namespace std;
 
 extern vector <process> process_list;
 extern scheduler my_scheduler;
+
 void process_proc_file(){
     string line, line2;
     int pid, prior;
-    float adm;
+    int adm;
     int iter;
-    float cpu_t, io_t;
+    int cpu_t, io_t;
     ifstream infile("PROCESS_SPEC");
     while (std::getline(infile, line))
-    {   
-        cout<<"here\n";
+    {
         if(line=="PROCESS"){
             process proc;
             getline(infile, line2);
@@ -53,22 +53,24 @@ void process_scheduler_file(){
     string line, line2;
     int level_count;
     int prior;
-    float t_slice;
+    int s_lvl;
+    int t_slice;
     ifstream infile("SCHEDULER_SPEC");
     while (std::getline(infile, line))
     {
         if(line=="SCHEDULER"){
             getline(infile, line2);
             std::istringstream iss(line2);
-            if (!(level_count)) { break; } // error
+            if (!(iss >> level_count)) { break; } // error
             // cout<<pid<<endl<<prior<<endl;
             
             my_scheduler.no_levels = level_count;
             for(int i=0; i<level_count; i++){
                 getline(infile, line2);
                 std::istringstream iss(line2);
-                if (!(iss >> prior >> t_slice)) { break; } // error
+                if (!(iss >> s_lvl >> prior >> t_slice)) { break; } // error
                 sc_level scl;
+                scl.level_number = s_lvl;
                 scl.priority = prior;
                 scl.time_slice = t_slice;
                 my_scheduler.levels.push_back(scl);

@@ -10,30 +10,30 @@ enum eventTypes{
      DEFAULT
 };
 
+
 struct process_phase{
-	int iterations;
-	int cpu_time;
-	int io_time;
+    int iterations;
+    int cpu_time;
+    int io_time;
 };
 
 struct process{
-	int p_id;
-	int start_priority;
-	int admission;
-	vector<process_phase> phases;
+    int p_id;
+    int start_priority;
+    int admission;
+    vector<process_phase> phases;
 };
 
 struct sc_level{
-	int priority;
-	int time_slice;
+    int level_number;
+    int priority;
+    int time_slice;
 };
 
 struct scheduler{
-	int no_levels;
-	vector<sc_level> levels;
+    int no_levels;
+    vector<sc_level> levels;
 };
-
-
 
 void process_proc_file();
 void process_scheduler_file();

@@ -8,18 +8,23 @@ EventManager::EventManager(){
 void EventManager::start(){
 
     while(1){
+        printf("Clock is  %d \n\n ",clockS.time());
         Event *e = event_queue.top().eventPtr;
-        if(cpuStopEvent ==NULL){
-            printf("No process running on CPU???\n");    
+        printf("Event Queue size  %d  ",event_queue.size());
+        printf("Event e time is  %d, event type is %d\n",e->time,e->eventType);
+        
+        if(cpuStopEvent->eventType ==DEFAULT){
+            printf("No processs  to run on CPU?\n");    
 
         }
-        if(cpuStopEvent->time > e->time){
+        else if(cpuStopEvent->time < e->time){
             //stop the current process executing on the cpu
             clockS.time(cpuStopEvent->time);
             sch.removeCurrentProcess();
             // scheduler will push for an IO_COMPLETE Event for the process  
+            continue;
         }
-        else if(e->eventType == ADMISSION_EVENT){
+        if(e->eventType == ADMISSION_EVENT){
             clockS.time(e->time);
             event_queue.pop();
             Event *newEvent = new Event();
@@ -27,13 +32,19 @@ void EventManager::start(){
             newEvent->time = clockS.time();  
             newEvent->p = e->p;
             (newEvent->p)->updateToNextCpu(0); 
+            printf("Adding event \n");
             eventManager.addEvent(newEvent);
+            newEvent->print();
             // added a new process to the event handler for execution
         }
         else if(e->eventType == CPU_EXEC){
                 clockS.time(e->time);
                 event_queue.pop();
-                sch.add_process(e->p); 
+                cpuStopEvent->time = clockS.time() + (e->p)->time_left_on_cpu;
+                cpuStopEvent->p = e->p;
+                 
+                sch.add_process(e->p);
+
                 /// push the event to the scheduler for further processing.
         }
         else if(e->eventType == IO_COMPLETE){

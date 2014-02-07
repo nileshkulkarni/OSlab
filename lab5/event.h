@@ -12,6 +12,7 @@ class Event {
     Process *p;
     int time;
     Event();
+    void print();
 };
 
 struct EventPtr{
@@ -21,7 +22,7 @@ struct EventPtr{
     }
     bool operator< (const EventPtr &e2) const
     {
-    	return (eventPtr->time) < (e2.eventPtr)->time;
+    	return (eventPtr->time) > (e2.eventPtr)->time;
      }
 
 };
@@ -33,7 +34,7 @@ struct ProcessPtr{
     }
     bool operator< (const ProcessPtr &e2) const
     {
-    	return (processPtr->priority) > (e2.processPtr)->priority;
+    	return (processPtr->priority) < (e2.processPtr)->priority;
      }
 };
 

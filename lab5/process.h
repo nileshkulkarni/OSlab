@@ -1,6 +1,8 @@
 #ifndef PROCESS_H
 #define PROCESS_H
 #include "header.h"
+#include <iostream>
+#include <stdio.h>
 //#include "event.h"
 
 class Process{

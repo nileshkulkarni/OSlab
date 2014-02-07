@@ -1,4 +1,4 @@
-processScheduling :  main.cpp  header.h process.o scheduler.o event.o eventManager.o clock.o 
+processScheduling :  main.cpp asgn5.cpp header.h process.o scheduler.o event.o eventManager.o clock.o 
 	g++ main.cpp asgn5.cpp scheduler.o clock.o process.o event.o eventManager.o -o processScheduling  -g
 
 scheduler.o: scheduler.cpp scheduler.h header.h eventManager.h clock.h process.h	

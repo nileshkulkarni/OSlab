@@ -15,6 +15,7 @@ void Scheduler::updateIOEvent(Process * p){
             e->time = clockS.time() + (p->P).phases[p->current_process_phase].io_time;
 
             e->p =p;
+            printf("Added IO event here\n");
             eventManager.addEvent(e); 
 
 
@@ -23,7 +24,8 @@ void Scheduler::updateIOEvent(Process * p){
 void Scheduler::removeCurrentProcess(){
     Process* p1 = cpu_queue.top().processPtr;
     if(currProcess->getPid() == p1->getPid()){
-        printf("No process updates Require, No process at higher priority \n");
+       // printf("No process updates Require, No process at higher priority \n");
+        printf("Removing a process from cpu\n");
         if(clockS.time() == cpuStopEvent->time){
             // stop executing the currentProcess
             // create a new event to mark completion on IO for the process;
@@ -36,7 +38,7 @@ void Scheduler::removeCurrentProcess(){
                 cpuStopEvent->eventType =CPU_STOP;    
             }
             else{
-                cpuStopEvent = NULL;
+                cpuStopEvent->eventType = DEFAULT;
             }
         }
     }
@@ -59,6 +61,12 @@ void Scheduler::updateProcessQueue(){
            printf("CPU :: I have  current Process running, with PID %d \n", currProcess->getPid()); 
         }
     }
+    if(currProcess == NULL){
+        printf("We have a new process to execute, Adding a new process as current process \n");
+        
+        currProcess = p1;
+
+    }
     
     else if(currProcess->getPid() == p1->getPid()){
         printf("No process updates Require, No process at higher priority \n");
@@ -74,7 +82,7 @@ void Scheduler::updateProcessQueue(){
                 cpuStopEvent->eventType =CPU_STOP;    
             }
             else{
-                cpuStopEvent = NULL;
+                cpuStopEvent->eventType = DEFAULT;
             }
         }
     }
@@ -92,6 +100,7 @@ void Scheduler::updateProcessQueue(){
 
 
 void Scheduler::add_process(Process* p1){
-    cpu_queue.push(p1);
+    ProcessPtr *p = new ProcessPtr(p1);
+    cpu_queue.push(*p);
     updateProcessQueue();
 }
