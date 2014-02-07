@@ -1,13 +1,28 @@
 #ifndef SCHEDULER_H
 #define SCHEDULER_H
 #include<queue>
+#include<stdio.h>
 #include "header.h"
+#include "process.h"
+#include "event.h"
+#include "clock.h"
+#include "eventManager.h"
 using namespace std;
+
+
 class Scheduler{
-    std::priority_queue<Process*> cpu_queue; 
-    
-    Process* prevProcess;
-    void add_process();
-    
+    public:
+    std::priority_queue<ProcessPtr> cpu_queue; 
+    Scheduler(); 
+    Process* currProcess;
+    void add_process(Process *);
+    void removeCurrentProcess();
+    void updateProcessQueue(); 
+    void updateIOEvent(Process *);
 };
+
+extern Scheduler sch;
+extern EventManager eventManager;
+extern Clock clockS;
+extern Event* cpuStopEvent;
 #endif

@@ -1,12 +1,13 @@
 #ifndef HEADER_H
 #define HEADER_H
-
+#include <vector>
+using namespace std;
 
 enum eventTypes{
      ADMISSION_EVENT,
      CPU_EXEC,
-     IO,
-     COMPLETE
+     IO_COMPLETE, COMPLETE, CPU_STOP,
+     DEFAULT
 };
 
 struct process_phase{
@@ -31,8 +32,11 @@ struct scheduler{
 	int no_levels;
 	vector<sc_level> levels;
 };
-bool operator compEvent (Event *e1,Event *e2);
-bool operator compScheduler (Process *p1,Process p2);
+
+
+
+void process_proc_file();
+void process_scheduler_file();
 
 
 #endif

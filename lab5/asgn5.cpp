@@ -6,7 +6,8 @@
 #include "header.h"
 using namespace std;
 
-
+extern vector <process> process_list;
+extern scheduler my_scheduler;
 void process_proc_file(){
     string line, line2;
     int pid, prior;
@@ -15,7 +16,8 @@ void process_proc_file(){
     float cpu_t, io_t;
     ifstream infile("PROCESS_SPEC");
     while (std::getline(infile, line))
-    {
+    {   
+        cout<<"here\n";
         if(line=="PROCESS"){
             process proc;
             getline(infile, line2);

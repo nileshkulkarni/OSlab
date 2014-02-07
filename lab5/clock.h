@@ -1,7 +1,10 @@
-class Clock(){
+#ifndef CLOCK_H
+#define CLOCK_H
+class Clock{
     int curr_time;
     public:
         Clock();
-        void time();
-        void time(int);
+        int time();
+        int time(int);
 };
+#endif

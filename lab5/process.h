@@ -1,16 +1,24 @@
 #ifndef PROCESS_H
 #define PROCESS_H
-class Process{
+#include "header.h"
+//#include "event.h"
 
+class Process{
     public:
-        struct process P;
+        
+        process P;
         int current_process_phase;
         int current_iteration_no;
-        int time_for_next_cpu;
+        int time_left_on_cpu;
+        int time_start_on_cpu;
         int prempted_cpu;
         int priority;
-        void updateToNextCpu();
-
+        
+        Process(struct process);
+        
+        void updateToNextCpu(int);
+        int getIOTime();
+        int getPid();
 };
 
 #endif
