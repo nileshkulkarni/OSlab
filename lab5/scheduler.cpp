@@ -35,26 +35,9 @@ void Scheduler::removeCurrentProcess(){
             // create a new event to mark completion on IO for the process;
             updateIOEvent(p1); // this will add a new IO event in the scheduler
             cpu_queue.pop();
-            if(cpu_queue.size()){
-                p1 = cpu_queue.top().processPtr; // this the new process which is going to execute on the cpu    
-                printf("Removing current process2 \n");
-                p1->print();
-                printf("\n");
-            }
-            else
-                p1 =NULL;
-            
-            if(p1 != NULL){
-                cpuStopEvent->time =  clockS.time() + p1->time_left_on_cpu;
-                 
-                cpuStopEvent->p = p1;
-                cpuStopEvent->eventType =CPU_STOP;   
-                currProcess = p1;
-                currProcess->time_start_on_cpu = clockS.time();
-            }
-            else{
-                cpuStopEvent->eventType = DEFAULT;
-            }
+            printf("made current process null as expecution of a processs is complete \n");
+            currProcess=NULL;
+            updateProcessQueue();
         }
     }
     else{
@@ -98,11 +81,12 @@ void Scheduler::updateProcessQueue(){
         p1->print();
         p1->time_start_on_cpu = clockS.time();
         //if(p1->updateToNextCpu(0)){
-            currProcess->time_left_on_cpu = clockS.time() - currProcess->time_start_on_cpu ; 
+            currProcess->time_left_on_cpu = currProcess->time_left_on_cpu-(clockS.time() - currProcess->time_start_on_cpu) ; 
             currProcess->prempted_cpu = 1;
+            printf("current time %d, and process start time %d",clockS.time(),currProcess->time_start_on_cpu);
              // this will update the time left on cpu
             printf("****\n");
-            p1->print();
+            currProcess->print();
             cpuStopEvent->time = clockS.time() + p1->time_left_on_cpu;
             printf("Stop Event Time is %d\n", cpuStopEvent->time);
             cpuStopEvent->p = p1;
