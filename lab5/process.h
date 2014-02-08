@@ -21,6 +21,7 @@ class Process{
         int updateToNextCpu(int);
         int getIOTime();
         int getPid();
+        void print();
 };
 
 #endif

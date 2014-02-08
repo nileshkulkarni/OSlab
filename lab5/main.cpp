@@ -19,10 +19,10 @@ int main(){
         Event *e = new Event();
         
         e->eventType = ADMISSION_EVENT;
-        printf("Admission event type is % d type is %d\n ",ADMISSION_EVENT,e->eventType);
+      //  printf("Admission event type is % d type is %d\n ",ADMISSION_EVENT,e->eventType);
         e->time =process_list[i].admission; 
         Process *p1 = new Process(process_list[i]);
-        std::cout<<" Process with pid" << p1->getPid()<<"\n";
+       // std::cout<<" Process with pid" << p1->getPid()<<"\n";
         e->p = p1;
         eventManager.addEvent(e);
     }
