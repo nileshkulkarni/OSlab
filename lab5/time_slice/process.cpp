@@ -15,6 +15,10 @@ Process::Process(struct process p){
     return;
 }
 
+void Process::print(){
+
+    printf("Process PID %d, time left on cpu is %d , priority %d, current IO time %d \n",P.p_id,priority,time_left_on_cpu, P.phases[current_process_phase].io_time);
+}
 int Process::getPid(){
     return P.p_id; 
 

@@ -30,10 +30,15 @@ void Scheduler::removeCurrentProcess(){
     if(!currProcess->time_left_on_cpu){
         cpu_queue.pop();
         updateIOEvent(currProcess);
+        currProcess = NULL;
     }
     else{
         Process *p =cpu_queue.front().processPtr;
-        cpu_queue.push(ProcessPtr(p)); 
+        cpu_queue.pop(); 
+        cpu_queue.push(ProcessPtr(p));
+        printf("insterting process back into the queue\n");
+        p->print();
+        currProcess = NULL;
     }
     updateProcessQueue(); 
 
@@ -52,9 +57,10 @@ void Scheduler::updateProcessQueue(){
     }
     else if(currProcess == NULL){
         currProcess= p1;
-        if(clockS.time()+timeSlice < clockS.time()+p1->time_left_on_cpu){
+        if(timeSlice < p1->time_left_on_cpu){
            cpuStopEvent->time = clockS.time()+timeSlice; 
            currProcess->time_left_on_cpu = currProcess->time_left_on_cpu - timeSlice; 
+            printf("Setting time_left on cpu as %d \n", currProcess->time_left_on_cpu);
         }
         else{
            cpuStopEvent->time = clockS.time()+p1->time_left_on_cpu; 
