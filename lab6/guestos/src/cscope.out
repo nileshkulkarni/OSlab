@@ -1,4 +1,4 @@
-cscope 15 $HOME/OS/OSlab/lab6/guestos/src               0001131137
+cscope 15 $HOME/OS/OSlab/lab6/guestos/src               0001133396
 	@bpred.c
 
 20 
@@ -96145,11 +96145,29 @@ pid
 	}
 }
 
-822 
+821 
+	$£t_ö°ru˘i⁄_¶i˚
+(
+¶i˚
+) {
+
+822 
+iß_˘x
+->
+ö°r_¶i˚
+ = 
+¶i˚
+;
+
+823 
+	}
+}
+
+825 
 	$h™dÀ_gue°_sysˇŒs
 () {
 
-823 
+826 
 syscode
  = 
 iß_ªgs
@@ -96157,39 +96175,315 @@ iß_ªgs
 óx
 ;
 
-824 
+827 
 ªtvÆ
  = 0;
 
-825 
+828 
 syscode
 ) {
 
-826 
+829 
 sysˇŒ_code_gë_pid
 :
 
-828 
+831 
 ªtvÆ
 =
 	`gë_pid
 ();
 
-833 i‡(
+834 
+sysˇŒ_code_£t_ö°ru˘i⁄_¶i˚
+:
+
+836 
+	`¥ötf
+("comes here\n");
+
+837 
+¶i˚
+ = 
+iß_ªgs
+->
+ebx
+;
+
+838 
+	`£t_ö°ru˘i⁄_¶i˚
+(
+¶i˚
+);
+
+843 
+sysˇŒ_code_ªad_wrôe_vútuÆ_disk
+:
+
+844 { 
+	`¥ötf
+("Syscalled \n");
+
+845 
+›
+ = 
+iß_ªgs
+->
+ebx
+;
+
+846 
+byãs
+ = 
+iß_ªgs
+->
+ecx
+;
+
+847 
+addªss
+ = 
+iß_ªgs
+->
+edx
+;
+
+848 
+BBn
+ = 
+iß_ªgs
+->
+esi
+;
+
+849 
+off£t
+ = 
+iß_ªgs
+->
+edi
+;
+
+852 
+	`¥ötf
+("P¨amëî†¨ê: %d %d %d %d %d \n", 
+›
+ , 
+byãs
+ , 
+addªss
+ , 
+BBn
+ , 
+off£t
+);
+
+854 
+blockSize
+ = 512;
+
+855 if(
+›
+==0){
+
+856 
+	`¥ötf
+("Came here intoÑead\n");
+
+858 
+	`¥ötf
+("here!!!\n");
+
+865 
+	`¥ötf
+("process directory\n");
+
+867 
+FILE
+ *
+Â
+
+	`f›í
+("MySim_disk","a");
+
+869 if(
+Â
+==
+NULL
+){
+
+870 
+	`¥ötf
+("fp is NULL : \n");
+
+871 
+	`exô
+(0);
+
+874 
+	`¥ötf
+("here???\n");
+
+877 * 
+buf
+ = 
+	`mÆloc
+(
+byãs
+);
+
+878 if(
+buf
+ =
+NULL
+){
+
+879 
+	`¥ötf
+("Malloc failed \n");
+
+880 
+	`exô
+(0);
+
+882 * 
+buf1
+ = 
+	`mÆloc
+(
+byãs
+);
+
+883 
+	`¥ötf
+("2 %p\n",(*)
+addªss
+);
+
+884 
+	`mem˝y
+(
+buf
+,(*)
+addªss
+,
+byãs
+);
+
+886 
+	`¥ötf
+("3 \n");
+
+888 
+	`f£ek
+(
+Â
+, 
+SEEK_SET
+, 
+BBn
+*
+blockSize
+ + 
+off£t
+);
+
+890 
+	`¥ötf
+("4 \n");
+
+891 
+	`fwrôe
+(
+buf
+,
+byãs
+,1,
+Â
+);
+
+893 
+	`¥ötf
+("FinishedÑead\n");
+
+897 
+	`¥ötf
+("Came here into write\n");
+
+898 
+FILE
+ *
+Â
+
+	`f›í
+("Sim_disk",'r');
+
+900 * 
+buf
+ = 
+	`mÆloc
+(
+byãs
+);
+
+901 
+	`f£ek
+(
+Â
+,
+SEEK_SET
+,
+BBn
+*
+blockSize
+ + 
+off£t
+);
+
+902 
+	`‰ód
+(
+buf
+,
+byãs
+,1,
+Â
+);
+
+903 
+	`mem˝y
+((*)
+addªss
+,(*Ë
+buf
+, 
+byãs
+);
+
+904 
+	`¥ötf
+("Finished write\n");
+
+914 
+	`¥ötf
+("hîêwôh sysˇŒ %d \n",
+syscode
+);
+
+915 i‡(
 syscode
  >
 sysˇŒ_code_cou¡
 ) {
 
-834 
+916 
 ªtvÆ
  = -38;
 
-836 
+918 
 	`Áèl
 ("not implemented system call '%s' (code %d)át 0x%x\n%s",
 
-837 
+919 
 syscode
  < 
 sysˇŒ_code_cou¡
@@ -96197,7 +96491,7 @@ sysˇŒ_code_cou¡
 sysˇŒ_«me
 [syscode] : "",
 
-838 
+920 
 syscode
 , 
 iß_ªgs
@@ -96207,19 +96501,19 @@ eù
 îr_sysˇŒ_nŸe
 );
 
-843  
+925  
 ªtvÆ
 ;
 
-844 
+926 
 	}
 }
 
-850 
+932 
 	$sysˇŒ_do
 () {
 
-851 
+933 
 syscode
  = 
 iß_ªgs
@@ -96227,25 +96521,25 @@ iß_ªgs
 óx
 ;
 
-852 
+934 
 ªtvÆ
  = 0;
 
-853 i‡(
+935 i‡(
 syscode
  > 325) {
 
-854 
+936 
 ªtvÆ
  = 
 	`h™dÀ_gue°_sysˇŒs
 ();
 
-863 
+945 
 	`sysˇŒ_debug
 ("syscall '%s' (code %d, inst %lld,Öid %d)\n",
 
-864 
+946 
 syscode
  < 
 sysˇŒ_code_cou¡
@@ -96253,7 +96547,7 @@ sysˇŒ_code_cou¡
 sysˇŒ_«me
 [syscode] : "",
 
-865 
+947 
 syscode
 , (Ë
 iß_ö°_cou¡
@@ -96263,43 +96557,43 @@ iß_˘x
 pid
 );
 
-866 i‡(
+948 i‡(
 syscode
  < 
 sysˇŒ_code_cou¡
 )
 
-867 
+949 
 sysˇŒ_‰eq
 [
 syscode
 ]++;
 
-868 i‡(
+950 i‡(
 	`debug_°©us
 (
 iß_ˇŒ_debug_ˇãg‹y
 )) {
 
-869 
+951 
 i
 ;
 
-870 
+952 
 i
  = 0; i < 
 iß_fun˘i⁄_Àvñ
 ; i++)
 
-871 
+953 
 	`iß_ˇŒ_debug
 ("| ");
 
-872 
+954 
 	`iß_ˇŒ_debug
 ("syscall '%s' (code %d, inst %lld,Öid %d)\n",
 
-873 
+955 
 syscode
  < 
 sysˇŒ_code_cou¡
@@ -96307,7 +96601,7 @@ sysˇŒ_code_cou¡
 sysˇŒ_«me
 [syscode] : "",
 
-874 
+956 
 syscode
 , (Ë
 iß_ö°_cou¡
@@ -96317,19 +96611,19 @@ iß_˘x
 pid
 );
 
-877 
+959 
 syscode
 ) {
 
-881 
+963 
 sysˇŒ_code_exô
 :
 
-883 
+965 
 °©us
 ;
 
-885 
+967 
 °©us
  = 
 iß_ªgs
@@ -96337,13 +96631,13 @@ iß_ªgs
 ebx
 ;
 
-886 
+968 
 	`sysˇŒ_debug
 (" sètus=0x%x\n", 
 °©us
 );
 
-887 
+969 
 	`˘x_föish
 (
 iß_˘x
@@ -96351,11 +96645,11 @@ iß_˘x
 °©us
 );
 
-892 
+974 
 sysˇŒ_code_˛o£
 :
 
-894 
+976 
 uöt32_t
  
 gue°_fd
@@ -96363,13 +96657,13 @@ gue°_fd
 ho°_fd
 ;
 
-895 
+977 
 fd_t
  *
 fd
 ;
 
-897 
+979 
 gue°_fd
  = 
 iß_ªgs
@@ -96377,13 +96671,13 @@ iß_ªgs
 ebx
 ;
 
-898 
+980 
 	`sysˇŒ_debug
 (" gue°_fd=%d\n", 
 gue°_fd
 );
 
-899 
+981 
 ho°_fd
  = 
 	`fdt_gë_ho°_fd
@@ -96395,13 +96689,13 @@ fdt
 gue°_fd
 );
 
-900 
+982 
 	`sysˇŒ_debug
 (" ho°_fd=%d\n", 
 ho°_fd
 );
 
-903 
+985 
 fd
  = 
 	`fdt_íåy_gë
@@ -96413,27 +96707,27 @@ fdt
 gue°_fd
 );
 
-904 i‡(!
+986 i‡(!
 fd
 ) {
 
-905 
+987 
 ªtvÆ
  = -
 EBADF
 ;
 
-910 i‡(
+992 i‡(
 ho°_fd
  > 2)
 
-911 
+993 
 	`˛o£
 (
 ho°_fd
 );
 
-914 i‡(
+996 i‡(
 fd
 ->
 köd
@@ -96441,7 +96735,7 @@ köd
 fd_köd_vútuÆ
 )
 
-915 
+997 
 	`sysˇŒ_debug
 (" ho° fûê'%s':Åemp‹¨y fûêdñëed\n", 
 fd
@@ -96449,7 +96743,7 @@ fd
 ∑th
 );
 
-916 
+998 
 	`fdt_íåy_‰ì
 (
 iß_˘x
@@ -96461,11 +96755,11 @@ fd
 gue°_fd
 );
 
-922 
+1004 
 sysˇŒ_code_ªad
 :
 
-924 
+1006 
 uöt32_t
  
 pbuf
@@ -96473,7 +96767,7 @@ pbuf
 cou¡
 ;
 
-925 
+1007 
 gue°_fd
 , 
 ho°_fd
@@ -96481,23 +96775,23 @@ ho°_fd
 îr
 ;
 
-926 *
+1008 *
 buf
 ;
 
-927 
+1009 
 fd_t
  *
 fd
 ;
 
-928 
+1010 
 pﬁlfd
  
 fds
 ;
 
-931 
+1013 
 gue°_fd
  = 
 iß_ªgs
@@ -96505,7 +96799,7 @@ iß_ªgs
 ebx
 ;
 
-932 
+1014 
 pbuf
  = 
 iß_ªgs
@@ -96513,7 +96807,7 @@ iß_ªgs
 ecx
 ;
 
-933 
+1015 
 cou¡
  = 
 iß_ªgs
@@ -96521,11 +96815,11 @@ iß_ªgs
 edx
 ;
 
-934 
+1016 
 	`sysˇŒ_debug
 (" guest_fd=%d,Öbuf=0x%x, count=0x%x\n",
 
-935 
+1017 
 gue°_fd
 , 
 pbuf
@@ -96533,7 +96827,7 @@ pbuf
 cou¡
 );
 
-938 
+1020 
 fd
  = 
 	`fdt_íåy_gë
@@ -96545,29 +96839,29 @@ fdt
 gue°_fd
 );
 
-939 i‡(!
+1021 i‡(!
 fd
 ) {
 
-940 
+1022 
 ªtvÆ
  = -
 EBADF
 ;
 
-943 
+1025 
 ho°_fd
  = 
 fd
 ->host_fd;
 
-944 
+1026 
 	`sysˇŒ_debug
 (" ho°_fd=%d\n", 
 ho°_fd
 );
 
-947 
+1029 
 buf
  = 
 	`ˇŒoc
@@ -96575,15 +96869,15 @@ buf
 cou¡
 );
 
-948 i‡(!
+1030 i‡(!
 buf
 )
 
-949 
+1031 
 	`Áèl
 ("syscallÑead: cannotállocate buffer");
 
-952 
+1034 
 fds
 .
 fd
@@ -96591,7 +96885,7 @@ fd
 ho°_fd
 ;
 
-953 
+1035 
 fds
 .
 evíts
@@ -96599,7 +96893,7 @@ evíts
 POLLIN
 ;
 
-954 
+1036 
 îr
  = 
 	`pﬁl
@@ -96607,15 +96901,15 @@ POLLIN
 fds
 , 1, 0);
 
-955 i‡(
+1037 i‡(
 îr
  < 0)
 
-956 
+1038 
 	`Áèl
 ("syscall 'read':Érror in 'poll'");
 
-959 i‡(
+1041 i‡(
 fds
 .
 ªvíts
@@ -96627,7 +96921,7 @@ fd
 O_NONBLOCK
 )) {
 
-960 
+1042 
 	`RETVAL
 (
 	`ªad
@@ -96639,11 +96933,11 @@ buf
 cou¡
 ));
 
-961 i‡(
+1043 i‡(
 ªtvÆ
  > 0) {
 
-962 
+1044 
 	`mem_wrôe
 (
 iß_mem
@@ -96655,7 +96949,7 @@ pbuf
 buf
 );
 
-963 
+1045 
 	`sysˇŒ_debug_°rög
 (" buf", 
 buf
@@ -96663,17 +96957,17 @@ buf
 cou¡
 , 1);
 
-965 
+1047 
 	`‰ì
 (
 buf
 );
 
-970 
+1052 
 	`sysˇŒ_debug
 (" blockingÑead -Örocess suspended\n");
 
-971 
+1053 
 iß_˘x
 ->
 wakeup_fd
@@ -96681,13 +96975,13 @@ wakeup_fd
 gue°_fd
 ;
 
-972 
+1054 
 iß_˘x
 ->
 wakeup_evíts
  = 1;
 
-973 
+1055 
 	`˘x_£t_°©us
 (
 iß_˘x
@@ -96697,21 +96991,21 @@ iß_˘x
 ˘x_ªad
 );
 
-974 
+1056 
 	`ke_¥o˚ss_evíts_scheduÀ
 ();
 
-976 
+1058 
 	`‰ì
 (
 buf
 );
 
-982 
+1064 
 sysˇŒ_code_wrôe
 :
 
-984 
+1066 
 uöt32_t
  
 pbuf
@@ -96719,29 +97013,29 @@ pbuf
 cou¡
 ;
 
-985 
+1067 
 gue°_fd
 , 
 ho°_fd
 ;
 
-986 
+1068 
 fd_t
  *
 fd
 ;
 
-987 *
+1069 *
 buf
 ;
 
-988 
+1070 
 pﬁlfd
  
 fds
 ;
 
-990 
+1072 
 gue°_fd
  = 
 iß_ªgs
@@ -96749,7 +97043,7 @@ iß_ªgs
 ebx
 ;
 
-991 
+1073 
 pbuf
  = 
 iß_ªgs
@@ -96757,7 +97051,7 @@ iß_ªgs
 ecx
 ;
 
-992 
+1074 
 cou¡
  = 
 iß_ªgs
@@ -96765,11 +97059,11 @@ iß_ªgs
 edx
 ;
 
-993 
+1075 
 	`sysˇŒ_debug
 (" guest_fd=%d,Öbuf=0x%x, count=0x%x\n",
 
-994 
+1076 
 gue°_fd
 , 
 pbuf
@@ -96777,7 +97071,7 @@ pbuf
 cou¡
 );
 
-997 
+1079 
 fd
  = 
 	`fdt_íåy_gë
@@ -96789,29 +97083,29 @@ fdt
 gue°_fd
 );
 
-998 i‡(!
+1080 i‡(!
 fd
 ) {
 
-999 
+1081 
 ªtvÆ
  = -
 EBADF
 ;
 
-1002 
+1084 
 ho°_fd
  = 
 fd
 ->host_fd;
 
-1003 
+1085 
 	`sysˇŒ_debug
 (" ho°_fd=%d\n", 
 ho°_fd
 );
 
-1006 
+1088 
 buf
  = 
 	`mÆloc
@@ -96819,15 +97113,15 @@ buf
 cou¡
 );
 
-1007 i‡(!
+1089 i‡(!
 buf
 )
 
-1008 
+1090 
 	`Áèl
 ("syscall write: out of memory");
 
-1009 
+1091 
 	`mem_ªad
 (
 iß_mem
@@ -96839,7 +97133,7 @@ cou¡
 buf
 );
 
-1010 
+1092 
 	`sysˇŒ_debug_°rög
 (" buf", 
 buf
@@ -96847,7 +97141,7 @@ buf
 cou¡
 , 0);
 
-1013 
+1095 
 fds
 .
 fd
@@ -96855,7 +97149,7 @@ fd
 ho°_fd
 ;
 
-1014 
+1096 
 fds
 .
 evíts
@@ -96863,19 +97157,19 @@ evíts
 POLLOUT
 ;
 
-1015 
+1097 
 	`pﬁl
 (&
 fds
 , 1, 0);
 
-1018 i‡(
+1100 i‡(
 fds
 .
 ªvíts
 ) {
 
-1019 
+1101 
 	`RETVAL
 (
 	`wrôe
@@ -96887,17 +97181,17 @@ buf
 cou¡
 ));
 
-1020 
+1102 
 	`‰ì
 (
 buf
 );
 
-1025 
+1107 
 	`sysˇŒ_debug
 (" blocking write -Örocess suspended\n");
 
-1026 
+1108 
 iß_˘x
 ->
 wakeup_fd
@@ -96905,7 +97199,7 @@ wakeup_fd
 gue°_fd
 ;
 
-1027 
+1109 
 	`˘x_£t_°©us
 (
 iß_˘x
@@ -96915,21 +97209,21 @@ iß_˘x
 ˘x_wrôe
 );
 
-1028 
+1110 
 	`ke_¥o˚ss_evíts_scheduÀ
 ();
 
-1029 
+1111 
 	`‰ì
 (
 buf
 );
 
-1034 
+1116 
 sysˇŒ_code_›í
 :
 
-1036 
+1118 
 fûíame
 [
 MAX_PATH_SIZE
@@ -96939,41 +97233,41 @@ fuŒ∑th
 ãmµ©h
 [MAX_PATH_SIZE];
 
-1037 
+1119 
 uöt32_t
  
 pfûíame
 ;
 
-1038 
+1120 
 Êags
 , 
 mode
 ;
 
-1039 
+1121 
 sÊags
 [
 MAX_STRING_SIZE
 ];
 
-1040 
+1122 
 Àngth
 , 
 fuŒ∑th_Àngth
 ;
 
-1041 
+1123 
 ho°_fd
 ;
 
-1042 
+1124 
 fd_t
  *
 fd
 ;
 
-1045 
+1127 
 pfûíame
  = 
 iß_ªgs
@@ -96981,7 +97275,7 @@ iß_ªgs
 ebx
 ;
 
-1046 
+1128 
 Êags
  = 
 iß_ªgs
@@ -96989,7 +97283,7 @@ iß_ªgs
 ecx
 ;
 
-1047 
+1129 
 mode
  = 
 iß_ªgs
@@ -96997,7 +97291,7 @@ iß_ªgs
 edx
 ;
 
-1048 
+1130 
 Àngth
  = 
 	`mem_ªad_°rög
@@ -97011,17 +97305,17 @@ MAX_PATH_SIZE
 fûíame
 );
 
-1049 i‡(
+1131 i‡(
 Àngth
  >
 MAX_PATH_SIZE
 )
 
-1050 
+1132 
 	`Áèl
 ("syscall open: maximumÖathÜengthÉxceeded");
 
-1051 
+1133 
 	`ld_gë_fuŒ_∑th
 (
 iß_˘x
@@ -97033,7 +97327,7 @@ fuŒ∑th
 MAX_PATH_SIZE
 );
 
-1052 
+1134 
 fuŒ∑th_Àngth
  = 
 	`°æí
@@ -97041,11 +97335,11 @@ fuŒ∑th_Àngth
 fuŒ∑th
 );
 
-1053 
+1135 
 	`sysˇŒ_debug
 (" filename='%s' flags=0x%x, mode=0x%x\n",
 
-1054 
+1136 
 fûíame
 , 
 Êags
@@ -97053,13 +97347,13 @@ fûíame
 mode
 );
 
-1055 
+1137 
 	`sysˇŒ_debug
 (" fuŒ∑th='%s'\n", 
 fuŒ∑th
 );
 
-1056 
+1138 
 	`m≠_Êags
 (&
 ›í_Êags_m≠
@@ -97071,13 +97365,13 @@ sÊags
 MAX_STRING_SIZE
 );
 
-1057 
+1139 
 	`sysˇŒ_debug
 (" fœgs=%s\n", 
 sÊags
 );
 
-1060 
+1142 
 	`gk_lib›í˛_ªdúe˘
 (
 fuŒ∑th
@@ -97085,19 +97379,19 @@ fuŒ∑th
 MAX_PATH_SIZE
 );
 
-1063 i‡(!
+1145 i‡(!
 	`°∫cmp
 (
 fuŒ∑th
 , "/proc/", 6)) {
 
-1066 i‡(!
+1148 i‡(!
 	`°rcmp
 (
 fuŒ∑th
 , "/proc/self/maps")) {
 
-1069 
+1151 
 	`˘x_gí_¥oc_£lf_m≠s
 (
 iß_˘x
@@ -97105,7 +97399,7 @@ iß_˘x
 ãmµ©h
 );
 
-1070 
+1152 
 ho°_fd
  = 
 	`›í
@@ -97117,13 +97411,13 @@ ho°_fd
 mode
 );
 
-1071 
+1153 
 	`as£π
 (
 ho°_fd
  > 0);
 
-1074 
+1156 
 fd
  = 
 	`fdt_íåy_√w
@@ -97141,11 +97435,11 @@ ho°_fd
 Êags
 );
 
-1075 
+1157 
 	`sysˇŒ_debug
 (" host file '%s' opened: guest_fd=%d, host_fd=%d\n",
 
-1076 
+1158 
 ãmµ©h
 , 
 fd
@@ -97155,7 +97449,7 @@ gue°_fd
 ho°_fd
 );
 
-1077 
+1159 
 ªtvÆ
  = 
 fd
@@ -97163,11 +97457,11 @@ fd
 gue°_fd
 ;
 
-1083 
+1165 
 	`sysˇŒ_debug
 (" warning: unhandled virtual file\n");
 
-1087 
+1169 
 ho°_fd
  = 
 	`›í
@@ -97179,17 +97473,17 @@ fuŒ∑th
 mode
 );
 
-1088 i‡(
+1170 i‡(
 ho°_fd
  < 0) {
 
-1089 
+1171 
 ªtvÆ
  = -
 î∫o
 ;
 
-1094 
+1176 
 fd
  = 
 	`fdt_íåy_√w
@@ -97207,11 +97501,11 @@ fuŒ∑th
 Êags
 );
 
-1095 
+1177 
 	`sysˇŒ_debug
 (" file descriptor opened: guest_fd=%d, host_fd=%d\n",
 
-1096 
+1178 
 fd
 ->
 gue°_fd
@@ -97219,7 +97513,7 @@ gue°_fd
 ho°_fd
 );
 
-1097 
+1179 
 ªtvÆ
  = 
 fd
@@ -97227,33 +97521,33 @@ fd
 gue°_fd
 ;
 
-1105 
+1187 
 sysˇŒ_code_waôpid
 :
 
-1107 
+1189 
 pid
 , 
 ›ti⁄s
 ;
 
-1108 
+1190 
 uöt32_t
  
 p°©us
 ;
 
-1109 
+1191 
 s›ti⁄s
 [0x100];
 
-1110 
+1192 
 ˘x_t
  *
 chûd
 ;
 
-1112 
+1194 
 pid
  = 
 iß_ªgs
@@ -97261,7 +97555,7 @@ iß_ªgs
 ebx
 ;
 
-1113 
+1195 
 p°©us
  = 
 iß_ªgs
@@ -97269,7 +97563,7 @@ iß_ªgs
 ecx
 ;
 
-1114 
+1196 
 ›ti⁄s
  = 
 iß_ªgs
@@ -97277,11 +97571,11 @@ iß_ªgs
 edx
 ;
 
-1115 
+1197 
 	`sysˇŒ_debug
 ("Öid=%d,Östatus=0x%x, options=0x%x\n",
 
-1116 
+1198 
 pid
 , 
 p°©us
@@ -97289,7 +97583,7 @@ p°©us
 ›ti⁄s
 );
 
-1117 
+1199 
 	`m≠_Êags
 (&
 waôpid_›ti⁄s_m≠
@@ -97299,21 +97593,21 @@ waôpid_›ti⁄s_m≠
 s›ti⁄s
 , 0x100);
 
-1118 
+1200 
 	`sysˇŒ_debug
 (" o±i⁄s=%s\n", 
 s›ti⁄s
 );
 
-1119 i‡(
+1201 i‡(
 pid
  != -1 &&Öid <= 0)
 
-1120 
+1202 
 	`Áèl
 ("syscall waitpid: only supported forÖid=-1 orÖid>0");
 
-1123 
+1205 
 chûd
  = 
 	`˘x_gë_zombõ
@@ -97323,13 +97617,13 @@ iß_˘x
 pid
 );
 
-1127 i‡(!
+1209 i‡(!
 chûd
  && !(
 ›ti⁄s
  & 0x1)) {
 
-1128 
+1210 
 iß_˘x
 ->
 wakeup_pid
@@ -97337,7 +97631,7 @@ wakeup_pid
 pid
 ;
 
-1129 
+1211 
 	`˘x_£t_°©us
 (
 iß_˘x
@@ -97347,11 +97641,11 @@ iß_˘x
 ˘x_waôpid
 );
 
-1135 i‡(
+1217 i‡(
 chûd
 ) {
 
-1136 
+1218 
 ªtvÆ
  = 
 chûd
@@ -97359,11 +97653,11 @@ chûd
 pid
 ;
 
-1137 i‡(
+1219 i‡(
 p°©us
 )
 
-1138 
+1220 
 	`mem_wrôe
 (
 iß_mem
@@ -97375,7 +97669,7 @@ chûd
 exô_code
 );
 
-1139 
+1221 
 	`˘x_£t_°©us
 (
 chûd
@@ -97383,11 +97677,11 @@ chûd
 ˘x_föished
 );
 
-1146 
+1228 
 sysˇŒ_code_u∆ök
 :
 
-1148 
+1230 
 fûíame
 [
 MAX_PATH_SIZE
@@ -97395,17 +97689,17 @@ MAX_PATH_SIZE
 fuŒ∑th
 [MAX_PATH_SIZE];
 
-1149 
+1231 
 uöt32_t
  
 pfûíame
 ;
 
-1150 
+1232 
 Àngth
 ;
 
-1152 
+1234 
 pfûíame
  = 
 iß_ªgs
@@ -97413,7 +97707,7 @@ iß_ªgs
 ebx
 ;
 
-1153 
+1235 
 Àngth
  = 
 	`mem_ªad_°rög
@@ -97427,17 +97721,17 @@ MAX_PATH_SIZE
 fûíame
 );
 
-1154 i‡(
+1236 i‡(
 Àngth
  >
 MAX_PATH_SIZE
 )
 
-1155 
+1237 
 	`Áèl
 ("syscall unlink: maximumÖathÜengthÉxceeded");
 
-1156 
+1238 
 	`ld_gë_fuŒ_∑th
 (
 iß_˘x
@@ -97449,13 +97743,13 @@ fuŒ∑th
 MAX_PATH_SIZE
 );
 
-1157 
+1239 
 	`sysˇŒ_debug
 ("Öfûíame=0x%x\n", 
 pfûíame
 );
 
-1158 
+1240 
 	`sysˇŒ_debug
 (" fûíame=%s, fuŒ∑th=%s\n", 
 fûíame
@@ -97463,7 +97757,7 @@ fûíame
 fuŒ∑th
 );
 
-1160 
+1242 
 	`RETVAL
 (
 	`u∆ök
@@ -97471,11 +97765,11 @@ fuŒ∑th
 fuŒ∑th
 ));
 
-1166 
+1248 
 sysˇŒ_code_time
 :
 
-1168 
+1250 
 uöt32_t
  
 ±ime
@@ -97483,7 +97777,7 @@ uöt32_t
 t
 ;
 
-1170 
+1252 
 ±ime
  = 
 iß_ªgs
@@ -97491,13 +97785,13 @@ iß_ªgs
 ebx
 ;
 
-1171 
+1253 
 	`sysˇŒ_debug
 ("Ötime=0x%x\n", 
 ±ime
 );
 
-1172 
+1254 
 t
  = 
 	`time
@@ -97505,11 +97799,11 @@ t
 NULL
 );
 
-1173 i‡(
+1255 i‡(
 ±ime
 )
 
-1174 
+1256 
 	`mem_wrôe
 (
 iß_mem
@@ -97519,17 +97813,17 @@ iß_mem
 t
 );
 
-1175 
+1257 
 ªtvÆ
  = 
 t
 ;
 
-1181 
+1263 
 sysˇŒ_code_chmod
 :
 
-1183 
+1265 
 fûíame
 [
 MAX_PATH_SIZE
@@ -97537,7 +97831,7 @@ MAX_PATH_SIZE
 fuŒ∑th
 [MAX_PATH_SIZE];
 
-1184 
+1266 
 uöt32_t
  
 pfûíame
@@ -97545,11 +97839,11 @@ pfûíame
 mode
 ;
 
-1185 
+1267 
 Àn
 ;
 
-1187 
+1269 
 pfûíame
  = 
 iß_ªgs
@@ -97557,7 +97851,7 @@ iß_ªgs
 ebx
 ;
 
-1188 
+1270 
 mode
  = 
 iß_ªgs
@@ -97565,7 +97859,7 @@ iß_ªgs
 ecx
 ;
 
-1189 
+1271 
 Àn
  = 
 	`mem_ªad_°rög
@@ -97579,17 +97873,17 @@ MAX_PATH_SIZE
 fûíame
 );
 
-1190 i‡(
+1272 i‡(
 Àn
  >
 MAX_PATH_SIZE
 )
 
-1191 
+1273 
 	`Áèl
 ("syscall chmod: maximumÖathÜengthÉxceeded");
 
-1192 
+1274 
 	`ld_gë_fuŒ_∑th
 (
 iß_˘x
@@ -97601,7 +97895,7 @@ fuŒ∑th
 MAX_PATH_SIZE
 );
 
-1193 
+1275 
 	`sysˇŒ_debug
 ("Öfûíame=0x%x, mode=0x%x\n", 
 pfûíame
@@ -97609,7 +97903,7 @@ pfûíame
 mode
 );
 
-1194 
+1276 
 	`sysˇŒ_debug
 (" fûíame='%s', fuŒ∑th='%s'\n", 
 fûíame
@@ -97617,7 +97911,7 @@ fûíame
 fuŒ∑th
 );
 
-1195 
+1277 
 	`RETVAL
 (
 	`chmod
@@ -97627,11 +97921,11 @@ fuŒ∑th
 mode
 ));
 
-1201 
+1283 
 sysˇŒ_code_l£ek
 :
 
-1203 
+1285 
 uöt32_t
  
 fd
@@ -97643,7 +97937,7 @@ off£t
 ho°_fd
 ;
 
-1205 
+1287 
 fd
  = 
 iß_ªgs
@@ -97651,7 +97945,7 @@ iß_ªgs
 ebx
 ;
 
-1206 
+1288 
 off£t
  = 
 iß_ªgs
@@ -97659,7 +97953,7 @@ iß_ªgs
 ecx
 ;
 
-1207 
+1289 
 ‹igö
  = 
 iß_ªgs
@@ -97667,7 +97961,7 @@ iß_ªgs
 edx
 ;
 
-1208 
+1290 
 ho°_fd
  = 
 	`fdt_gë_ho°_fd
@@ -97679,11 +97973,11 @@ fdt
 fd
 );
 
-1209 
+1291 
 	`sysˇŒ_debug
 (" fd=%d, offset=0x%x, origin=0x%x\n",
 
-1210 
+1292 
 fd
 , 
 off£t
@@ -97691,13 +97985,13 @@ off£t
 ‹igö
 );
 
-1211 
+1293 
 	`sysˇŒ_debug
 (" ho°_fd=%d\n", 
 ho°_fd
 );
 
-1213 
+1295 
 	`RETVAL
 (
 	`l£ek
@@ -97709,11 +98003,11 @@ off£t
 ‹igö
 ));
 
-1219 
+1301 
 sysˇŒ_code_gëpid
 :
 
-1221 
+1303 
 ªtvÆ
  = 
 iß_˘x
@@ -97721,11 +98015,11 @@ iß_˘x
 pid
 ;
 
-1227 
+1309 
 sysˇŒ_code_utime
 :
 
-1229 
+1311 
 fûíame
 [
 MAX_PATH_SIZE
@@ -97733,7 +98027,7 @@ MAX_PATH_SIZE
 fuŒ∑th
 [MAX_PATH_SIZE];
 
-1230 
+1312 
 uöt32_t
  
 pfûíame
@@ -97741,19 +98035,19 @@ pfûíame
 putimbuf
 ;
 
-1231 
+1313 
 utimbuf
  utimbuf;
 
-1232 
+1314 
 sim_utimbuf
  sim_utimbuf;
 
-1233 
+1315 
 Àn
 ;
 
-1235 
+1317 
 pfûíame
  = 
 iß_ªgs
@@ -97761,7 +98055,7 @@ iß_ªgs
 ebx
 ;
 
-1236 
+1318 
 putimbuf
  = 
 iß_ªgs
@@ -97769,7 +98063,7 @@ iß_ªgs
 ecx
 ;
 
-1237 
+1319 
 Àn
  = 
 	`mem_ªad_°rög
@@ -97783,17 +98077,17 @@ MAX_PATH_SIZE
 fûíame
 );
 
-1238 i‡(
+1320 i‡(
 Àn
  >
 MAX_PATH_SIZE
 )
 
-1239 
+1321 
 	`Áèl
 ("syscall utime: maximumÖathÜengthÉxceeded");
 
-1240 
+1322 
 	`ld_gë_fuŒ_∑th
 (
 iß_˘x
@@ -97805,7 +98099,7 @@ fuŒ∑th
 MAX_PATH_SIZE
 );
 
-1241 
+1323 
 	`mem_ªad
 (
 iß_mem
@@ -97815,7 +98109,7 @@ putimbuf
 sim_utimbuf
 ), &sim_utimbuf);
 
-1242 
+1324 
 	`sysˇŒ_utime_sim_to_ªad
 (&
 utimbuf
@@ -97823,27 +98117,27 @@ utimbuf
 sim_utimbuf
 );
 
-1243 
+1325 
 	`sysˇŒ_debug
 (" filename='%s',Öutimbuf=0x%x\n",
 
-1244 
+1326 
 fûíame
 , 
 putimbuf
 );
 
-1245 
+1327 
 	`sysˇŒ_debug
 (" fuŒ∑th='%s'\n", 
 fuŒ∑th
 );
 
-1246 
+1328 
 	`sysˇŒ_debug
 (" utimbuf.actime = %u, utimbuf.modtime = %u\n",
 
-1247 
+1329 
 sim_utimbuf
 .
 a˘ime
@@ -97851,7 +98145,7 @@ a˘ime
 modtime
 );
 
-1248 
+1330 
 	`RETVAL
 (
 	`utime
@@ -97861,11 +98155,11 @@ fuŒ∑th
 utimbuf
 ));
 
-1254 
+1336 
 sysˇŒ_code_ac˚ss
 :
 
-1256 
+1338 
 fûíame
 [
 MAX_PATH_SIZE
@@ -97877,7 +98171,7 @@ smode
 MAX_STRING_SIZE
 ];
 
-1257 
+1339 
 uöt32_t
  
 pfûíame
@@ -97885,11 +98179,11 @@ pfûíame
 mode
 ;
 
-1258 
+1340 
 Àn
 ;
 
-1260 
+1342 
 pfûíame
  = 
 iß_ªgs
@@ -97897,7 +98191,7 @@ iß_ªgs
 ebx
 ;
 
-1261 
+1343 
 mode
  = 
 iß_ªgs
@@ -97905,7 +98199,7 @@ iß_ªgs
 ecx
 ;
 
-1262 
+1344 
 Àn
  = 
 	`mem_ªad_°rög
@@ -97919,17 +98213,17 @@ MAX_PATH_SIZE
 fûíame
 );
 
-1263 i‡(
+1345 i‡(
 Àn
  >
 MAX_PATH_SIZE
 )
 
-1264 
+1346 
 	`Áèl
 ("syscalláccess: maximumÖathÜengthÉxceeded");
 
-1265 
+1347 
 	`ld_gë_fuŒ_∑th
 (
 iß_˘x
@@ -97941,7 +98235,7 @@ fuŒ∑th
 MAX_PATH_SIZE
 );
 
-1266 
+1348 
 	`m≠_Êags
 (&
 ac˚ss_mode_m≠
@@ -97953,29 +98247,29 @@ smode
 MAX_STRING_SIZE
 );
 
-1267 
+1349 
 	`sysˇŒ_debug
 (" filename='%s', mode=0x%x\n",
 
-1268 
+1350 
 fûíame
 , 
 mode
 );
 
-1269 
+1351 
 	`sysˇŒ_debug
 (" fuŒ∑th='%s'\n", 
 fuŒ∑th
 );
 
-1270 
+1352 
 	`sysˇŒ_debug
 (" mode=%s\n", 
 smode
 );
 
-1272 
+1354 
 	`RETVAL
 (
 	`ac˚ss
@@ -97985,11 +98279,11 @@ fuŒ∑th
 mode
 ));
 
-1278 
+1360 
 sysˇŒ_code_kûl
 :
 
-1280 
+1362 
 uöt32_t
  
 pid
@@ -97997,13 +98291,13 @@ pid
 sig
 ;
 
-1281 
+1363 
 ˘x_t
  *
 ˘x
 ;
 
-1283 
+1365 
 pid
  = 
 iß_ªgs
@@ -98011,7 +98305,7 @@ iß_ªgs
 ebx
 ;
 
-1284 
+1366 
 sig
  = 
 iß_ªgs
@@ -98019,19 +98313,19 @@ iß_ªgs
 ecx
 ;
 
-1285 
+1367 
 	`sysˇŒ_debug
 ("Öid=%d, sig=%d (%s)\n", 
 pid
 ,
 
-1286 
+1368 
 sig
 , 
 	`sim_sig«l_«me
 (sig));
 
-1290 
+1372 
 ˘x
  = 
 	`˘x_gë
@@ -98039,17 +98333,17 @@ sig
 pid
 );
 
-1291 i‡(!
+1373 i‡(!
 ˘x
 )
 
-1292 
+1374 
 	`Áèl
 ("sysˇŒ kûl:Öid %d d€†nŸÉxi°", 
 pid
 );
 
-1295 
+1377 
 	`sim_sig£t_add
 (&
 ˘x
@@ -98061,25 +98355,25 @@ sig«l_masks
 sig
 );
 
-1296 
+1378 
 	`˘x_ho°_thªad_su•íd_ˇn˚l
 (
 ˘x
 );
 
-1297 
+1379 
 	`ke_¥o˚ss_evíts_scheduÀ
 ();
 
-1298 
+1380 
 	`ke_¥o˚ss_evíts
 ();
 
-1304 
+1386 
 sysˇŒ_code_ª«me
 :
 
-1306 
+1388 
 uöt32_t
  
 pﬁd∑th
@@ -98087,7 +98381,7 @@ pﬁd∑th
 ≤ew∑th
 ;
 
-1307 
+1389 
 ﬁd∑th
 [
 MAX_PATH_SIZE
@@ -98095,7 +98389,7 @@ MAX_PATH_SIZE
 √w∑th
 [MAX_PATH_SIZE];
 
-1308 
+1390 
 ﬁdfuŒ∑th
 [
 MAX_PATH_SIZE
@@ -98103,13 +98397,13 @@ MAX_PATH_SIZE
 √wfuŒ∑th
 [MAX_PATH_SIZE];
 
-1309 
+1391 
 Àn1
 , 
 Àn2
 ;
 
-1311 
+1393 
 pﬁd∑th
  = 
 iß_ªgs
@@ -98117,7 +98411,7 @@ iß_ªgs
 ebx
 ;
 
-1312 
+1394 
 ≤ew∑th
  = 
 iß_ªgs
@@ -98125,7 +98419,7 @@ iß_ªgs
 ecx
 ;
 
-1313 
+1395 
 Àn1
  = 
 	`mem_ªad_°rög
@@ -98139,7 +98433,7 @@ MAX_PATH_SIZE
 ﬁd∑th
 );
 
-1314 
+1396 
 Àn2
  = 
 	`mem_ªad_°rög
@@ -98153,7 +98447,7 @@ MAX_PATH_SIZE
 √w∑th
 );
 
-1315 i‡(
+1397 i‡(
 Àn1
  >
 MAX_PATH_SIZE
@@ -98161,11 +98455,11 @@ MAX_PATH_SIZE
 Àn2
  >= MAX_PATH_SIZE)
 
-1316 
+1398 
 	`Áèl
 ("syscallÑename: maximumÖathÜengthÉxceeded");
 
-1317 
+1399 
 	`ld_gë_fuŒ_∑th
 (
 iß_˘x
@@ -98177,7 +98471,7 @@ iß_˘x
 MAX_PATH_SIZE
 );
 
-1318 
+1400 
 	`ld_gë_fuŒ_∑th
 (
 iß_˘x
@@ -98189,7 +98483,7 @@ iß_˘x
 MAX_PATH_SIZE
 );
 
-1319 
+1401 
 	`sysˇŒ_debug
 ("Öﬁd∑th=0x%x,Ö√w∑th=0x%x\n", 
 pﬁd∑th
@@ -98197,7 +98491,7 @@ pﬁd∑th
 ≤ew∑th
 );
 
-1320 
+1402 
 	`sysˇŒ_debug
 (" old∑th='%s',Çew∑th='%s'\n", 
 ﬁd∑th
@@ -98205,7 +98499,7 @@ pﬁd∑th
 √w∑th
 );
 
-1321 
+1403 
 	`sysˇŒ_debug
 (" oldfuŒ∑th='%s',ÇewfuŒ∑th='%s'\n", 
 ﬁdfuŒ∑th
@@ -98213,7 +98507,7 @@ pﬁd∑th
 √wfuŒ∑th
 );
 
-1323 
+1405 
 	`RETVAL
 (
 	`ª«me
@@ -98223,11 +98517,11 @@ pﬁd∑th
 √wfuŒ∑th
 ));
 
-1329 
+1411 
 sysˇŒ_code_mkdú
 :
 
-1331 
+1413 
 uöt32_t
  
 µ©h
@@ -98235,7 +98529,7 @@ uöt32_t
 mode
 ;
 
-1332 
+1414 
 ∑th
 [
 MAX_PATH_SIZE
@@ -98243,11 +98537,11 @@ MAX_PATH_SIZE
 fuŒ∑th
 [MAX_PATH_SIZE];
 
-1333 
+1415 
 Àngth
 ;
 
-1335 
+1417 
 µ©h
  = 
 iß_ªgs
@@ -98255,7 +98549,7 @@ iß_ªgs
 ebx
 ;
 
-1336 
+1418 
 mode
  = 
 iß_ªgs
@@ -98263,7 +98557,7 @@ iß_ªgs
 ecx
 ;
 
-1337 
+1419 
 Àngth
  = 
 	`mem_ªad_°rög
@@ -98277,17 +98571,17 @@ MAX_PATH_SIZE
 ∑th
 );
 
-1338 i‡(
+1420 i‡(
 Àngth
  >
 MAX_PATH_SIZE
 )
 
-1339 
+1421 
 	`Áèl
 ("syscall open: maximumÖathÜengthÉxceeded");
 
-1340 
+1422 
 	`ld_gë_fuŒ_∑th
 (
 iß_˘x
@@ -98299,7 +98593,7 @@ fuŒ∑th
 MAX_PATH_SIZE
 );
 
-1341 
+1423 
 	`sysˇŒ_debug
 ("Ö∑th=0x%x, mode=0x%x\n", 
 µ©h
@@ -98307,7 +98601,7 @@ MAX_PATH_SIZE
 mode
 );
 
-1342 
+1424 
 	`sysˇŒ_debug
 ("Ö©h='%s', fuŒ∑th='%s'\n", 
 ∑th
@@ -98315,7 +98609,7 @@ mode
 fuŒ∑th
 );
 
-1344 
+1426 
 	`RETVAL
 (
 	`mkdú
@@ -98325,23 +98619,23 @@ fuŒ∑th
 mode
 ));
 
-1350 
+1432 
 sysˇŒ_code_dup
 :
 
-1352 
+1434 
 gue°_fd
 , 
 dup_gue°_fd
 ;
 
-1353 
+1435 
 ho°_fd
 , 
 dup_ho°_fd
 ;
 
-1354 
+1436 
 fd_t
  *
 fd
@@ -98349,7 +98643,7 @@ fd
 dup_fd
 ;
 
-1356 
+1438 
 gue°_fd
  = 
 iß_ªgs
@@ -98357,13 +98651,13 @@ iß_ªgs
 ebx
 ;
 
-1357 
+1439 
 	`sysˇŒ_debug
 (" gue°_fd=%d\n", 
 gue°_fd
 );
 
-1360 
+1442 
 fd
  = 
 	`fdt_íåy_gë
@@ -98375,29 +98669,29 @@ fdt
 gue°_fd
 );
 
-1361 i‡(!
+1443 i‡(!
 fd
 ) {
 
-1362 
+1444 
 ªtvÆ
  = -
 EBADF
 ;
 
-1365 
+1447 
 ho°_fd
  = 
 fd
 ->host_fd;
 
-1366 
+1448 
 	`sysˇŒ_debug
 (" ho°_fd=%d\n", 
 ho°_fd
 );
 
-1369 
+1451 
 dup_ho°_fd
  = 
 	`dup
@@ -98405,17 +98699,17 @@ dup_ho°_fd
 ho°_fd
 );
 
-1370 i‡(
+1452 i‡(
 dup_ho°_fd
  < 0) {
 
-1371 
+1453 
 ªtvÆ
  = -
 î∫o
 ;
 
-1376 
+1458 
 dup_fd
  = 
 	`fdt_íåy_√w
@@ -98435,7 +98729,7 @@ fd
 Êags
 );
 
-1377 
+1459 
 dup_gue°_fd
  = 
 dup_fd
@@ -98443,23 +98737,23 @@ dup_fd
 gue°_fd
 ;
 
-1380 
+1462 
 ªtvÆ
  = 
 dup_gue°_fd
 ;
 
-1386 
+1468 
 sysˇŒ_code_pùe
 :
 
-1388 
+1470 
 uöt32_t
  
 pfd
 ;
 
-1389 
+1471 
 fd_t
  *
 ªad_fd
@@ -98467,7 +98761,7 @@ fd_t
 wrôe_fd
 ;
 
-1390 
+1472 
 uöt32_t
  
 gue°_ªad_fd
@@ -98475,13 +98769,13 @@ gue°_ªad_fd
 gue°_wrôe_fd
 ;
 
-1391 
+1473 
 ho°_fd
 [2], 
 îr
 ;
 
-1393 
+1475 
 pfd
  = 
 iß_ªgs
@@ -98489,13 +98783,13 @@ iß_ªgs
 ebx
 ;
 
-1394 
+1476 
 	`sysˇŒ_debug
 ("Öfd=0x%x\n", 
 pfd
 );
 
-1397 
+1479 
 îr
  = 
 	`pùe
@@ -98503,23 +98797,23 @@ pfd
 ho°_fd
 );
 
-1398 i‡(
+1480 i‡(
 îr
  < 0)
 
-1399 
+1481 
 	`Áèl
 ("syscall 'pipe': couldÇot createÖipe");
 
-1400 
+1482 
 	`sysˇŒ_debug
 (" hostÖipe created: fd={%d, %d}\n",
 
-1401 
+1483 
 ho°_fd
 [0], host_fd[1]);
 
-1404 
+1486 
 ªad_fd
  = 
 	`fdt_íåy_√w
@@ -98535,7 +98829,7 @@ ho°_fd
 O_RDONLY
 );
 
-1405 
+1487 
 wrôe_fd
  = 
 	`fdt_íåy_√w
@@ -98551,11 +98845,11 @@ ho°_fd
 O_WRONLY
 );
 
-1406 
+1488 
 	`sysˇŒ_debug
 ("Öipe created: fd={%d, %d}\n",
 
-1407 
+1489 
 ªad_fd
 ->
 gue°_fd
@@ -98563,7 +98857,7 @@ gue°_fd
 wrôe_fd
 ->guest_fd);
 
-1408 
+1490 
 gue°_ªad_fd
  = 
 ªad_fd
@@ -98571,7 +98865,7 @@ gue°_ªad_fd
 gue°_fd
 ;
 
-1409 
+1491 
 gue°_wrôe_fd
  = 
 wrôe_fd
@@ -98579,7 +98873,7 @@ wrôe_fd
 gue°_fd
 ;
 
-1412 
+1494 
 	`mem_wrôe
 (
 iß_mem
@@ -98589,7 +98883,7 @@ pfd
 gue°_ªad_fd
 );
 
-1413 
+1495 
 	`mem_wrôe
 (
 iß_mem
@@ -98599,25 +98893,25 @@ pfd
 gue°_wrôe_fd
 );
 
-1419 
+1501 
 sysˇŒ_code_times
 :
 
-1421 
+1503 
 uöt32_t
  
 ±ms
 ;
 
-1422 
+1504 
 tms
 Åms;
 
-1423 
+1505 
 sim_tms
  sim_tms;
 
-1425 
+1507 
 ±ms
  = 
 iß_ªgs
@@ -98625,13 +98919,13 @@ iß_ªgs
 ebx
 ;
 
-1426 
+1508 
 	`sysˇŒ_debug
 ("Ötms=0x%x\n", 
 ±ms
 );
 
-1428 
+1510 
 ªtvÆ
  = 
 	`times
@@ -98639,7 +98933,7 @@ ebx
 tms
 );
 
-1429 
+1511 
 	`sysˇŒ_c›y_tms
 (&
 sim_tms
@@ -98647,11 +98941,11 @@ sim_tms
 tms
 );
 
-1430 i‡(
+1512 i‡(
 ±ms
 )
 
-1431 
+1513 
 	`mem_wrôe
 (
 iß_mem
@@ -98661,11 +98955,11 @@ iß_mem
 sim_tms
 ), &sim_tms);
 
-1437 
+1519 
 sysˇŒ_code_brk
 :
 
-1439 
+1521 
 uöt32_t
  
 ﬁdbrk
@@ -98675,7 +98969,7 @@ uöt32_t
 size
 ;
 
-1440 
+1522 
 uöt32_t
  
 ﬁdbrk_∫d
@@ -98683,7 +98977,7 @@ uöt32_t
 √wbrk_∫d
 ;
 
-1442 
+1524 
 √wbrk
  = 
 iß_ªgs
@@ -98691,7 +98985,7 @@ iß_ªgs
 ebx
 ;
 
-1443 
+1525 
 ﬁdbrk
  = 
 iß_˘x
@@ -98701,17 +98995,17 @@ lﬂdî
 brk
 ;
 
-1444 
+1526 
 	`sysˇŒ_debug
 ("Çewbrk=0x%x (previous brk was 0x%x)\n",
 
-1445 
+1527 
 √wbrk
 , 
 ﬁdbrk
 );
 
-1447 
+1529 
 √wbrk_∫d
  = 
 	`ROUND_UP
@@ -98721,7 +99015,7 @@ brk
 MEM_PAGESIZE
 );
 
-1448 
+1530 
 ﬁdbrk_∫d
  = 
 	`ROUND_UP
@@ -98731,23 +99025,23 @@ MEM_PAGESIZE
 MEM_PAGESIZE
 );
 
-1452 i‡(!
+1534 i‡(!
 √wbrk
 ) {
 
-1453 
+1535 
 ªtvÆ
  = 
 ﬁdbrk
 ;
 
-1460 i‡(
+1542 i‡(
 √wbrk
  > 
 ﬁdbrk
 ) {
 
-1461 
+1543 
 size
  = 
 √wbrk_∫d
@@ -98755,11 +99049,11 @@ size
 ﬁdbrk_∫d
 ;
 
-1462 i‡(
+1544 i‡(
 size
 ) {
 
-1463 i‡(
+1545 i‡(
 	`mem_m≠_•a˚
 (
 iß_mem
@@ -98769,11 +99063,11 @@ iß_mem
 size
 ) != oldbrk_rnd)
 
-1464 
+1546 
 	`Áèl
 ("syscall brk: out of memory");
 
-1465 
+1547 
 	`mem_m≠
 (
 iß_mem
@@ -98783,13 +99077,13 @@ iß_mem
 size
 ,
 
-1466 
+1548 
 mem_ac˚ss_ªad
  | 
 mem_ac˚ss_wrôe
 );
 
-1468 
+1550 
 iß_˘x
 ->
 lﬂdî
@@ -98799,13 +99093,13 @@ brk
 √wbrk
 ;
 
-1469 
+1551 
 ªtvÆ
  = 
 √wbrk
 ;
 
-1470 
+1552 
 	`sysˇŒ_debug
 (" hó∞grow†0x%x byãs\n", 
 √wbrk
@@ -98813,13 +99107,13 @@ brk
 ﬁdbrk
 );
 
-1475 i‡(
+1557 i‡(
 √wbrk
  < 
 ﬁdbrk
 ) {
 
-1476 
+1558 
 size
  = 
 ﬁdbrk_∫d
@@ -98827,11 +99121,11 @@ size
 √wbrk_∫d
 ;
 
-1477 i‡(
+1559 i‡(
 size
 )
 
-1478 
+1560 
 	`mem_unm≠
 (
 iß_mem
@@ -98841,7 +99135,7 @@ iß_mem
 size
 );
 
-1479 
+1561 
 iß_˘x
 ->
 lﬂdî
@@ -98851,13 +99145,13 @@ brk
 √wbrk
 ;
 
-1480 
+1562 
 ªtvÆ
  = 
 √wbrk
 ;
 
-1481 
+1563 
 	`sysˇŒ_debug
 (" hó∞shrök†0x%x byãs\n", 
 ﬁdbrk
@@ -98865,11 +99159,11 @@ brk
 √wbrk
 );
 
-1495 
+1577 
 sysˇŒ_code_io˘l
 :
 
-1497 
+1579 
 uöt32_t
  
 cmd
@@ -98877,17 +99171,17 @@ cmd
 ¨g
 ;
 
-1498 
+1580 
 gue°_fd
 ;
 
-1499 
+1581 
 fd_t
  *
 fd
 ;
 
-1501 
+1583 
 gue°_fd
  = 
 iß_ªgs
@@ -98895,7 +99189,7 @@ iß_ªgs
 ebx
 ;
 
-1502 
+1584 
 cmd
  = 
 iß_ªgs
@@ -98903,7 +99197,7 @@ iß_ªgs
 ecx
 ;
 
-1503 
+1585 
 ¨g
  = 
 iß_ªgs
@@ -98911,11 +99205,11 @@ iß_ªgs
 edx
 ;
 
-1504 
+1586 
 	`sysˇŒ_debug
 (" guest_fd=%d, cmd=0x%x,árg=0x%x\n",
 
-1505 
+1587 
 gue°_fd
 , 
 cmd
@@ -98923,7 +99217,7 @@ cmd
 ¨g
 );
 
-1508 
+1590 
 fd
  = 
 	`fdt_íåy_gë
@@ -98935,25 +99229,25 @@ fdt
 gue°_fd
 );
 
-1509 i‡(!
+1591 i‡(!
 fd
 ) {
 
-1510 
+1592 
 ªtvÆ
  = -
 EBADF
 ;
 
-1515 i‡(
+1597 i‡(
 cmd
  >= 0x5401 || cmd <= 0x5408) {
 
-1521 
+1603 
 buf
 [60];
 
-1523 
+1605 
 	`mem_ªad
 (
 iß_mem
@@ -98963,7 +99257,7 @@ iß_mem
 buf
 ), buf);
 
-1524 
+1606 
 	`RETVAL
 (
 	`io˘l
@@ -98977,11 +99271,11 @@ cmd
 buf
 ));
 
-1525 i‡(!
+1607 i‡(!
 ªtvÆ
 )
 
-1526 
+1608 
 	`mem_wrôe
 (
 iß_mem
@@ -98991,27 +99285,27 @@ iß_mem
 buf
 ), buf);
 
-1529 
+1611 
 	`Áèl
 ("sysˇŒ io˘l: cmd = 0x%xÇŸ im∂emíãd", 
 cmd
 );
 
-1536 
+1618 
 sysˇŒ_code_gëµid
 :
 
-1539 i‡(!
+1621 i‡(!
 iß_˘x
 ->
 ∑ª¡
 )
 
-1540 
+1622 
 ªtvÆ
  = 1;
 
-1542 
+1624 
 ªtvÆ
  = 
 iß_˘x
@@ -99021,11 +99315,11 @@ iß_˘x
 pid
 ;
 
-1548 
+1630 
 sysˇŒ_code_£ålimô
 :
 
-1550 
+1632 
 uöt32_t
  
 ªsour˚
@@ -99033,15 +99327,15 @@ uöt32_t
 ¥lim
 ;
 
-1551 *
+1633 *
 §esour˚
 ;
 
-1552 
+1634 
 sim_æimô
  sim_rlimit;
 
-1554 
+1636 
 ªsour˚
  = 
 iß_ªgs
@@ -99049,7 +99343,7 @@ iß_ªgs
 ebx
 ;
 
-1555 
+1637 
 ¥lim
  = 
 iß_ªgs
@@ -99057,7 +99351,7 @@ iß_ªgs
 ecx
 ;
 
-1556 
+1638 
 §esour˚
  = 
 	`m≠_vÆue
@@ -99067,7 +99361,7 @@ ecx
 ªsour˚
 );
 
-1557 
+1639 
 	`sysˇŒ_debug
 ("Ñesour˚=0x%x,Öæim=0x%x\n", 
 ªsour˚
@@ -99075,13 +99369,13 @@ ecx
 ¥lim
 );
 
-1558 
+1640 
 	`sysˇŒ_debug
 ("Ñesour˚=%s\n", 
 §esour˚
 );
 
-1560 
+1642 
 	`mem_ªad
 (
 iß_mem
@@ -99091,11 +99385,11 @@ iß_mem
 sim_æimô
 ), &sim_rlimit);
 
-1561 
+1643 
 	`sysˇŒ_debug
 ("Ñlim->cur=0x%x,Ñlim->max=0x%x\n",
 
-1562 
+1644 
 sim_æimô
 .
 cur
@@ -99103,29 +99397,29 @@ cur
 max
 );
 
-1563 
+1645 
 ªsour˚
 ) {
 
-1565 
+1647 
 RLIMIT_DATA
 :
 
-1570 
+1652 
 RLIMIT_STACK
 :
 
-1578 
+1660 
 	`Áèl
 ("£ålimô:ÇŸ im∂emíãd f‹Ñesour˚=%s", 
 §esour˚
 );
 
-1585 
+1667 
 sysˇŒ_code_gërußge
 :
 
-1587 
+1669 
 uöt32_t
  
 who
@@ -99133,15 +99427,15 @@ who
 ¥u
 ;
 
-1588 
+1670 
 rußge
 Ñusage;
 
-1589 
+1671 
 sim_rußge
  sim_rusage;
 
-1591 
+1673 
 who
  = 
 iß_ªgs
@@ -99149,7 +99443,7 @@ iß_ªgs
 ebx
 ;
 
-1592 
+1674 
 ¥u
  = 
 iß_ªgs
@@ -99157,7 +99451,7 @@ iß_ªgs
 ecx
 ;
 
-1593 
+1675 
 	`sysˇŒ_debug
 (" who=0x%x,Öru=0x%x\n", 
 who
@@ -99165,15 +99459,15 @@ who
 ¥u
 );
 
-1595 i‡(
+1677 i‡(
 who
  != 0)
 
-1596 
+1678 
 	`Áèl
 ("syscall getrusage:Çot implemented for who != RUSAGE_SELF");
 
-1597 
+1679 
 	`RETVAL
 (
 	`gërußge
@@ -99183,11 +99477,11 @@ RUSAGE_SELF
 rußge
 ));
 
-1598 i‡(!
+1680 i‡(!
 ªtvÆ
 ) {
 
-1599 
+1681 
 	`sysˇŒ_c›y_rußge
 (&
 sim_rußge
@@ -99195,7 +99489,7 @@ sim_rußge
 rußge
 );
 
-1600 
+1682 
 	`mem_wrôe
 (
 iß_mem
@@ -99205,11 +99499,11 @@ iß_mem
 sim_rußge
 ), &sim_rusage);
 
-1612 
+1694 
 sysˇŒ_code_gëtimeofday
 :
 
-1614 
+1696 
 uöt32_t
  
 ±v
@@ -99217,19 +99511,19 @@ uöt32_t
 ±z
 ;
 
-1615 
+1697 
 timevÆ
  
 tv
 ;
 
-1616 
+1698 
 timez⁄e
  
 tz
 ;
 
-1618 
+1700 
 ±v
  = 
 iß_ªgs
@@ -99237,7 +99531,7 @@ iß_ªgs
 ebx
 ;
 
-1619 
+1701 
 ±z
  = 
 iß_ªgs
@@ -99245,7 +99539,7 @@ iß_ªgs
 ecx
 ;
 
-1620 
+1702 
 	`sysˇŒ_debug
 ("Ötv=0x%x,Ötz=0x%x\n", 
 ±v
@@ -99253,7 +99547,7 @@ ecx
 ±z
 );
 
-1622 
+1704 
 	`RETVAL
 (
 	`gëtimeofday
@@ -99263,11 +99557,11 @@ tv
 tz
 ));
 
-1623 i‡(
+1705 i‡(
 ±v
 ) {
 
-1624 
+1706 
 	`mem_wrôe
 (
 iß_mem
@@ -99279,7 +99573,7 @@ tv
 tv_£c
 );
 
-1625 
+1707 
 	`mem_wrôe
 (
 iß_mem
@@ -99291,11 +99585,11 @@ tv
 tv_u£c
 );
 
-1627 i‡(
+1709 i‡(
 ±z
 ) {
 
-1628 
+1710 
 	`mem_wrôe
 (
 iß_mem
@@ -99307,7 +99601,7 @@ tz
 tz_möuãswe°
 );
 
-1629 
+1711 
 	`mem_wrôe
 (
 iß_mem
@@ -99319,11 +99613,11 @@ tz
 tz_d°time
 );
 
-1636 
+1718 
 sysˇŒ_code_ªadlök
 :
 
-1638 
+1720 
 uöt32_t
  
 ∑th
@@ -99333,29 +99627,29 @@ buf
 bufsz
 ;
 
-1639 
+1721 
 ∑th_°r
 [
 MAX_PATH_SIZE
 ];
 
-1640 
+1722 
 fuŒ_∑th_°r
 [
 MAX_PATH_SIZE
 ];
 
-1641 
+1723 
 de°_∑th
 [
 MAX_PATH_SIZE
 ];
 
-1642 
+1724 
 de°_size
 ;
 
-1644 
+1726 
 ∑th
  = 
 iß_ªgs
@@ -99363,7 +99657,7 @@ iß_ªgs
 ebx
 ;
 
-1645 
+1727 
 buf
  = 
 iß_ªgs
@@ -99371,7 +99665,7 @@ iß_ªgs
 ecx
 ;
 
-1646 
+1728 
 bufsz
  = 
 iß_ªgs
@@ -99379,7 +99673,7 @@ iß_ªgs
 edx
 ;
 
-1647 
+1729 
 	`sysˇŒ_debug
 ("Ö©h=0x%x, buf=0x%x, bufsz=%d\n", 
 ∑th
@@ -99389,7 +99683,7 @@ buf
 bufsz
 );
 
-1650 
+1732 
 	`mem_ªad_°rög
 (
 iß_mem
@@ -99401,7 +99695,7 @@ MAX_PATH_SIZE
 ∑th_°r
 );
 
-1651 
+1733 
 	`ld_gë_fuŒ_∑th
 (
 iß_˘x
@@ -99413,19 +99707,19 @@ fuŒ_∑th_°r
 MAX_PATH_SIZE
 );
 
-1652 
+1734 
 	`sysˇŒ_debug
 ("Ö©h_°r='%s'\n", 
 ∑th_°r
 );
 
-1655 i‡(!
+1737 i‡(!
 	`°rcmp
 (
 fuŒ_∑th_°r
 , "/proc/self/exe")) {
 
-1658 
+1740 
 	`°r˝y
 (
 de°_∑th
@@ -99437,7 +99731,7 @@ lﬂdî
 exe
 );
 
-1663 
+1745 
 	`RETVAL
 (
 	`ªadlök
@@ -99449,11 +99743,11 @@ de°_∑th
 MAX_PATH_SIZE
 ));
 
-1664 i‡(
+1746 i‡(
 ªtvÆ
  < 0)
 
-1669 
+1751 
 de°_size
  = 
 	`°æí
@@ -99461,19 +99755,19 @@ de°_size
 de°_∑th
 ) + 1;
 
-1670 i‡(
+1752 i‡(
 de°_size
  > 
 bufsz
 ) {
 
-1671 
+1753 
 ªtvÆ
  = -
 EFAULT
 ;
 
-1676 
+1758 
 	`mem_wrôe_°rög
 (
 iß_mem
@@ -99483,23 +99777,23 @@ buf
 de°_∑th
 );
 
-1677 
+1759 
 	`sysˇŒ_debug
 (" de°_∑th='%s'\n", 
 de°_∑th
 );
 
-1683 
+1765 
 sysˇŒ_code_mm≠
 :
 
-1685 
+1767 
 uöt32_t
  
 ∑rgs
 ;
 
-1686 
+1768 
 uöt32_t
  
 addr
@@ -99509,7 +99803,7 @@ addr
 ¥Ÿ
 ;
 
-1687 
+1769 
 uöt32_t
  
 Êags
@@ -99517,11 +99811,11 @@ uöt32_t
 off£t
 ;
 
-1688 
+1770 
 gue°_fd
 ;
 
-1689 
+1771 
 •rŸ
 [
 MAX_STRING_SIZE
@@ -99529,7 +99823,7 @@ MAX_STRING_SIZE
 sÊags
 [MAX_STRING_SIZE];
 
-1693 
+1775 
 ∑rgs
  = 
 iß_ªgs
@@ -99537,7 +99831,7 @@ iß_ªgs
 ebx
 ;
 
-1694 
+1776 
 	`mem_ªad
 (
 iß_mem
@@ -99547,7 +99841,7 @@ iß_mem
 addr
 );
 
-1695 
+1777 
 	`mem_ªad
 (
 iß_mem
@@ -99557,7 +99851,7 @@ iß_mem
 Àn
 );
 
-1696 
+1778 
 	`mem_ªad
 (
 iß_mem
@@ -99567,7 +99861,7 @@ iß_mem
 ¥Ÿ
 );
 
-1697 
+1779 
 	`mem_ªad
 (
 iß_mem
@@ -99577,7 +99871,7 @@ iß_mem
 Êags
 );
 
-1698 
+1780 
 	`mem_ªad
 (
 iß_mem
@@ -99587,7 +99881,7 @@ iß_mem
 gue°_fd
 );
 
-1699 
+1781 
 	`mem_ªad
 (
 iß_mem
@@ -99597,17 +99891,17 @@ iß_mem
 off£t
 );
 
-1701 
+1783 
 	`sysˇŒ_debug
 ("Ö¨gs=0x%x\n", 
 ∑rgs
 );
 
-1702 
+1784 
 	`sysˇŒ_debug
 ("áddr=0x%x,Üen=%u,Örot=0x%x, flags=0x%x, "
 
-1704 
+1786 
 addr
 , 
 Àn
@@ -99621,7 +99915,7 @@ gue°_fd
 off£t
 );
 
-1705 
+1787 
 	`m≠_Êags
 (&
 mm≠_¥Ÿ_m≠
@@ -99631,7 +99925,7 @@ mm≠_¥Ÿ_m≠
 •rŸ
 ,  (sprot));
 
-1706 
+1788 
 	`m≠_Êags
 (&
 mm≠_Êags_m≠
@@ -99641,7 +99935,7 @@ mm≠_Êags_m≠
 sÊags
 ,  (sflags));
 
-1707 
+1789 
 	`sysˇŒ_debug
 ("ÖrŸ=%s, fœgs=%s\n", 
 •rŸ
@@ -99649,7 +99943,7 @@ sÊags
 sÊags
 );
 
-1710 
+1792 
 ªtvÆ
  = 
 	`do_mm≠
@@ -99663,17 +99957,17 @@ addr
 Êags
 ,
 
-1711 
+1793 
 gue°_fd
 , 
 off£t
 );
 
-1717 
+1799 
 sysˇŒ_code_munm≠
 :
 
-1719 
+1801 
 uöt32_t
  
 addr
@@ -99681,13 +99975,13 @@ addr
 size
 ;
 
-1720 
+1802 
 uöt32_t
  
 size_Æign
 ;
 
-1722 
+1804 
 addr
  = 
 iß_ªgs
@@ -99695,7 +99989,7 @@ iß_ªgs
 ebx
 ;
 
-1723 
+1805 
 size
  = 
 iß_ªgs
@@ -99703,7 +99997,7 @@ iß_ªgs
 ecx
 ;
 
-1724 
+1806 
 	`sysˇŒ_debug
 ("áddr=0x%x, size=0x%x\n", 
 addr
@@ -99711,17 +100005,17 @@ addr
 size
 );
 
-1725 i‡(
+1807 i‡(
 addr
  & (
 MEM_PAGESIZE
  - 1))
 
-1726 
+1808 
 	`Áèl
 ("munmap: size isÇotá multiple ofÖage size");
 
-1728 
+1810 
 size_Æign
  = 
 	`ROUND_UP
@@ -99731,7 +100025,7 @@ size
 MEM_PAGESIZE
 );
 
-1729 
+1811 
 	`mem_unm≠
 (
 iß_mem
@@ -99741,11 +100035,11 @@ addr
 size_Æign
 );
 
-1735 
+1817 
 sysˇŒ_code_fchmod
 :
 
-1737 
+1819 
 uöt32_t
  
 fd
@@ -99755,7 +100049,7 @@ ho°_fd
 mode
 ;
 
-1739 
+1821 
 fd
  = 
 iß_ªgs
@@ -99763,7 +100057,7 @@ iß_ªgs
 ebx
 ;
 
-1740 
+1822 
 mode
  = 
 iß_ªgs
@@ -99771,7 +100065,7 @@ iß_ªgs
 ecx
 ;
 
-1741 
+1823 
 ho°_fd
  = 
 	`fdt_gë_ho°_fd
@@ -99783,23 +100077,23 @@ fdt
 fd
 );
 
-1742 
+1824 
 	`sysˇŒ_debug
 (" fd=%d, mode=%d\n",
 
-1743 
+1825 
 fd
 , 
 mode
 );
 
-1744 
+1826 
 	`sysˇŒ_debug
 (" ho°_fd=%d\n", 
 ho°_fd
 );
 
-1746 
+1828 
 	`RETVAL
 (
 	`fchmod
@@ -99809,25 +100103,25 @@ ho°_fd
 mode
 ));
 
-1752 
+1834 
 sysˇŒ_code_sockëˇŒ
 :
 
-1754 
+1836 
 ˇŒ
 ;
 
-1755 
+1837 
 uöt32_t
  
 ¨gs
 ;
 
-1756 *
+1838 *
 ˇŒ_«me
 ;
 
-1758 
+1840 
 ˇŒ
  = 
 iß_ªgs
@@ -99835,7 +100129,7 @@ iß_ªgs
 ebx
 ;
 
-1759 
+1841 
 ¨gs
  = 
 iß_ªgs
@@ -99843,7 +100137,7 @@ iß_ªgs
 ecx
 ;
 
-1760 
+1842 
 ˇŒ_«me
  = 
 	`m≠_vÆue
@@ -99853,7 +100147,7 @@ sockëˇŒ_ˇŒ_m≠
 ˇŒ
 );
 
-1761 
+1843 
 	`sysˇŒ_debug
 (" cÆl=%d (%s)\n", 
 ˇŒ
@@ -99861,17 +100155,17 @@ sockëˇŒ_ˇŒ_m≠
 ˇŒ_«me
 );
 
-1762 
+1844 
 	`sysˇŒ_debug
 ("árgs=0x%x\n", 
 ¨gs
 );
 
-1765 i‡(
+1847 i‡(
 ˇŒ
  == 1) {
 
-1767 
+1849 
 uöt32_t
  
 Ámûy
@@ -99881,23 +100175,23 @@ ty≥
 ¥Ÿocﬁ
 ;
 
-1768 *
+1850 *
 Ámûy_«me
 , *
 ty≥_«me
 ;
 
-1769 
+1851 
 ho°_fd
 ;
 
-1770 
+1852 
 fd_t
  *
 fd
 ;
 
-1773 
+1855 
 	`mem_ªad
 (
 iß_mem
@@ -99907,7 +100201,7 @@ iß_mem
 Ámûy
 );
 
-1774 
+1856 
 	`mem_ªad
 (
 iß_mem
@@ -99917,7 +100211,7 @@ iß_mem
 ty≥
 );
 
-1775 
+1857 
 	`mem_ªad
 (
 iß_mem
@@ -99927,7 +100221,7 @@ iß_mem
 ¥Ÿocﬁ
 );
 
-1776 
+1858 
 Ámûy_«me
  = 
 	`m≠_vÆue
@@ -99937,7 +100231,7 @@ sockë_Ámûy_m≠
 Ámûy
 );
 
-1777 
+1859 
 ty≥_«me
  = 
 	`m≠_vÆue
@@ -99947,11 +100241,11 @@ sockë_ty≥_m≠
 ty≥
  & 0xff);
 
-1778 
+1860 
 	`sysˇŒ_debug
 (" family=0x%x,Åype=0x%x,Örotocol=0x%x\n",
 
-1779 
+1861 
 Ámûy
 , 
 ty≥
@@ -99959,47 +100253,47 @@ ty≥
 ¥Ÿocﬁ
 );
 
-1780 
+1862 
 	`sysˇŒ_debug
 (" famûy=%s\n", 
 Ámûy_«me
 );
 
-1781 
+1863 
 	`sysˇŒ_debug
 ("Åy≥=%s", 
 ty≥_«me
 );
 
-1782 i‡(
+1864 i‡(
 ty≥
  & 0x80000)
 
-1783 
+1865 
 	`sysˇŒ_debug
 ("|SOCK_CLOEXEC");
 
-1784 i‡(
+1866 i‡(
 ty≥
  & 0x800)
 
-1785 
+1867 
 	`sysˇŒ_debug
 ("|SOCK_NONBLOCK");
 
-1786 
+1868 
 	`sysˇŒ_debug
 ("\n");
 
-1789 i‡((
+1871 i‡((
 ty≥
  & 0xff) != 1)
 
-1790 
+1872 
 	`Áèl
 ("syscall 'socketcall': SYS_SOCKET: only sockets ofÅype SOCK_STREAMállowed");
 
-1793 
+1875 
 ho°_fd
  = 
 	`sockë
@@ -100011,17 +100305,17 @@ ty≥
 ¥Ÿocﬁ
 );
 
-1794 i‡(
+1876 i‡(
 ho°_fd
  < 0) {
 
-1795 
+1877 
 ªtvÆ
  = -
 î∫o
 ;
 
-1800 
+1882 
 fd
  = 
 	`fdt_íåy_√w
@@ -100037,11 +100331,11 @@ ho°_fd
 O_RDWR
 );
 
-1801 
+1883 
 	`sysˇŒ_debug
 (" file descriptor opened: guest_fd=%d, host_fd=%d\n",
 
-1802 
+1884 
 fd
 ->
 gue°_fd
@@ -100049,7 +100343,7 @@ gue°_fd
 ho°_fd
 );
 
-1803 
+1885 
 ªtvÆ
  = 
 fd
@@ -100057,11 +100351,11 @@ fd
 gue°_fd
 ;
 
-1806 } i‡(
+1888 } i‡(
 ˇŒ
  == 3) {
 
-1808 
+1890 
 uöt32_t
  
 gue°_fd
@@ -100071,25 +100365,25 @@ gue°_fd
 addæí
 ;
 
-1809 
+1891 
 fd_t
  *
 fd
 ;
 
-1810 
+1892 
 buf
 [
 MAX_STRING_SIZE
 ];
 
-1811 
+1893 
 sockaddr
  *
 addr
 ;
 
-1813 
+1895 
 	`mem_ªad
 (
 iß_mem
@@ -100099,7 +100393,7 @@ iß_mem
 gue°_fd
 );
 
-1814 
+1896 
 	`mem_ªad
 (
 iß_mem
@@ -100109,7 +100403,7 @@ iß_mem
 ∑ddr
 );
 
-1815 
+1897 
 	`mem_ªad
 (
 iß_mem
@@ -100119,11 +100413,11 @@ iß_mem
 addæí
 );
 
-1816 
+1898 
 	`sysˇŒ_debug
 (" guest_fd=%d,Öaddr=0x%x,áddrlen=%d\n",
 
-1817 
+1899 
 gue°_fd
 , 
 ∑ddr
@@ -100131,17 +100425,17 @@ gue°_fd
 addæí
 );
 
-1820 i‡(
+1902 i‡(
 addæí
  > 
 MAX_STRING_SIZE
 )
 
-1821 
+1903 
 	`Áèl
 ("syscall 'socketcall': SYS_CONNECT: maximum string sizeÉxceeded");
 
-1822 
+1904 
 addr
  = (
 sockaddr
@@ -100149,7 +100443,7 @@ sockaddr
 buf
 [0];
 
-1823 
+1905 
 	`as£π
 ( (
 addr
@@ -100157,7 +100451,7 @@ addr
 ß_Ámûy
 ) == 2);
 
-1824 
+1906 
 	`as£π
 ((*Ë&
 addr
@@ -100167,7 +100461,7 @@ addr
 ß_Ámûy
  == 2);
 
-1825 
+1907 
 	`mem_ªad
 (
 iß_mem
@@ -100179,7 +100473,7 @@ addæí
 addr
 );
 
-1826 
+1908 
 	`sysˇŒ_debug
 (" sockaddr.Ámûy=%s\n", 
 	`m≠_vÆue
@@ -100191,7 +100485,7 @@ addr
 ß_Ámûy
 ));
 
-1827 
+1909 
 	`sysˇŒ_debug_°rög
 (" sockaddr.d©a", 
 addr
@@ -100201,7 +100495,7 @@ addr
 addæí
  - 2, 1);
 
-1830 
+1912 
 fd
  = 
 	`fdt_íåy_gë
@@ -100213,17 +100507,17 @@ fdt
 gue°_fd
 );
 
-1831 i‡(!
+1913 i‡(!
 fd
 ) {
 
-1832 
+1914 
 ªtvÆ
  = -
 EBADF
 ;
 
-1835 i‡(
+1917 i‡(
 fd
 ->
 köd
@@ -100231,11 +100525,11 @@ köd
 fd_köd_sockë
 )
 
-1836 
+1918 
 	`Áèl
 (" syscall 'socketcall': SYS_CONNECT: file descriptor isÇotá socket");
 
-1837 
+1919 
 	`sysˇŒ_debug
 (" ho°_fd=%d\n", 
 fd
@@ -100243,7 +100537,7 @@ fd
 ho°_fd
 );
 
-1840 
+1922 
 	`RETVAL
 (
 	`c⁄√˘
@@ -100257,11 +100551,11 @@ addr
 addæí
 ));
 
-1843 } i‡(
+1925 } i‡(
 ˇŒ
  == 7) {
 
-1845 
+1927 
 uöt32_t
  
 gue°_fd
@@ -100273,25 +100567,25 @@ gue°_fd
 addæí
 ;
 
-1846 
+1928 
 fd_t
  *
 fd
 ;
 
-1847 
+1929 
 sockaddr
  *
 addr
 ;
 
-1848 
+1930 
 sockÀn_t
  
 ho°_addæí
 ;
 
-1850 
+1932 
 	`mem_ªad
 (
 iß_mem
@@ -100301,7 +100595,7 @@ iß_mem
 gue°_fd
 );
 
-1851 
+1933 
 	`mem_ªad
 (
 iß_mem
@@ -100311,7 +100605,7 @@ iß_mem
 ∑ddr
 );
 
-1852 
+1934 
 	`mem_ªad
 (
 iß_mem
@@ -100321,11 +100615,11 @@ iß_mem
 ∑ddæí
 );
 
-1853 
+1935 
 	`sysˇŒ_debug
 (" guest_fd=%d,Öaddr=0x%x,Öaddrlen=0x%x\n",
 
-1854 
+1936 
 gue°_fd
 , 
 ∑ddr
@@ -100333,7 +100627,7 @@ gue°_fd
 ∑ddæí
 );
 
-1857 
+1939 
 fd
  = 
 	`fdt_íåy_gë
@@ -100345,17 +100639,17 @@ fdt
 gue°_fd
 );
 
-1858 i‡(!
+1940 i‡(!
 fd
 ) {
 
-1859 
+1941 
 ªtvÆ
  = -
 EBADF
 ;
 
-1864 
+1946 
 	`mem_ªad
 (
 iß_mem
@@ -100365,19 +100659,19 @@ iß_mem
 addæí
 );
 
-1865 
+1947 
 	`sysˇŒ_debug
 ("áddæí=%d\n", 
 addæí
 );
 
-1866 
+1948 
 ho°_addæí
  = 
 addæí
 ;
 
-1867 
+1949 
 addr
  = 
 	`mÆloc
@@ -100385,7 +100679,7 @@ addr
 addæí
 );
 
-1870 
+1952 
 	`RETVAL
 (
 	`gë≥î«me
@@ -100399,33 +100693,33 @@ addr
 ho°_addæí
 ));
 
-1871 i‡(
+1953 i‡(
 ªtvÆ
  < 0) {
 
-1872 
+1954 
 	`‰ì
 (
 addr
 );
 
-1875 
+1957 
 addæí
  = 
 ho°_addæí
 ;
 
-1876 
+1958 
 	`sysˇŒ_debug
 ("Ñesult:\n");
 
-1877 
+1959 
 	`sysˇŒ_debug
 ("áddæí=%d\n", 
 ho°_addæí
 );
 
-1878 
+1960 
 	`sysˇŒ_debug_°rög
 (" sockaddr.d©a", 
 addr
@@ -100435,7 +100729,7 @@ addr
 addæí
  - 2, 1);
 
-1881 
+1963 
 	`mem_wrôe
 (
 iß_mem
@@ -100445,7 +100739,7 @@ iß_mem
 addæí
 );
 
-1882 
+1964 
 	`mem_wrôe
 (
 iß_mem
@@ -100457,25 +100751,25 @@ addæí
 addr
 );
 
-1883 
+1965 
 	`‰ì
 (
 addr
 );
 
-1887 
+1969 
 	`Áèl
 ("syscall 'socketcall': call '%s'Çot implemented",
 
-1888 
+1970 
 ˇŒ_«me
 );
 
-1895 
+1977 
 sysˇŒ_code_£tôimî
 :
 
-1897 
+1979 
 uöt32_t
  
 which
@@ -100485,13 +100779,13 @@ pvÆue
 povÆue
 ;
 
-1898 
+1980 
 sim_ôimîvÆ
  
 ôimîvÆ
 ;
 
-1899 
+1981 
 uöt64_t
  
 now
@@ -100499,7 +100793,7 @@ now
 	`ke_timî
 ();
 
-1901 
+1983 
 which
  = 
 iß_ªgs
@@ -100507,7 +100801,7 @@ iß_ªgs
 ebx
 ;
 
-1902 
+1984 
 pvÆue
  = 
 iß_ªgs
@@ -100515,7 +100809,7 @@ iß_ªgs
 ecx
 ;
 
-1903 
+1985 
 povÆue
  = 
 iß_ªgs
@@ -100523,11 +100817,11 @@ iß_ªgs
 edx
 ;
 
-1904 
+1986 
 	`sysˇŒ_debug
 (" which=%d (%s),Övalue=0x%x,Öovalue=0x%x\n",
 
-1905 
+1987 
 which
 , 
 	`m≠_vÆue
@@ -100539,11 +100833,11 @@ pvÆue
 povÆue
 );
 
-1908 i‡(
+1990 i‡(
 pvÆue
 ) {
 
-1909 
+1991 
 	`mem_ªad
 (
 iß_mem
@@ -100553,25 +100847,25 @@ pvÆue
 ôimîvÆ
 ), &itimerval);
 
-1910 
+1992 
 	`sysˇŒ_debug
 (" itimervalát 'pvalue':\n");
 
-1911 
+1993 
 	`sim_ôimîvÆ_debug
 (&
 ôimîvÆ
 );
 
-1915 i‡(
+1997 i‡(
 which
  >= 3)
 
-1916 
+1998 
 	`Áèl
 ("syscall 'setitimer': wrong value for 'which'árgument");
 
-1919 
+2001 
 iß_˘x
 ->
 ôimî_vÆue
@@ -100587,7 +100881,7 @@ now
 tv_£c
  * 1000000
 
-1920 + 
+2002 + 
 ôimîvÆ
 .
 ô_vÆue
@@ -100595,7 +100889,7 @@ tv_£c
 tv_u£c
 ;
 
-1921 
+2003 
 iß_˘x
 ->
 ôimî_öãrvÆ
@@ -100609,7 +100903,7 @@ which
 tv_£c
  * 1000000
 
-1922 + 
+2004 + 
 ôimîvÆ
 .
 ô_öãrvÆ
@@ -100617,21 +100911,21 @@ tv_£c
 tv_u£c
 ;
 
-1926 
+2008 
 	`˘x_ho°_thªad_timî_ˇn˚l
 (
 iß_˘x
 );
 
-1927 
+2009 
 	`ke_¥o˚ss_evíts_scheduÀ
 ();
 
-1933 
+2015 
 sysˇŒ_code_gëôimî
 :
 
-1935 
+2017 
 uöt32_t
  
 which
@@ -100639,13 +100933,13 @@ which
 pvÆue
 ;
 
-1936 
+2018 
 sim_ôimîvÆ
  
 ôimîvÆ
 ;
 
-1937 
+2019 
 uöt64_t
  
 now
@@ -100653,13 +100947,13 @@ now
 	`ke_timî
 ();
 
-1938 
+2020 
 uöt64_t
  
 ªm
 ;
 
-1940 
+2022 
 which
  = 
 iß_ªgs
@@ -100667,7 +100961,7 @@ iß_ªgs
 ebx
 ;
 
-1941 
+2023 
 pvÆue
  = 
 iß_ªgs
@@ -100675,11 +100969,11 @@ iß_ªgs
 ecx
 ;
 
-1942 
+2024 
 	`sysˇŒ_debug
 (" which=%d (%s),Övalue=0x%x\n",
 
-1943 
+2025 
 which
 , 
 	`m≠_vÆue
@@ -100689,15 +100983,15 @@ which
 pvÆue
 );
 
-1946 i‡(
+2028 i‡(
 which
  >= 3)
 
-1947 
+2029 
 	`Áèl
 ("syscall 'getitimer': wrong value for 'which'árgument");
 
-1950 
+2032 
 ªm
  = 
 now
@@ -100709,7 +101003,7 @@ iß_˘x
 which
 ] ? isa_ctx->itimer_value[which] -Çow : 0;
 
-1951 
+2033 
 ôimîvÆ
 .
 ô_vÆue
@@ -100719,7 +101013,7 @@ tv_£c
 ªm
  / 1000000;
 
-1952 
+2034 
 ôimîvÆ
 .
 ô_vÆue
@@ -100729,7 +101023,7 @@ tv_u£c
 ªm
  % 1000000;
 
-1953 
+2035 
 ôimîvÆ
 .
 ô_öãrvÆ
@@ -100743,7 +101037,7 @@ iß_˘x
 which
 ] / 1000000;
 
-1954 
+2036 
 ôimîvÆ
 .
 ô_öãrvÆ
@@ -100757,7 +101051,7 @@ iß_˘x
 which
 ] % 1000000;
 
-1955 
+2037 
 	`mem_wrôe
 (
 iß_mem
@@ -100767,29 +101061,29 @@ pvÆue
 ôimîvÆ
 ), &itimerval);
 
-1961 
+2043 
 sysˇŒ_code_sigªtu∫
 :
 
-1963 
+2045 
 	`sig«l_h™dÀr_ªtu∫
 (
 iß_˘x
 );
 
-1964 
+2046 
 	`ke_¥o˚ss_evíts_scheduÀ
 ();
 
-1965 
+2047 
 	`ke_¥o˚ss_evíts
 ();
 
-1976 
+2058 
 sysˇŒ_code_˛⁄e
 :
 
-1978 
+2060 
 uöt32_t
  
 Êags
@@ -100801,7 +101095,7 @@ uöt32_t
 chûd_tid±r
 ;
 
-1979 
+2061 
 uöt32_t
  
 suµ‹ãd_Êags
@@ -100809,19 +101103,19 @@ suµ‹ãd_Êags
 m™d©‹y_Êags
 ;
 
-1980 
+2062 
 ˘x_t
  *
 √w_˘x
 ;
 
-1981 
+2063 
 sÊags
 [
 MAX_STRING_SIZE
 ];
 
-1983 
+2065 
 Êags
  = 
 iß_ªgs
@@ -100829,7 +101123,7 @@ iß_ªgs
 ebx
 ;
 
-1984 
+2066 
 √w•
  = 
 iß_ªgs
@@ -100837,7 +101131,7 @@ iß_ªgs
 ecx
 ;
 
-1985 
+2067 
 ∑ª¡_tid±r
  = 
 iß_ªgs
@@ -100845,7 +101139,7 @@ iß_ªgs
 edx
 ;
 
-1986 
+2068 
 chûd_tid±r
  = 
 iß_ªgs
@@ -100853,11 +101147,11 @@ iß_ªgs
 edi
 ;
 
-1987 
+2069 
 	`sysˇŒ_debug
 (" flags=0x%x,Çewsp=0x%x,Öarent_tidptr=0x%x, child_tidptr=0x%x\n",
 
-1988 
+2070 
 Êags
 , 
 √w•
@@ -100867,7 +101161,7 @@ edi
 chûd_tid±r
 );
 
-1989 
+2071 
 	`m≠_Êags
 (&
 ˛⁄e_Êags_m≠
@@ -100879,17 +101173,17 @@ sÊags
 MAX_STRING_SIZE
 );
 
-1990 
+2072 
 	`sysˇŒ_debug
 (" fœgs=%s\n", 
 sÊags
 );
 
-1992 i‡(!
+2074 i‡(!
 √w•
 )
 
-1993 
+2075 
 √w•
  = 
 iß_ªgs
@@ -100897,7 +101191,7 @@ iß_ªgs
 e•
 ;
 
-1996 
+2078 
 √w_˘x
  = 
 	`˘x_˛⁄e
@@ -100905,7 +101199,7 @@ e•
 iß_˘x
 );
 
-1997 
+2079 
 ªtvÆ
  = 
 √w_˘x
@@ -100913,11 +101207,11 @@ iß_˘x
 pid
 ;
 
-1998 
+2080 
 	`sysˇŒ_debug
 (" context %d created withÖid %d\n",
 
-1999 
+2081 
 √w_˘x
 ->
 pid
@@ -100925,23 +101219,23 @@ pid
 ªtvÆ
 );
 
-2002 
+2084 
 m™d©‹y_Êags
  = 0x00000f00;
 
-2003 
+2085 
 suµ‹ãd_Êags
  = 0x013d00f‡| 
 m™d©‹y_Êags
 ;
 
-2004 i‡((
+2086 i‡((
 Êags
  & 
 m™d©‹y_Êags
 ) != mandatory_flags) {
 
-2005 
+2087 
 	`m≠_Êags
 (&
 ˛⁄e_Êags_m≠
@@ -100955,21 +101249,21 @@ sÊags
 MAX_STRING_SIZE
 );
 
-2006 
+2088 
 	`Áèl
 ("syscall clone:Åhese mandatory flagsáreÇot specified: %s",
 
-2007 
+2089 
 sÊags
 );
 
-2009 i‡(
+2091 i‡(
 Êags
  & ~
 suµ‹ãd_Êags
 ) {
 
-2010 
+2092 
 	`m≠_Êags
 (&
 ˛⁄e_Êags_m≠
@@ -100983,25 +101277,25 @@ sÊags
 MAX_STRING_SIZE
 );
 
-2011 
+2093 
 	`Áèl
 ("syscall clone: one ofÅhese flags is specifiedándÇot supported: %s",
 
-2012 
+2094 
 sÊags
 );
 
-2018 i‡(
+2100 i‡(
 Êags
  & 0x10000) {
 
-2019 
+2101 
 √w_˘x
 ->
 exô_sig«l
  = 0;
 
-2021 
+2103 
 √w_˘x
 ->
 exô_sig«l
@@ -101009,11 +101303,11 @@ exô_sig«l
 Êags
  & 0xff;
 
-2025 i‡(
+2107 i‡(
 Êags
  & 0x100000)
 
-2026 
+2108 
 	`mem_wrôe
 (
 iß_˘x
@@ -101027,11 +101321,11 @@ mem
 pid
 );
 
-2029 i‡(
+2111 i‡(
 Êags
  & 0x1000000)
 
-2030 
+2112 
 √w_˘x
 ->
 £t_chûd_tid
@@ -101039,11 +101333,11 @@ pid
 chûd_tid±r
 ;
 
-2031 i‡(
+2113 i‡(
 Êags
  & 0x200000)
 
-2032 
+2114 
 √w_˘x
 ->
 ˛ór_chûd_tid
@@ -101051,23 +101345,23 @@ chûd_tid±r
 chûd_tid±r
 ;
 
-2035 i‡(
+2117 i‡(
 Êags
  & 0x80000) {
 
-2036 
+2118 
 sim_u£r_desc
  
 uöfo
 ;
 
-2037 
+2119 
 uöt32_t
  
 puöfo
 ;
 
-2039 
+2121 
 puöfo
  = 
 iß_ªgs
@@ -101075,13 +101369,13 @@ iß_ªgs
 esi
 ;
 
-2040 
+2122 
 	`sysˇŒ_debug
 ("Öuöfo=0x%x\n", 
 puöfo
 );
 
-2042 
+2124 
 	`mem_ªad
 (
 iß_mem
@@ -101093,11 +101387,11 @@ sim_u£r_desc
 uöfo
 );
 
-2043 
+2125 
 	`sysˇŒ_debug
 ("Éntry_number=0x%x, base_addr=0x%x,Üimit=0x%x\n",
 
-2044 
+2126 
 uöfo
 .
 íåy_numbî
@@ -101107,11 +101401,11 @@ ba£_addr
 limô
 );
 
-2045 
+2127 
 	`sysˇŒ_debug
 (" seg_32bit=0x%x, contents=0x%x,Ñead_exec_only=0x%x\n",
 
-2046 
+2128 
 uöfo
 .
 £g_32bô
@@ -101121,11 +101415,11 @@ c⁄ã¡s
 ªad_exec_⁄ly
 );
 
-2047 
+2129 
 	`sysˇŒ_debug
 ("Üimit_in_pages=0x%x, seg_not_present=0x%x, useable=0x%x\n",
 
-2048 
+2130 
 uöfo
 .
 limô_ö_∑ges
@@ -101135,35 +101429,35 @@ limô_ö_∑ges
 u£abÀ
 );
 
-2049 i‡(!
+2131 i‡(!
 uöfo
 .
 £g_32bô
 )
 
-2050 
+2132 
 	`Áèl
 ("syscall set_thread_area: only 32-bit segments supported");
 
-2053 i‡(
+2135 i‡(
 uöfo
 .
 limô_ö_∑ges
 )
 
-2054 
+2136 
 uöfo
 .
 limô
  <<= 12;
 
-2059 
+2141 
 uöfo
 .
 íåy_numbî
  = 6;
 
-2060 
+2142 
 	`mem_wrôe
 (
 iß_mem
@@ -101175,7 +101469,7 @@ uöfo
 íåy_numbî
 );
 
-2062 
+2144 
 √w_˘x
 ->
 glibc_£gmít_ba£
@@ -101185,7 +101479,7 @@ uöfo
 ba£_addr
 ;
 
-2063 
+2145 
 √w_˘x
 ->
 glibc_£gmít_limô
@@ -101195,7 +101489,7 @@ uöfo
 limô
 ;
 
-2067 
+2149 
 √w_˘x
 ->
 öôül_°ack
@@ -101203,7 +101497,7 @@ limô
 √w•
 ;
 
-2068 
+2150 
 √w_˘x
 ->
 ªgs
@@ -101213,7 +101507,7 @@ e•
 √w•
 ;
 
-2069 
+2151 
 √w_˘x
 ->
 ªgs
@@ -101221,17 +101515,17 @@ e•
 óx
  = 0;
 
-2076 
+2158 
 sysˇŒ_code_√wu«me
 :
 
-2078 
+2160 
 uöt32_t
  
 put¢ame
 ;
 
-2080 
+2162 
 put¢ame
  = 
 iß_ªgs
@@ -101239,13 +101533,13 @@ iß_ªgs
 ebx
 ;
 
-2081 
+2163 
 	`sysˇŒ_debug
 ("Öut¢ame=0x%x\n", 
 put¢ame
 );
 
-2082 
+2164 
 	`sysˇŒ_debug
 (" sy¢ame='%s',Çodíame='%s'\n", 
 sim_ut¢ame
@@ -101255,7 +101549,7 @@ sy¢ame
 nodíame
 );
 
-2083 
+2165 
 	`sysˇŒ_debug
 ("Ññ´£='%s', vîsi⁄='%s'\n", 
 sim_ut¢ame
@@ -101265,7 +101559,7 @@ sim_ut¢ame
 vîsi⁄
 );
 
-2084 
+2166 
 	`sysˇŒ_debug
 (" machöe='%s', domaö«me='%s'\n", 
 sim_ut¢ame
@@ -101275,7 +101569,7 @@ machöe
 domaö«me
 );
 
-2086 
+2168 
 	`mem_wrôe
 (
 iß_mem
@@ -101285,11 +101579,11 @@ put¢ame
 sim_ut¢ame
 ), &sim_utsname);
 
-2092 
+2174 
 sysˇŒ_code_m¥Ÿe˘
 :
 
-2094 
+2176 
 uöt32_t
  
 °¨t
@@ -101299,13 +101593,13 @@ uöt32_t
 ¥Ÿ
 ;
 
-2095 
+2177 
 mem_ac˚ss_íum
  
 ≥rm
  = 0;
 
-2097 
+2179 
 °¨t
  = 
 iß_ªgs
@@ -101313,7 +101607,7 @@ iß_ªgs
 ebx
 ;
 
-2098 
+2180 
 Àn
  = 
 iß_ªgs
@@ -101321,7 +101615,7 @@ iß_ªgs
 ecx
 ;
 
-2099 
+2181 
 ¥Ÿ
  = 
 iß_ªgs
@@ -101329,11 +101623,11 @@ iß_ªgs
 edx
 ;
 
-2100 
+2182 
 	`sysˇŒ_debug
 (" start=0x%x,Üen=0x%x,Örot=0x%x\n",
 
-2101 
+2183 
 °¨t
 , 
 Àn
@@ -101341,7 +101635,7 @@ edx
 ¥Ÿ
 );
 
-2104 
+2186 
 ≥rm
  |
 ¥Ÿ
@@ -101349,7 +101643,7 @@ edx
 mem_ac˚ss_ªad
  : 0;
 
-2105 
+2187 
 ≥rm
  |
 ¥Ÿ
@@ -101357,7 +101651,7 @@ mem_ac˚ss_ªad
 mem_ac˚ss_wrôe
  : 0;
 
-2106 
+2188 
 ≥rm
  |
 ¥Ÿ
@@ -101365,7 +101659,7 @@ mem_ac˚ss_wrôe
 mem_ac˚ss_exec
  : 0;
 
-2107 
+2189 
 	`mem_¥Ÿe˘
 (
 iß_mem
@@ -101377,11 +101671,11 @@ iß_mem
 ≥rm
 );
 
-2113 
+2195 
 sysˇŒ_code_Œ£ek
 :
 
-2115 
+2197 
 uöt32_t
  
 fd
@@ -101393,7 +101687,7 @@ fd
 ho°_fd
 ;
 
-2116 
+2198 
 öt32_t
  
 off£t_high
@@ -101401,13 +101695,13 @@ off£t_high
 off£t_low
 ;
 
-2117 
+2199 
 öt64_t
  
 off£t
 ;
 
-2119 
+2201 
 fd
  = 
 iß_ªgs
@@ -101415,7 +101709,7 @@ iß_ªgs
 ebx
 ;
 
-2120 
+2202 
 off£t_high
  = 
 iß_ªgs
@@ -101423,7 +101717,7 @@ iß_ªgs
 ecx
 ;
 
-2121 
+2203 
 off£t_low
  = 
 iß_ªgs
@@ -101431,7 +101725,7 @@ iß_ªgs
 edx
 ;
 
-2122 
+2204 
 off£t
  = ((
 öt64_t
@@ -101441,7 +101735,7 @@ off£t_high
 off£t_low
 ;
 
-2123 
+2205 
 ¥esu…
  = 
 iß_ªgs
@@ -101449,7 +101743,7 @@ iß_ªgs
 esi
 ;
 
-2124 
+2206 
 ‹igö
  = 
 iß_ªgs
@@ -101457,7 +101751,7 @@ iß_ªgs
 edi
 ;
 
-2125 
+2207 
 ho°_fd
  = 
 	`fdt_gë_ho°_fd
@@ -101469,11 +101763,11 @@ fdt
 fd
 );
 
-2126 
+2208 
 	`sysˇŒ_debug
 (" fd=%d, offset_high=0x%x, offset_low=0x%x,Öresult=0x%x, origin=0x%x\n",
 
-2127 
+2209 
 fd
 , 
 off£t_high
@@ -101485,27 +101779,27 @@ off£t_low
 ‹igö
 );
 
-2128 
+2210 
 	`sysˇŒ_debug
 (" ho°_fd=%d\n", 
 ho°_fd
 );
 
-2129 
+2211 
 	`sysˇŒ_debug
 (" off£t=0x%Œx\n", (Ë
 off£t
 );
 
-2130 i‡(
+2212 i‡(
 off£t_high
  != -1 && offset_high)
 
-2131 
+2213 
 	`Áèl
 ("syscallÜlseek: only supported for 32-bit files");
 
-2133 
+2215 
 off£t
  = 
 	`l£ek
@@ -101517,19 +101811,19 @@ off£t_low
 ‹igö
 );
 
-2134 
+2216 
 ªtvÆ
  = 
 off£t
 ;
 
-2135 i‡(
+2217 i‡(
 ªtvÆ
  >0 && 
 ¥esu…
 ) {
 
-2136 
+2218 
 	`mem_wrôe
 (
 iß_mem
@@ -101539,15 +101833,15 @@ iß_mem
 off£t
 );
 
-2137 
+2219 
 ªtvÆ
  = 0;
 
-2144 
+2226 
 sysˇŒ_code_gëdíts
 :
 
-2146 
+2228 
 uöt32_t
  
 fd
@@ -101559,11 +101853,11 @@ cou¡
 ho°_fd
 ;
 
-2147 *
+2229 *
 buf
 ;
 
-2148 
+2230 
 ƒód
 , 
 ho°_offs
@@ -101571,63 +101865,63 @@ ho°_offs
 gue°_offs
 ;
 
-2149 
+2231 
 d_ty≥
 ;
 
-2151 
+2233 
 	slöux_dúít
  {
 
-2152 
+2234 
 d_öo
 ;
 
-2153 
+2235 
 off_t
  
 d_off
 ;
 
-2154 
+2236 
 d_ª˛í
 ;
 
-2155 
+2237 
 d_«me
 [];
 
-2156 } *
+2238 } *
 dúít
 ;
 
-2158 
+2240 
 	ssim_löux_dúít
  {
 
-2159 
+2241 
 uöt32_t
  
 d_öo
 ;
 
-2160 
+2242 
 uöt32_t
  
 d_off
 ;
 
-2161 
+2243 
 uöt16_t
  
 d_ª˛í
 ;
 
-2162 
+2244 
 d_«me
 [];
 
-2163 } 
+2245 } 
 	`__©åibuã__
 ((
 ∑cked
@@ -101635,7 +101929,7 @@ d_«me
 sim_dúít
 ;
 
-2166 
+2248 
 fd
  = 
 iß_ªgs
@@ -101643,7 +101937,7 @@ iß_ªgs
 ebx
 ;
 
-2167 
+2249 
 pdúít
  = 
 iß_ªgs
@@ -101651,7 +101945,7 @@ iß_ªgs
 ecx
 ;
 
-2168 
+2250 
 cou¡
  = 
 iß_ªgs
@@ -101659,7 +101953,7 @@ iß_ªgs
 edx
 ;
 
-2169 
+2251 
 ho°_fd
  = 
 	`fdt_gë_ho°_fd
@@ -101671,11 +101965,11 @@ fdt
 fd
 );
 
-2170 
+2252 
 	`sysˇŒ_debug
 (" fd=%d,Ödirent=0x%x, count=%d\n",
 
-2171 
+2253 
 fd
 , 
 pdúít
@@ -101683,13 +101977,13 @@ pdúít
 cou¡
 );
 
-2172 
+2254 
 	`sysˇŒ_debug
 (" ho°_fd=%d\n", 
 ho°_fd
 );
 
-2175 
+2257 
 buf
  = 
 	`ˇŒoc
@@ -101697,15 +101991,15 @@ buf
 cou¡
 );
 
-2176 i‡(!
+2258 i‡(!
 buf
 )
 
-2177 
+2259 
 	`Áèl
 ("getdents: cannotállocate buffer");
 
-2178 
+2260 
 ƒód
  = 
 	`sysˇŒ
@@ -101719,37 +102013,37 @@ buf
 cou¡
 );
 
-2181 i‡(
+2263 i‡(
 ƒód
  < 0)
 
-2182 
+2264 
 	`Áèl
 ("getdents: callÅo host system callÑeturnedÉrror");
 
-2183 i‡(!
+2265 i‡(!
 ƒód
 ) {
 
-2184 
+2266 
 ªtvÆ
  = 0;
 
-2189 
+2271 
 ho°_offs
  = 0;
 
-2190 
+2272 
 gue°_offs
  = 0;
 
-2191 
+2273 
 ho°_offs
  < 
 ƒód
 ) {
 
-2192 
+2274 
 dúít
  = (
 löux_dúít
@@ -101759,7 +102053,7 @@ buf
 ho°_offs
 );
 
-2193 
+2275 
 sim_dúít
 .
 d_öo
@@ -101767,7 +102061,7 @@ d_öo
 dúít
 ->d_ino;
 
-2194 
+2276 
 sim_dúít
 .
 d_off
@@ -101775,7 +102069,7 @@ d_off
 dúít
 ->d_off;
 
-2195 
+2277 
 sim_dúít
 .
 d_ª˛í
@@ -101787,7 +102081,7 @@ dúít
 d_«me
 )) / 4 * 4;
 
-2196 
+2278 
 d_ty≥
  = *(*Ë(
 buf
@@ -101799,7 +102093,7 @@ dúít
 d_ª˛í
  - 1);
 
-2198 
+2280 
 	`sysˇŒ_debug
 (" d_öo=%u ", 
 sim_dúít
@@ -101807,7 +102101,7 @@ sim_dúít
 d_öo
 );
 
-2199 
+2281 
 	`sysˇŒ_debug
 ("d_off=%u ", 
 sim_dúít
@@ -101815,7 +102109,7 @@ sim_dúít
 d_off
 );
 
-2200 
+2282 
 	`sysˇŒ_debug
 ("d_ª˛í=%u(ho°),%u(gue°Ë", 
 dúít
@@ -101825,7 +102119,7 @@ d_ª˛í
 sim_dúít
 .d_reclen);
 
-2201 
+2283 
 	`sysˇŒ_debug
 ("d_«me='%s'\n", 
 dúít
@@ -101833,7 +102127,7 @@ dúít
 d_«me
 );
 
-2203 
+2285 
 	`mem_wrôe
 (
 iß_mem
@@ -101847,7 +102141,7 @@ sim_dúít
 d_öo
 );
 
-2204 
+2286 
 	`mem_wrôe
 (
 iß_mem
@@ -101861,7 +102155,7 @@ sim_dúít
 d_off
 );
 
-2205 
+2287 
 	`mem_wrôe
 (
 iß_mem
@@ -101875,7 +102169,7 @@ sim_dúít
 d_ª˛í
 );
 
-2206 
+2288 
 	`mem_wrôe_°rög
 (
 iß_mem
@@ -101889,7 +102183,7 @@ dúít
 d_«me
 );
 
-2207 
+2289 
 	`mem_wrôe
 (
 iß_mem
@@ -101905,7 +102199,7 @@ d_ª˛í
 d_ty≥
 );
 
-2209 
+2291 
 ho°_offs
  +
 dúít
@@ -101913,7 +102207,7 @@ dúít
 d_ª˛í
 ;
 
-2210 
+2292 
 gue°_offs
  +
 sim_dúít
@@ -101921,17 +102215,17 @@ sim_dúít
 d_ª˛í
 ;
 
-2211 i‡(
+2293 i‡(
 gue°_offs
  > 
 cou¡
 )
 
-2212 
+2294 
 	`Áèl
 ("getdents: host bufferÅoo small");
 
-2214 
+2296 
 	`sysˇŒ_debug
 ("Ñë=%d(ho°),%d(gue°)\n", 
 ho°_offs
@@ -101939,23 +102233,23 @@ ho°_offs
 gue°_offs
 );
 
-2215 
+2297 
 	`‰ì
 (
 buf
 );
 
-2216 
+2298 
 ªtvÆ
  = 
 gue°_offs
 ;
 
-2225 
+2307 
 sysˇŒ_code_£À˘
 :
 
-2227 
+2309 
 uöt32_t
  
 n
@@ -101969,7 +102263,7 @@ exp
 tvp
 ;
 
-2228 
+2310 
 fd_£t
  
 ö
@@ -101979,19 +102273,19 @@ out
 ex
 ;
 
-2229 
+2311 
 sim_timevÆ
  
 sim_tv
 ;
 
-2230 
+2312 
 timevÆ
  
 tv
 ;
 
-2232 
+2314 
 n
  = 
 iß_ªgs
@@ -101999,7 +102293,7 @@ iß_ªgs
 ebx
 ;
 
-2233 
+2315 
 öp
  = 
 iß_ªgs
@@ -102007,7 +102301,7 @@ iß_ªgs
 ecx
 ;
 
-2234 
+2316 
 ouç
  = 
 iß_ªgs
@@ -102015,7 +102309,7 @@ iß_ªgs
 edx
 ;
 
-2235 
+2317 
 exp
  = 
 iß_ªgs
@@ -102023,7 +102317,7 @@ iß_ªgs
 esi
 ;
 
-2236 
+2318 
 tvp
  = 
 iß_ªgs
@@ -102031,11 +102325,11 @@ iß_ªgs
 edi
 ;
 
-2237 
+2319 
 	`sysˇŒ_debug
 ("Ç=%d, inp=0x%x, outp=0x%x,Éxp=0x%x,Åvp=0x%x\n",
 
-2238 
+2320 
 n
 , 
 öp
@@ -102047,7 +102341,7 @@ exp
 tvp
 );
 
-2241 i‡(!
+2323 i‡(!
 	`sim_fd_£t_ªad
 (
 öp
@@ -102057,7 +102351,7 @@ tvp
 n
 )
 
-2242 || !
+2324 || !
 	`sim_fd_£t_ªad
 (
 ouç
@@ -102067,7 +102361,7 @@ out
 n
 )
 
-2243 || !
+2325 || !
 	`sim_fd_£t_ªad
 (
 exp
@@ -102077,13 +102371,13 @@ ex
 n
 )) {
 
-2244 
+2326 
 ªtvÆ
  = -
 EBADF
 ;
 
-2249 
+2331 
 	`sim_fd_£t_dump
 ("öp", &
 ö
@@ -102091,7 +102385,7 @@ EBADF
 n
 );
 
-2250 
+2332 
 	`sim_fd_£t_dump
 ("ouç", &
 out
@@ -102099,7 +102393,7 @@ out
 n
 );
 
-2251 
+2333 
 	`sim_fd_£t_dump
 ("exp", &
 ex
@@ -102107,17 +102401,17 @@ ex
 n
 );
 
-2254 
+2336 
 	`mem£t
 (&
 sim_tv
 , 0,  (sim_tv));
 
-2255 i‡(
+2337 i‡(
 tvp
 )
 
-2256 
+2338 
 	`mem_ªad
 (
 iß_mem
@@ -102127,17 +102421,17 @@ tvp
 sim_tv
 ), &sim_tv);
 
-2257 
+2339 
 	`sysˇŒ_debug
 ("Åv:\n");
 
-2258 
+2340 
 	`sim_timevÆ_debug
 (&
 sim_tv
 );
 
-2261 i‡(
+2343 i‡(
 sim_tv
 .
 tv_£c
@@ -102145,17 +102439,17 @@ tv_£c
 tv_u£c
 )
 
-2262 
+2344 
 	`Áèl
 ("syscall 'select':Çot supported for 'tv' otherÅhan 0");
 
-2265 
+2347 
 	`mem£t
 (&
 tv
 , 0,  (tv));
 
-2266 
+2348 
 	`RETVAL
 (
 	`£À˘
@@ -102171,11 +102465,11 @@ ex
 tv
 ));
 
-2267 i‡(
+2349 i‡(
 ªtvÆ
  < 0)
 
-2271 
+2353 
 	`sim_fd_£t_wrôe
 (
 öp
@@ -102185,7 +102479,7 @@ tv
 n
 );
 
-2272 
+2354 
 	`sim_fd_£t_wrôe
 (
 ouç
@@ -102195,7 +102489,7 @@ out
 n
 );
 
-2273 
+2355 
 	`sim_fd_£t_wrôe
 (
 exp
@@ -102205,11 +102499,11 @@ ex
 n
 );
 
-2279 
+2361 
 sysˇŒ_code_msync
 :
 
-2281 
+2363 
 uöt32_t
  
 °¨t
@@ -102219,13 +102513,13 @@ uöt32_t
 Êags
 ;
 
-2282 
+2364 
 sÊags
 [
 MAX_STRING_SIZE
 ];
 
-2285 
+2367 
 °¨t
  = 
 iß_ªgs
@@ -102233,7 +102527,7 @@ iß_ªgs
 ebx
 ;
 
-2286 
+2368 
 Àn
  = 
 iß_ªgs
@@ -102241,7 +102535,7 @@ iß_ªgs
 ecx
 ;
 
-2287 
+2369 
 Êags
  = 
 iß_ªgs
@@ -102249,7 +102543,7 @@ iß_ªgs
 edx
 ;
 
-2288 
+2370 
 	`m≠_Êags
 (&
 msync_Êags_m≠
@@ -102261,11 +102555,11 @@ sÊags
 MAX_STRING_SIZE
 );
 
-2289 
+2371 
 	`sysˇŒ_debug
 (" start=0x%x,Üen=0x%x, flags=0x%x\n",
 
-2290 
+2372 
 °¨t
 , 
 Àn
@@ -102273,33 +102567,33 @@ MAX_STRING_SIZE
 Êags
 );
 
-2291 
+2373 
 	`sysˇŒ_debug
 (" fœgs=%s\n", 
 sÊags
 );
 
-2294 
+2376 
 	`w¨nög
 ("syscall 'msync' ignored");
 
-2300 
+2382 
 sysˇŒ_code_wrôev
 :
 
-2302 
+2384 
 gue°_fd
 , 
 ho°_fd
 ;
 
-2303 
+2385 
 fd_t
  *
 fd
 ;
 
-2304 
+2386 
 uöt32_t
  
 piovec
@@ -102307,7 +102601,7 @@ piovec
 vÀn
 ;
 
-2305 
+2387 
 uöt32_t
  
 iov_ba£
@@ -102315,17 +102609,17 @@ iov_ba£
 iov_Àn
 ;
 
-2306 *
+2388 *
 buf
 ;
 
-2307 
+2389 
 v
 , 
 Àngth
 ;
 
-2309 
+2391 
 gue°_fd
  = 
 iß_ªgs
@@ -102333,7 +102627,7 @@ iß_ªgs
 ebx
 ;
 
-2310 
+2392 
 piovec
  = 
 iß_ªgs
@@ -102341,7 +102635,7 @@ iß_ªgs
 ecx
 ;
 
-2311 
+2393 
 vÀn
  = 
 iß_ªgs
@@ -102349,11 +102643,11 @@ iß_ªgs
 edx
 ;
 
-2312 
+2394 
 	`sysˇŒ_debug
 (" guest_fd=%d,Öiovec = 0x%x, vlen=0x%x\n",
 
-2313 
+2395 
 gue°_fd
 , 
 piovec
@@ -102361,7 +102655,7 @@ piovec
 vÀn
 );
 
-2317 
+2399 
 fd
  = 
 	`fdt_íåy_gë
@@ -102373,29 +102667,29 @@ fdt
 gue°_fd
 );
 
-2318 i‡(!
+2400 i‡(!
 fd
 ) {
 
-2319 
+2401 
 î∫o
  = -
 EBADF
 ;
 
-2322 
+2404 
 ho°_fd
  = 
 fd
 ->host_fd;
 
-2323 
+2405 
 	`sysˇŒ_debug
 (" ho°_fd=%d\n", 
 ho°_fd
 );
 
-2324 i‡(
+2406 i‡(
 fd
 ->
 köd
@@ -102403,17 +102697,17 @@ köd
 fd_köd_pùe
 )
 
-2325 
+2407 
 	`Áèl
 ("syscall writev:Çot supported forÖipes");
 
-2328 
+2410 
 v
  = 0; v < 
 vÀn
 ; v++) {
 
-2331 
+2413 
 	`mem_ªad
 (
 iß_mem
@@ -102423,7 +102717,7 @@ piovec
 iov_ba£
 );
 
-2332 
+2414 
 	`mem_ªad
 (
 iß_mem
@@ -102433,11 +102727,11 @@ piovec
 iov_Àn
 );
 
-2333 
+2415 
 piovec
  += 8;
 
-2336 
+2418 
 buf
  = 
 	`mÆloc
@@ -102445,7 +102739,7 @@ buf
 iov_Àn
 );
 
-2337 
+2419 
 	`mem_ªad
 (
 iß_mem
@@ -102457,7 +102751,7 @@ iov_Àn
 buf
 );
 
-2338 
+2420 
 Àngth
  = 
 	`wrôe
@@ -102469,97 +102763,97 @@ buf
 iov_Àn
 );
 
-2339 
+2421 
 	`‰ì
 (
 buf
 );
 
-2342 
+2424 
 ªtvÆ
  +
 Àngth
 ;
 
-2343 i‡(
+2425 i‡(
 Àngth
  < 0) {
 
-2344 
+2426 
 ªtvÆ
  = -1;
 
-2353 
+2435 
 sysˇŒ_code_sys˘l
 :
 
-2355 
+2437 
 uöt32_t
  
 ∑rgs
 ;
 
-2357 
+2439 
 	ssys˘l_¨gs_t
  {
 
-2358 
+2440 
 uöt32_t
  
 ≤ame
 ;
 
-2359 
+2441 
 uöt32_t
  
 ∆í
 ;
 
-2360 
+2442 
 uöt32_t
  
 pﬁdvÆ
 ;
 
-2361 
+2443 
 uöt32_t
  
 ﬁdÀ≈
 ;
 
-2362 
+2444 
 uöt32_t
  
 ≤ewvÆ
 ;
 
-2363 
+2445 
 uöt32_t
  
 √wÀn
 ;
 
-2364 } 
+2446 } 
 ¨gs
 ;
 
-2365 
+2447 
 i
 ;
 
-2366 
+2448 
 uöt32_t
  
 aux
 ;
 
-2367 
+2449 
 uöt32_t
  
 zîo
  = 0;
 
-2369 
+2451 
 ∑rgs
  = 
 iß_ªgs
@@ -102567,13 +102861,13 @@ iß_ªgs
 ebx
 ;
 
-2370 
+2452 
 	`sysˇŒ_debug
 ("Ö¨gs=0x%x\n", 
 ∑rgs
 );
 
-2371 
+2453 
 	`mem_ªad
 (
 iß_mem
@@ -102585,7 +102879,7 @@ sys˘l_¨gs_t
 ¨gs
 );
 
-2372 
+2454 
 	`sysˇŒ_debug
 ("Ö«me=0x%x\n", 
 ¨gs
@@ -102593,7 +102887,7 @@ sys˘l_¨gs_t
 ≤ame
 );
 
-2373 
+2455 
 	`sysˇŒ_debug
 ("ÇÀn=%d\¿ ", 
 ¨gs
@@ -102601,7 +102895,7 @@ sys˘l_¨gs_t
 ∆í
 );
 
-2374 
+2456 
 i
  = 0; i < 
 ¨gs
@@ -102609,7 +102903,7 @@ i
 ∆í
 ; i++) {
 
-2375 
+2457 
 	`mem_ªad
 (
 iß_mem
@@ -102623,7 +102917,7 @@ i
 aux
 );
 
-2376 
+2458 
 	`sysˇŒ_debug
 ("«me[%d]=%d ", 
 i
@@ -102631,7 +102925,7 @@ i
 aux
 );
 
-2378 
+2460 
 	`sysˇŒ_debug
 ("\¿ÖﬁdvÆ=0x%x\n", 
 ¨gs
@@ -102639,7 +102933,7 @@ aux
 pﬁdvÆ
 );
 
-2379 
+2461 
 	`sysˇŒ_debug
 (" oldÀ≈=0x%x\n", 
 ¨gs
@@ -102647,7 +102941,7 @@ pﬁdvÆ
 ﬁdÀ≈
 );
 
-2380 
+2462 
 	`sysˇŒ_debug
 ("Ö√wvÆ=0x%x\n", 
 ¨gs
@@ -102655,7 +102949,7 @@ pﬁdvÆ
 ≤ewvÆ
 );
 
-2381 
+2463 
 	`sysˇŒ_debug
 ("ÇewÀn=%d\n", 
 ¨gs
@@ -102663,11 +102957,11 @@ pﬁdvÆ
 √wÀn
 );
 
-2382 
+2464 
 	`w¨nög
 ("syscall sysctl:Öartially supportedándÇot debugged");
 
-2384 i‡(!
+2466 i‡(!
 ¨gs
 .
 ﬁdÀ≈
@@ -102675,11 +102969,11 @@ pﬁdvÆ
 pﬁdvÆ
 )
 
-2385 
+2467 
 	`Áèl
 ("syscall sysctl:Çot supported forÖoldval=0 or oldlenp=0");
 
-2386 i‡(
+2468 i‡(
 ¨gs
 .
 ≤ewvÆ
@@ -102687,11 +102981,11 @@ pﬁdvÆ
 √wÀn
 )
 
-2387 
+2469 
 	`Áèl
 ("syscall sysctl:Çot supported forÖnewval orÇewlen otherÅhan 0");
 
-2389 
+2471 
 	`mem_wrôe
 (
 iß_mem
@@ -102703,7 +102997,7 @@ iß_mem
 zîo
 );
 
-2390 
+2472 
 	`mem_wrôe
 (
 iß_mem
@@ -102715,11 +103009,11 @@ pﬁdvÆ
 zîo
 );
 
-2396 
+2478 
 sysˇŒ_code_sched_£ç¨am
 :
 
-2398 
+2480 
 uöt32_t
  
 pid
@@ -102727,13 +103021,13 @@ pid
 µ¨am
 ;
 
-2399 
+2481 
 uöt32_t
  
 sched_¥i‹ôy
 ;
 
-2401 
+2483 
 pid
  = 
 iß_ªgs
@@ -102741,7 +103035,7 @@ iß_ªgs
 ebx
 ;
 
-2402 
+2484 
 µ¨am
  = 
 iß_ªgs
@@ -102749,19 +103043,19 @@ iß_ªgs
 ecx
 ;
 
-2403 
+2485 
 	`sysˇŒ_debug
 ("Öid=%d\n", 
 pid
 );
 
-2404 
+2486 
 	`sysˇŒ_debug
 ("Ö∑øm=0x%x\n", 
 µ¨am
 );
 
-2405 
+2487 
 	`mem_ªad
 (
 iß_mem
@@ -102771,17 +103065,17 @@ iß_mem
 sched_¥i‹ôy
 );
 
-2406 
+2488 
 	`sysˇŒ_debug
 ("Ö¨am.sched_¥i‹ôy=%d\n", 
 sched_¥i‹ôy
 );
 
-2414 
+2496 
 sysˇŒ_code_sched_gë∑øm
 :
 
-2416 
+2498 
 uöt32_t
  
 pid
@@ -102789,13 +103083,13 @@ pid
 µ¨am
 ;
 
-2417 
+2499 
 uöt32_t
  
 zîo
  = 0;
 
-2419 
+2501 
 pid
  = 
 iß_ªgs
@@ -102803,7 +103097,7 @@ iß_ªgs
 ebx
 ;
 
-2420 
+2502 
 µ¨am
  = 
 iß_ªgs
@@ -102811,19 +103105,19 @@ iß_ªgs
 ecx
 ;
 
-2421 
+2503 
 	`sysˇŒ_debug
 ("Öid=%d\n", 
 pid
 );
 
-2422 
+2504 
 	`sysˇŒ_debug
 ("Ö∑øm=0x%x\n", 
 µ¨am
 );
 
-2425 
+2507 
 	`mem_wrôe
 (
 iß_mem
@@ -102833,17 +103127,17 @@ iß_mem
 zîo
 );
 
-2431 
+2513 
 sysˇŒ_code_sched_gëscheduÀr
 :
 
-2433 
+2515 
 uöt32_t
  
 pid
 ;
 
-2435 
+2517 
 pid
  = 
 iß_ªgs
@@ -102851,23 +103145,23 @@ iß_ªgs
 ebx
 ;
 
-2436 
+2518 
 	`sysˇŒ_debug
 ("Öid=%d\n", 
 pid
 );
 
-2442 
+2524 
 sysˇŒ_code_sched_gë_¥i‹ôy_max
 :
 
-2444 
+2526 
 uöt32_t
  
 pﬁicy
 ;
 
-2446 
+2528 
 pﬁicy
  = 
 iß_ªgs
@@ -102875,45 +103169,45 @@ iß_ªgs
 ebx
 ;
 
-2447 
+2529 
 	`sysˇŒ_debug
 ("Öﬁicy=%d\n", 
 pﬁicy
 );
 
-2449 
+2531 
 pﬁicy
 ) {
 
-2450 0: 
+2532 0: 
 ªtvÆ
  = 0;
 
-2452 1: 
+2534 1: 
 ªtvÆ
  = 99;
 
-2454 2: 
+2536 2: 
 ªtvÆ
  = 99;
 
-2456 : 
+2538 : 
 	`Áèl
 ("sysˇŒ 'sched_gë_¥i‹ôy_max'ÇŸ im∂emíãd f‹Öﬁicy=%d", 
 pﬁicy
 );
 
-2463 
+2545 
 sysˇŒ_code_sched_gë_¥i‹ôy_mö
 :
 
-2465 
+2547 
 uöt32_t
  
 pﬁicy
 ;
 
-2467 
+2549 
 pﬁicy
  = 
 iß_ªgs
@@ -102921,39 +103215,39 @@ iß_ªgs
 ebx
 ;
 
-2468 
+2550 
 	`sysˇŒ_debug
 ("Öﬁicy=%d\n", 
 pﬁicy
 );
 
-2470 
+2552 
 pﬁicy
 ) {
 
-2471 0: 
+2553 0: 
 ªtvÆ
  = 0;
 
-2473 1: 
+2555 1: 
 ªtvÆ
  = 1;
 
-2475 2: 
+2557 2: 
 ªtvÆ
  = 1;
 
-2477 : 
+2559 : 
 	`Áèl
 ("sysˇŒ 'sched_gë_¥i‹ôy_mö'ÇŸ im∂emíãd f‹Öﬁicy=%d", 
 pﬁicy
 );
 
-2484 
+2566 
 sysˇŒ_code_«no¶ìp
 :
 
-2486 
+2568 
 uöt32_t
  
 rqç
@@ -102961,7 +103255,7 @@ rqç
 rmç
 ;
 
-2487 
+2569 
 uöt32_t
  
 £c
@@ -102969,13 +103263,13 @@ uöt32_t
 n£c
 ;
 
-2488 
+2570 
 uöt64_t
  
 tŸÆ
 ;
 
-2490 
+2572 
 rqç
  = 
 iß_ªgs
@@ -102983,7 +103277,7 @@ iß_ªgs
 ebx
 ;
 
-2491 
+2573 
 rmç
  = 
 iß_ªgs
@@ -102991,7 +103285,7 @@ iß_ªgs
 ecx
 ;
 
-2492 
+2574 
 	`sysˇŒ_debug
 ("Ñqç=0x%x,Ñmç=0x%x\n", 
 rqç
@@ -102999,7 +103293,7 @@ rqç
 rmç
 );
 
-2494 
+2576 
 	`mem_ªad
 (
 iß_mem
@@ -103009,7 +103303,7 @@ rqç
 £c
 );
 
-2495 
+2577 
 	`mem_ªad
 (
 iß_mem
@@ -103019,7 +103313,7 @@ rqç
 n£c
 );
 
-2496 
+2578 
 tŸÆ
  = (
 uöt64_t
@@ -103029,13 +103323,13 @@ uöt64_t
 n£c
  / 1000);
 
-2497 
+2579 
 	`sysˇŒ_debug
 (" sÀïÅimê(us): %Œd\n", (Ë
 tŸÆ
 );
 
-2498 
+2580 
 iß_˘x
 ->
 wakeup_time
@@ -103045,7 +103339,7 @@ wakeup_time
 tŸÆ
 ;
 
-2501 
+2583 
 	`˘x_£t_°©us
 (
 iß_˘x
@@ -103055,15 +103349,15 @@ iß_˘x
 ˘x_«no¶ìp
 );
 
-2502 
+2584 
 	`ke_¥o˚ss_evíts_scheduÀ
 ();
 
-2508 
+2590 
 sysˇŒ_code_mªm≠
 :
 
-2510 
+2592 
 uöt32_t
  
 addr
@@ -103075,13 +103369,13 @@ addr
 Êags
 ;
 
-2511 
+2593 
 uöt32_t
  
 √w_addr
 ;
 
-2513 
+2595 
 addr
  = 
 iß_ªgs
@@ -103089,7 +103383,7 @@ iß_ªgs
 ebx
 ;
 
-2514 
+2596 
 ﬁd_Àn
  = 
 iß_ªgs
@@ -103097,7 +103391,7 @@ iß_ªgs
 ecx
 ;
 
-2515 
+2597 
 √w_Àn
  = 
 iß_ªgs
@@ -103105,7 +103399,7 @@ iß_ªgs
 edx
 ;
 
-2516 
+2598 
 Êags
  = 
 iß_ªgs
@@ -103113,11 +103407,11 @@ iß_ªgs
 esi
 ;
 
-2517 
+2599 
 	`sysˇŒ_debug
 ("áddr=0x%x, old_len=0x%x,Çew_len=0x%x flags=0x%x\n",
 
-2518 
+2600 
 addr
 , 
 ﬁd_Àn
@@ -103127,7 +103421,7 @@ addr
 Êags
 );
 
-2521 
+2603 
 	`as£π
 (!(
 addr
@@ -103135,7 +103429,7 @@ addr
 MEM_PAGESIZE
  - 1)));
 
-2522 
+2604 
 	`as£π
 (!(
 ﬁd_Àn
@@ -103143,7 +103437,7 @@ MEM_PAGESIZE
 MEM_PAGESIZE
  - 1)));
 
-2523 
+2605 
 	`as£π
 (!(
 √w_Àn
@@ -103151,43 +103445,43 @@ MEM_PAGESIZE
 MEM_PAGESIZE
  - 1)));
 
-2524 i‡(!(
+2606 i‡(!(
 Êags
  & 0x1))
 
-2525 
+2607 
 	`Áèl
 ("syscall mremap: flags MAP_MAYMOVE must beÖresent");
 
-2526 i‡(!
+2608 i‡(!
 ﬁd_Àn
  || !
 √w_Àn
 )
 
-2527 
+2609 
 	`Áèl
 ("syscall mremap: old_len orÇew_len cannot be zero");
 
-2528 
+2610 
 ªtvÆ
  = 
 addr
 ;
 
-2531 i‡(
+2613 i‡(
 √w_Àn
  =
 ﬁd_Àn
 )
 
-2535 i‡(
+2617 i‡(
 √w_Àn
  < 
 ﬁd_Àn
 ) {
 
-2536 
+2618 
 	`mem_unm≠
 (
 iß_mem
@@ -103199,13 +103493,13 @@ addr
 ﬁd_Àn
  -Çew_len);
 
-2542 i‡(
+2624 i‡(
 √w_Àn
  > 
 ﬁd_Àn
  &&
 
-2543 
+2625 
 	`mem_m≠_•a˚
 (
 iß_mem
@@ -103217,7 +103511,7 @@ addr
 √w_Àn
  - old_len) ==áddr + old_len) {
 
-2544 
+2626 
 	`mem_m≠
 (
 iß_mem
@@ -103229,13 +103523,13 @@ addr
 √w_Àn
  - old_len,
 
-2545 
+2627 
 mem_ac˚ss_ªad
  | 
 mem_ac˚ss_wrôe
 );
 
-2550 
+2632 
 √w_addr
  = 
 	`mem_m≠_•a˚_down
@@ -103247,17 +103541,17 @@ MMAP_BASE_ADDRESS
 √w_Àn
 );
 
-2551 i‡(
+2633 i‡(
 √w_addr
  =(
 uöt32_t
 ) - 1)
 
-2552 
+2634 
 	`Áèl
 ("syscall mremap: out of memory");
 
-2553 
+2635 
 	`mem_m≠
 (
 iß_mem
@@ -103267,13 +103561,13 @@ iß_mem
 √w_Àn
 ,
 
-2554 
+2636 
 mem_ac˚ss_ªad
  | 
 mem_ac˚ss_wrôe
 );
 
-2555 
+2637 
 	`mem_c›y
 (
 iß_mem
@@ -103289,7 +103583,7 @@ addr
 √w_Àn
 ));
 
-2556 
+2638 
 	`mem_unm≠
 (
 iß_mem
@@ -103299,17 +103593,17 @@ addr
 ﬁd_Àn
 );
 
-2557 
+2639 
 ªtvÆ
  = 
 √w_addr
 ;
 
-2563 
+2645 
 sysˇŒ_code_pﬁl
 :
 
-2565 
+2647 
 uöt32_t
  
 pfds
@@ -103317,7 +103611,7 @@ pfds
 nfds
 ;
 
-2566 
+2648 
 timeout
 , 
 gue°_fd
@@ -103325,31 +103619,31 @@ gue°_fd
 ho°_fd
 ;
 
-2567 
+2649 
 sim_pﬁlfd
  
 gue°_fds
 ;
 
-2568 
+2650 
 pﬁlfd
  
 ho°_fds
 ;
 
-2569 
+2651 
 £víts
 [
 MAX_STRING_SIZE
 ];
 
-2570 
+2652 
 fd_t
  *
 fd
 ;
 
-2572 
+2654 
 pfds
  = 
 iß_ªgs
@@ -103357,7 +103651,7 @@ iß_ªgs
 ebx
 ;
 
-2573 
+2655 
 nfds
  = 
 iß_ªgs
@@ -103365,7 +103659,7 @@ iß_ªgs
 ecx
 ;
 
-2574 
+2656 
 timeout
  = 
 iß_ªgs
@@ -103373,11 +103667,11 @@ iß_ªgs
 edx
 ;
 
-2575 
+2657 
 	`sysˇŒ_debug
 ("Öfds=0x%x,Çfds=%d,Åimeout=%d\n",
 
-2576 
+2658 
 pfds
 , 
 nfds
@@ -103385,21 +103679,21 @@ nfds
 timeout
 );
 
-2577 i‡(
+2659 i‡(
 nfds
  != 1)
 
-2578 
+2660 
 	`Áèl
 ("syscallÖoll:Çot suported forÇfds != 1");
 
-2579 
+2661 
 	`as£π
 ( (
 sim_pﬁlfd
 ) == 8);
 
-2580 
+2662 
 	`as£π
 (
 POLLIN
@@ -103407,7 +103701,7 @@ POLLIN
 POLLOUT
  == 4);
 
-2583 
+2665 
 	`mem_ªad
 (
 iß_mem
@@ -103419,7 +103713,7 @@ sim_pﬁlfd
 gue°_fds
 );
 
-2584 
+2666 
 gue°_fd
  = 
 gue°_fds
@@ -103427,7 +103721,7 @@ gue°_fds
 fd
 ;
 
-2585 
+2667 
 	`m≠_Êags
 (&
 pﬁl_evít_m≠
@@ -103441,7 +103735,7 @@ evíts
 MAX_STRING_SIZE
 );
 
-2586 
+2668 
 	`sysˇŒ_debug
 (" gue°_fd=%d,Évíts=%s\n", 
 gue°_fd
@@ -103449,7 +103743,7 @@ gue°_fd
 £víts
 );
 
-2589 
+2671 
 fd
  = 
 	`fdt_íåy_gë
@@ -103461,49 +103755,49 @@ fdt
 gue°_fd
 );
 
-2590 i‡(!
+2672 i‡(!
 fd
 ) {
 
-2591 
+2673 
 ªtvÆ
  = -
 EBADF
 ;
 
-2594 
+2676 
 ho°_fd
  = 
 fd
 ->host_fd;
 
-2595 
+2677 
 	`sysˇŒ_debug
 (" ho°_fd=%d\n", 
 ho°_fd
 );
 
-2598 i‡(
+2680 i‡(
 gue°_fds
 .
 evíts
  & ~0x5)
 
-2599 
+2681 
 	`Áèl
 ("syscallÖoll: only POLLINánd POLLOUTÉvents supported");
 
-2602 i‡(
+2684 i‡(
 fd
 ->
 ho°_fd
  < 0)
 
-2603 
+2685 
 	`Áèl
 ("syscall 'poll':Çot supported file descriptor");
 
-2607 
+2689 
 ho°_fds
 .
 fd
@@ -103511,7 +103805,7 @@ fd
 ho°_fd
 ;
 
-2608 
+2690 
 ho°_fds
 .
 evíts
@@ -103521,7 +103815,7 @@ gue°_fds
 POLLIN
  : 0) |
 
-2609 ((
+2691 ((
 gue°_fds
 .
 evíts
@@ -103529,7 +103823,7 @@ evíts
 POLLOUT
  : 0);
 
-2610 
+2692 
 	`RETVAL
 (
 	`pﬁl
@@ -103537,15 +103831,15 @@ POLLOUT
 ho°_fds
 , 1, 0));
 
-2611 i‡(
+2693 i‡(
 ªtvÆ
  < 0)
 
-2616 i‡(
+2698 i‡(
 ªtvÆ
  > 0) {
 
-2619 i‡(
+2701 i‡(
 gue°_fds
 .
 evíts
@@ -103557,11 +103851,11 @@ ho°_fds
 POLLOUT
 ) {
 
-2620 
+2702 
 	`sysˇŒ_debug
 ("Çon-blocking writeÅo file guaranteed\n");
 
-2621 
+2703 
 gue°_fds
 .
 ªvíts
@@ -103569,7 +103863,7 @@ gue°_fds
 POLLOUT
 ;
 
-2622 
+2704 
 	`mem_wrôe
 (
 iß_mem
@@ -103581,11 +103875,11 @@ sim_pﬁlfd
 gue°_fds
 );
 
-2623 
+2705 
 ªtvÆ
  = 1;
 
-2628 i‡(
+2710 i‡(
 gue°_fds
 .
 evíts
@@ -103597,11 +103891,11 @@ ho°_fds
 POLLIN
 ) {
 
-2629 
+2711 
 	`sysˇŒ_debug
 ("Çon-blockingÑead from file guaranteed\n");
 
-2630 
+2712 
 gue°_fds
 .
 ªvíts
@@ -103609,7 +103903,7 @@ gue°_fds
 POLLIN
 ;
 
-2631 
+2713 
 	`mem_wrôe
 (
 iß_mem
@@ -103621,29 +103915,29 @@ sim_pﬁlfd
 gue°_fds
 );
 
-2632 
+2714 
 ªtvÆ
  = 1;
 
-2637 
+2719 
 	`ab‹t
 ();
 
-2642 
+2724 
 	`sysˇŒ_debug
 ("Örocess goingÅo sleep waiting forÉvents on file\n");
 
-2643 
+2725 
 iß_˘x
 ->
 wakeup_time
  = 0;
 
-2644 i‡(
+2726 i‡(
 timeout
  >= 0)
 
-2645 
+2727 
 iß_˘x
 ->
 wakeup_time
@@ -103655,7 +103949,7 @@ uöt64_t
 timeout
  * 1000;
 
-2646 
+2728 
 iß_˘x
 ->
 wakeup_fd
@@ -103663,7 +103957,7 @@ wakeup_fd
 gue°_fd
 ;
 
-2647 
+2729 
 iß_˘x
 ->
 wakeup_evíts
@@ -103673,7 +103967,7 @@ gue°_fds
 evíts
 ;
 
-2648 
+2730 
 	`˘x_£t_°©us
 (
 iß_˘x
@@ -103683,15 +103977,15 @@ iß_˘x
 ˘x_pﬁl
 );
 
-2649 
+2731 
 	`ke_¥o˚ss_evíts_scheduÀ
 ();
 
-2655 
+2737 
 sysˇŒ_code_π_siga˘i⁄
 :
 
-2657 
+2739 
 uöt32_t
  
 sig
@@ -103703,13 +103997,13 @@ pﬂ˘
 sig£tsize
 ;
 
-2658 
+2740 
 sim_siga˘i⁄
  
 a˘
 ;
 
-2660 
+2742 
 sig
  = 
 iß_ªgs
@@ -103717,7 +104011,7 @@ iß_ªgs
 ebx
 ;
 
-2661 
+2743 
 ∑˘
  = 
 iß_ªgs
@@ -103725,7 +104019,7 @@ iß_ªgs
 ecx
 ;
 
-2662 
+2744 
 pﬂ˘
  = 
 iß_ªgs
@@ -103733,7 +104027,7 @@ iß_ªgs
 edx
 ;
 
-2663 
+2745 
 sig£tsize
  = 
 iß_ªgs
@@ -103741,11 +104035,11 @@ iß_ªgs
 esi
 ;
 
-2664 
+2746 
 	`sysˇŒ_debug
 (" sig=%d,Öact=0x%x,Öoact=0x%x, sigsetsize=0x%x\n",
 
-2665 
+2747 
 sig
 , 
 ∑˘
@@ -103755,7 +104049,7 @@ pﬂ˘
 sig£tsize
 );
 
-2666 
+2748 
 	`sysˇŒ_debug
 (" sig«l=%s\n", 
 	`sim_sig«l_«me
@@ -103763,21 +104057,21 @@ sig£tsize
 sig
 ));
 
-2669 i‡(
+2751 i‡(
 sig
  < 1 || sig > 64)
 
-2670 
+2752 
 	`Áèl
 ("sysˇŒÑt_siga˘i⁄: invÆid sig«»(%d)", 
 sig
 );
 
-2673 i‡(
+2755 i‡(
 ∑˘
 ) {
 
-2674 
+2756 
 	`mem_ªad
 (
 iß_mem
@@ -103787,13 +104081,13 @@ iß_mem
 a˘
 ), &act);
 
-2675 i‡(
+2757 i‡(
 	`debug_°©us
 (
 sysˇŒ_debug_ˇãg‹y
 )) {
 
-2676 
+2758 
 FILE
  *
 f
@@ -103803,11 +104097,11 @@ f
 sysˇŒ_debug_ˇãg‹y
 );
 
-2677 
+2759 
 	`sysˇŒ_debug
 ("áct: ");
 
-2678 
+2760 
 	`sim_siga˘i⁄_dump
 (&
 a˘
@@ -103815,11 +104109,11 @@ a˘
 f
 );
 
-2679 
+2761 
 	`sysˇŒ_debug
 ("\n flags: ");
 
-2680 
+2762 
 	`sim_siga˘i⁄_Êags_dump
 (
 a˘
@@ -103829,11 +104123,11 @@ a˘
 f
 );
 
-2681 
+2763 
 	`sysˇŒ_debug
 ("\n mask: ");
 
-2682 
+2764 
 	`sim_sig£t_dump
 (
 a˘
@@ -103843,15 +104137,15 @@ mask
 f
 );
 
-2683 
+2765 
 	`sysˇŒ_debug
 ("\n");
 
-2688 i‡(
+2770 i‡(
 pﬂ˘
 ) {
 
-2689 
+2771 
 	`mem_wrôe
 (
 iß_mem
@@ -103861,7 +104155,7 @@ pﬂ˘
 sim_siga˘i⁄
 ),
 
-2690 &
+2772 &
 iß_˘x
 ->
 sig«l_h™dÀrs
@@ -103871,11 +104165,11 @@ siga˘i⁄
 sig
  - 1]);
 
-2694 i‡(
+2776 i‡(
 ∑˘
 )
 
-2695 
+2777 
 iß_˘x
 ->
 sig«l_h™dÀrs
@@ -103887,11 +104181,11 @@ sig
 a˘
 ;
 
-2702 
+2784 
 sysˇŒ_code_π_sig¥ocmask
 :
 
-2704 
+2786 
 uöt32_t
  
 how
@@ -103903,7 +104197,7 @@ po£t
 sig£tsize
 ;
 
-2705 
+2787 
 uöt64_t
  
 £t
@@ -103911,7 +104205,7 @@ uöt64_t
 o£t
 ;
 
-2707 
+2789 
 how
  = 
 iß_ªgs
@@ -103919,7 +104213,7 @@ iß_ªgs
 ebx
 ;
 
-2708 
+2790 
 p£t
  = 
 iß_ªgs
@@ -103927,7 +104221,7 @@ iß_ªgs
 ecx
 ;
 
-2709 
+2791 
 po£t
  = 
 iß_ªgs
@@ -103935,7 +104229,7 @@ iß_ªgs
 edx
 ;
 
-2710 
+2792 
 sig£tsize
  = 
 iß_ªgs
@@ -103943,11 +104237,11 @@ iß_ªgs
 esi
 ;
 
-2711 
+2793 
 	`sysˇŒ_debug
 (" how=0x%x,Öset=0x%x,Öoset=0x%x, sigsetsize=0x%x\n",
 
-2712 
+2794 
 how
 , 
 p£t
@@ -103957,7 +104251,7 @@ po£t
 sig£tsize
 );
 
-2713 
+2795 
 	`sysˇŒ_debug
 (" how=%s\n", 
 	`m≠_vÆue
@@ -103967,7 +104261,7 @@ sig¥ocmask_how_m≠
 how
 ));
 
-2716 
+2798 
 o£t
  = 
 iß_˘x
@@ -103977,11 +104271,11 @@ sig«l_masks
 blocked
 ;
 
-2719 i‡(
+2801 i‡(
 p£t
 ) {
 
-2722 
+2804 
 	`mem_ªad
 (
 iß_mem
@@ -103991,19 +104285,19 @@ p£t
 £t
 );
 
-2723 i‡(
+2805 i‡(
 	`debug_°©us
 (
 sysˇŒ_debug_ˇãg‹y
 )) {
 
-2724 
+2806 
 	`sysˇŒ_debug
 (" së=0x%Œx ", (Ë
 £t
 );
 
-2725 
+2807 
 	`sim_sig£t_dump
 (
 £t
@@ -104013,15 +104307,15 @@ sysˇŒ_debug_ˇãg‹y
 sysˇŒ_debug_ˇãg‹y
 ));
 
-2726 
+2808 
 	`sysˇŒ_debug
 ("\n");
 
-2730 
+2812 
 how
 ) {
 
-2732 
+2814 
 iß_˘x
 ->
 sig«l_masks
@@ -104031,7 +104325,7 @@ blocked
 £t
 ;
 
-2735 
+2817 
 iß_˘x
 ->
 sig«l_masks
@@ -104041,7 +104335,7 @@ blocked
 £t
 ;
 
-2738 
+2820 
 iß_˘x
 ->
 sig«l_masks
@@ -104051,15 +104345,15 @@ blocked
 £t
 ;
 
-2741 
+2823 
 	`Áèl
 ("syscallÑt_sigprocmask: wrong how value");
 
-2746 i‡(
+2828 i‡(
 po£t
 )
 
-2747 
+2829 
 	`mem_wrôe
 (
 iß_mem
@@ -104069,19 +104363,19 @@ po£t
 o£t
 );
 
-2751 
+2833 
 	`ke_¥o˚ss_evíts_scheduÀ
 ();
 
-2752 
+2834 
 	`ke_¥o˚ss_evíts
 ();
 
-2759 
+2841 
 sysˇŒ_code_π_sigsu•íd
 :
 
-2761 
+2843 
 uöt32_t
  
 ≤ew£t
@@ -104089,13 +104383,13 @@ uöt32_t
 sig£tsize
 ;
 
-2762 
+2844 
 uöt64_t
  
 √w£t
 ;
 
-2764 
+2846 
 ≤ew£t
  = 
 iß_ªgs
@@ -104103,7 +104397,7 @@ iß_ªgs
 ebx
 ;
 
-2765 
+2847 
 sig£tsize
  = 
 iß_ªgs
@@ -104111,17 +104405,17 @@ iß_ªgs
 ecx
 ;
 
-2766 
+2848 
 	`sysˇŒ_debug
 ("Önewset=0x%x, sigsetsize=0x%x\n",
 
-2767 
+2849 
 ≤ew£t
 , 
 sig£tsize
 );
 
-2770 
+2852 
 	`mem_ªad
 (
 iß_mem
@@ -104131,13 +104425,13 @@ iß_mem
 √w£t
 );
 
-2771 i‡(
+2853 i‡(
 	`debug_°©us
 (
 sysˇŒ_debug_ˇãg‹y
 )) {
 
-2772 
+2854 
 FILE
  *
 f
@@ -104147,11 +104441,11 @@ f
 sysˇŒ_debug_ˇãg‹y
 );
 
-2773 
+2855 
 	`sysˇŒ_debug
 (" old mask: ");
 
-2774 
+2856 
 	`sim_sig£t_dump
 (
 iß_˘x
@@ -104163,11 +104457,11 @@ blocked
 f
 );
 
-2775 
+2857 
 	`sysˇŒ_debug
 ("\nÇew mask: ");
 
-2776 
+2858 
 	`sim_sig£t_dump
 (
 √w£t
@@ -104175,11 +104469,11 @@ f
 f
 );
 
-2777 
+2859 
 	`sysˇŒ_debug
 ("\nÖending: ");
 
-2778 
+2860 
 	`sim_sig£t_dump
 (
 iß_˘x
@@ -104191,11 +104485,11 @@ sig«l_masks
 f
 );
 
-2779 
+2861 
 	`sysˇŒ_debug
 ("\n");
 
-2783 
+2865 
 iß_˘x
 ->
 sig«l_masks
@@ -104205,7 +104499,7 @@ backup
 blocked
 ;
 
-2784 
+2866 
 iß_˘x
 ->
 sig«l_masks
@@ -104215,7 +104509,7 @@ blocked
 √w£t
 ;
 
-2785 
+2867 
 	`˘x_£t_°©us
 (
 iß_˘x
@@ -104225,19 +104519,19 @@ iß_˘x
 ˘x_sigsu•íd
 );
 
-2788 
+2870 
 	`ke_¥o˚ss_evíts_scheduÀ
 ();
 
-2789 
+2871 
 	`ke_¥o˚ss_evíts
 ();
 
-2795 
+2877 
 sysˇŒ_code_gëcwd
 :
 
-2797 
+2879 
 uöt32_t
  
 pbuf
@@ -104247,11 +104541,11 @@ size
 Àn
 ;
 
-2798 *
+2880 *
 cwd
 ;
 
-2800 
+2882 
 pbuf
  = 
 iß_ªgs
@@ -104259,7 +104553,7 @@ iß_ªgs
 ebx
 ;
 
-2801 
+2883 
 size
  = 
 iß_ªgs
@@ -104267,7 +104561,7 @@ iß_ªgs
 ecx
 ;
 
-2802 
+2884 
 	`sysˇŒ_debug
 ("Öbuf=0x%x, size=0x%x\n", 
 pbuf
@@ -104275,7 +104569,7 @@ pbuf
 size
 );
 
-2804 
+2886 
 cwd
  = 
 iß_˘x
@@ -104283,7 +104577,7 @@ iß_˘x
 lﬂdî
 ->cwd;
 
-2805 
+2887 
 Àn
  = 
 	`°æí
@@ -104291,19 +104585,19 @@ lﬂdî
 cwd
 );
 
-2806 i‡(
+2888 i‡(
 size
  <
 Àn
 )
 
-2807 
+2889 
 ªtvÆ
  = -
 ERANGE
 ;
 
-2809 
+2891 
 	`mem_wrôe_°rög
 (
 iß_mem
@@ -104313,17 +104607,17 @@ pbuf
 cwd
 );
 
-2810 
+2892 
 ªtvÆ
  = 
 Àn
  + 1;
 
-2817 
+2899 
 sysˇŒ_code_gëæimô
 :
 
-2819 
+2901 
 uöt32_t
  
 ªsour˚
@@ -104331,15 +104625,15 @@ uöt32_t
 ¥lim
 ;
 
-2820 *
+2902 *
 §esour˚
 ;
 
-2821 
+2903 
 sim_æimô
  sim_rlimit;
 
-2823 
+2905 
 ªsour˚
  = 
 iß_ªgs
@@ -104347,7 +104641,7 @@ iß_ªgs
 ebx
 ;
 
-2824 
+2906 
 ¥lim
  = 
 iß_ªgs
@@ -104355,7 +104649,7 @@ iß_ªgs
 ecx
 ;
 
-2825 
+2907 
 §esour˚
  = 
 	`m≠_vÆue
@@ -104365,7 +104659,7 @@ ecx
 ªsour˚
 );
 
-2826 
+2908 
 	`sysˇŒ_debug
 ("Ñesour˚=0x%x,Öæim=0x%x\n", 
 ªsour˚
@@ -104373,29 +104667,29 @@ ecx
 ¥lim
 );
 
-2827 
+2909 
 	`sysˇŒ_debug
 ("Ñesour˚=%s\n", 
 §esour˚
 );
 
-2829 
+2911 
 ªsour˚
 ) {
 
-2831 
+2913 
 sim_æimô
 .
 cur
  = 0xffffffff;
 
-2832 
+2914 
 sim_æimô
 .
 max
  = 0xffffffff;
 
-2835 
+2917 
 sim_æimô
 .
 cur
@@ -104407,31 +104701,31 @@ lﬂdî
 °ack_size
 ;
 
-2836 
+2918 
 sim_æimô
 .
 max
  = 0xffffffff;
 
-2839 
+2921 
 sim_æimô
 .
 cur
  = 0x400;
 
-2840 
+2922 
 sim_æimô
 .
 max
  = 0x400;
 
-2843 
+2925 
 	`Áèl
 ("gëæimô:ÇŸ im∂emíãd f‹Ñesour˚=%s", 
 §esour˚
 );
 
-2846 
+2928 
 	`mem_wrôe
 (
 iß_mem
@@ -104441,7 +104735,7 @@ iß_mem
 sim_æimô
 ), &sim_rlimit);
 
-2847 
+2929 
 	`sysˇŒ_debug
 ("ÑëvÆ: cur=0x%x, max=0x%x\n", 
 sim_æimô
@@ -104449,17 +104743,17 @@ sim_æimô
 cur
 ,
 
-2848 
+2930 
 sim_æimô
 .
 max
 );
 
-2855 
+2937 
 sysˇŒ_code_mm≠2
 :
 
-2857 
+2939 
 uöt32_t
  
 addr
@@ -104469,7 +104763,7 @@ addr
 ¥Ÿ
 ;
 
-2858 
+2940 
 uöt32_t
  
 Êags
@@ -104477,11 +104771,11 @@ uöt32_t
 off£t
 ;
 
-2859 
+2941 
 gue°_fd
 ;
 
-2860 
+2942 
 •rŸ
 [
 MAX_STRING_SIZE
@@ -104489,7 +104783,7 @@ MAX_STRING_SIZE
 sÊags
 [MAX_STRING_SIZE];
 
-2863 
+2945 
 addr
  = 
 iß_ªgs
@@ -104497,7 +104791,7 @@ iß_ªgs
 ebx
 ;
 
-2864 
+2946 
 Àn
  = 
 iß_ªgs
@@ -104505,7 +104799,7 @@ iß_ªgs
 ecx
 ;
 
-2865 
+2947 
 ¥Ÿ
  = 
 iß_ªgs
@@ -104513,7 +104807,7 @@ iß_ªgs
 edx
 ;
 
-2866 
+2948 
 Êags
  = 
 iß_ªgs
@@ -104521,7 +104815,7 @@ iß_ªgs
 esi
 ;
 
-2867 
+2949 
 gue°_fd
  = 
 iß_ªgs
@@ -104529,7 +104823,7 @@ iß_ªgs
 edi
 ;
 
-2868 
+2950 
 off£t
  = 
 iß_ªgs
@@ -104537,11 +104831,11 @@ iß_ªgs
 ebp
 ;
 
-2871 
+2953 
 	`sysˇŒ_debug
 ("áddr=0x%x,Üen=%u,Örot=0x%x, flags=0x%x, guest_fd=%d, offset=0x%x\n",
 
-2872 
+2954 
 addr
 , 
 Àn
@@ -104555,7 +104849,7 @@ gue°_fd
 off£t
 );
 
-2873 
+2955 
 	`m≠_Êags
 (&
 mm≠_¥Ÿ_m≠
@@ -104567,7 +104861,7 @@ mm≠_¥Ÿ_m≠
 MAX_STRING_SIZE
 );
 
-2874 
+2956 
 	`m≠_Êags
 (&
 mm≠_Êags_m≠
@@ -104579,7 +104873,7 @@ sÊags
 MAX_STRING_SIZE
 );
 
-2875 
+2957 
 	`sysˇŒ_debug
 ("ÖrŸ=%s, fœgs=%s\n", 
 •rŸ
@@ -104587,7 +104881,7 @@ MAX_STRING_SIZE
 sÊags
 );
 
-2878 
+2960 
 ªtvÆ
  = 
 	`do_mm≠
@@ -104601,7 +104895,7 @@ addr
 Êags
 ,
 
-2879 
+2961 
 gue°_fd
 , 
 off£t
@@ -104609,11 +104903,11 @@ off£t
 MEM_PAGESHIFT
 );
 
-2886 
+2968 
 sysˇŒ_code_·runˇã64
 :
 
-2888 
+2970 
 uöt32_t
  
 fd
@@ -104623,7 +104917,7 @@ fd
 ho°_fd
 ;
 
-2890 
+2972 
 fd
  = 
 iß_ªgs
@@ -104631,7 +104925,7 @@ iß_ªgs
 ebx
 ;
 
-2891 
+2973 
 Àngth
  = 
 iß_ªgs
@@ -104639,7 +104933,7 @@ iß_ªgs
 ecx
 ;
 
-2892 
+2974 
 ho°_fd
  = 
 	`fdt_gë_ho°_fd
@@ -104651,7 +104945,7 @@ fdt
 fd
 );
 
-2893 
+2975 
 	`sysˇŒ_debug
 (" fd=%d,Üígth=0x%x\n", 
 fd
@@ -104659,13 +104953,13 @@ fd
 Àngth
 );
 
-2894 
+2976 
 	`sysˇŒ_debug
 (" ho°_fd=%d\n", 
 ho°_fd
 );
 
-2896 
+2978 
 	`RETVAL
 (
 	`·runˇã
@@ -104675,11 +104969,11 @@ ho°_fd
 Àngth
 ));
 
-2902 
+2984 
 sysˇŒ_code_°©64
 :
 
-2904 
+2986 
 uöt32_t
  
 pfûíame
@@ -104687,7 +104981,7 @@ pfûíame
 p°©buf
 ;
 
-2905 
+2987 
 fûíame
 [
 MAX_PATH_SIZE
@@ -104695,23 +104989,23 @@ MAX_PATH_SIZE
 fuŒ∑th
 [MAX_PATH_SIZE];
 
-2906 
+2988 
 °©
  
 °©buf
 ;
 
-2907 
+2989 
 sim_°©64
  
 sim_°©buf
 ;
 
-2908 
+2990 
 Àngth
 ;
 
-2910 
+2992 
 pfûíame
  = 
 iß_ªgs
@@ -104719,7 +105013,7 @@ iß_ªgs
 ebx
 ;
 
-2911 
+2993 
 p°©buf
  = 
 iß_ªgs
@@ -104727,7 +105021,7 @@ iß_ªgs
 ecx
 ;
 
-2912 
+2994 
 Àngth
  = 
 	`mem_ªad_°rög
@@ -104741,17 +105035,17 @@ MAX_PATH_SIZE
 fûíame
 );
 
-2913 i‡(
+2995 i‡(
 Àngth
  >
 MAX_PATH_SIZE
 )
 
-2914 
+2996 
 	`Áèl
 ("syscall stat64: maximumÖathÜengthÉxceeded");
 
-2915 
+2997 
 	`ld_gë_fuŒ_∑th
 (
 iß_˘x
@@ -104763,17 +105057,17 @@ fuŒ∑th
 MAX_PATH_SIZE
 );
 
-2916 
+2998 
 	`sysˇŒ_debug
 ("Öfilename=0x%x,Östatbuf=0x%x\n",
 
-2917 
+2999 
 pfûíame
 , 
 p°©buf
 );
 
-2918 
+3000 
 	`sysˇŒ_debug
 (" fûíame='%s', fuŒ∑th='%s'\n", 
 fûíame
@@ -104781,7 +105075,7 @@ fûíame
 fuŒ∑th
 );
 
-2920 
+3002 
 	`RETVAL
 (
 	`°©
@@ -104791,11 +105085,11 @@ fuŒ∑th
 °©buf
 ));
 
-2921 i‡(!
+3003 i‡(!
 ªtvÆ
 ) {
 
-2922 
+3004 
 	`sysˇŒ_c›y_°©64
 (&
 sim_°©buf
@@ -104803,7 +105097,7 @@ sim_°©buf
 °©buf
 );
 
-2923 
+3005 
 	`mem_wrôe
 (
 iß_mem
@@ -104813,11 +105107,11 @@ p°©buf
 sim_°©buf
 ), &sim_statbuf);
 
-2930 
+3012 
 sysˇŒ_code_l°©64
 :
 
-2932 
+3014 
 uöt32_t
  
 pfûíame
@@ -104825,7 +105119,7 @@ pfûíame
 p°©buf
 ;
 
-2933 
+3015 
 fûíame
 [
 MAX_PATH_SIZE
@@ -104833,23 +105127,23 @@ MAX_PATH_SIZE
 fuŒ∑th
 [MAX_PATH_SIZE];
 
-2934 
+3016 
 Àngth
 ;
 
-2935 
+3017 
 °©
  
 °©buf
 ;
 
-2936 
+3018 
 sim_°©64
  
 sim_°©buf
 ;
 
-2938 
+3020 
 pfûíame
  = 
 iß_ªgs
@@ -104857,7 +105151,7 @@ iß_ªgs
 ebx
 ;
 
-2939 
+3021 
 p°©buf
  = 
 iß_ªgs
@@ -104865,7 +105159,7 @@ iß_ªgs
 ecx
 ;
 
-2940 
+3022 
 Àngth
  = 
 	`mem_ªad_°rög
@@ -104879,17 +105173,17 @@ MAX_PATH_SIZE
 fûíame
 );
 
-2941 i‡(
+3023 i‡(
 Àngth
  >
 MAX_PATH_SIZE
 )
 
-2942 
+3024 
 	`Áèl
 ("syscallÜstat64: maximumÖathÜengthÉxceeded");
 
-2943 
+3025 
 	`ld_gë_fuŒ_∑th
 (
 iß_˘x
@@ -104901,7 +105195,7 @@ fuŒ∑th
 MAX_PATH_SIZE
 );
 
-2944 
+3026 
 	`sysˇŒ_debug
 ("Öfûíame=0x%x,Ö°©buf=0x%x\n", 
 pfûíame
@@ -104909,7 +105203,7 @@ pfûíame
 p°©buf
 );
 
-2945 
+3027 
 	`sysˇŒ_debug
 (" fûíame='%s', fuŒ∑th='%s'\n", 
 fûíame
@@ -104917,7 +105211,7 @@ fûíame
 fuŒ∑th
 );
 
-2947 
+3029 
 	`RETVAL
 (
 	`l°©
@@ -104927,11 +105221,11 @@ fuŒ∑th
 °©buf
 ));
 
-2948 i‡(!
+3030 i‡(!
 ªtvÆ
 ) {
 
-2949 
+3031 
 	`sysˇŒ_c›y_°©64
 (&
 sim_°©buf
@@ -104939,7 +105233,7 @@ sim_°©buf
 °©buf
 );
 
-2950 
+3032 
 	`mem_wrôe
 (
 iß_mem
@@ -104949,11 +105243,11 @@ p°©buf
 sim_°©buf
 ), &sim_statbuf);
 
-2957 
+3039 
 sysˇŒ_code_f°©64
 :
 
-2959 
+3041 
 uöt32_t
  
 fd
@@ -104963,19 +105257,19 @@ p°©buf
 ho°_fd
 ;
 
-2960 
+3042 
 °©
  
 °©buf
 ;
 
-2961 
+3043 
 sim_°©64
  
 sim_°©buf
 ;
 
-2963 
+3045 
 fd
  = 
 iß_ªgs
@@ -104983,7 +105277,7 @@ iß_ªgs
 ebx
 ;
 
-2964 
+3046 
 p°©buf
  = 
 iß_ªgs
@@ -104991,7 +105285,7 @@ iß_ªgs
 ecx
 ;
 
-2965 
+3047 
 ho°_fd
  = 
 	`fdt_gë_ho°_fd
@@ -105003,7 +105297,7 @@ fdt
 fd
 );
 
-2966 
+3048 
 	`sysˇŒ_debug
 (" fd=%d,Ö°©buf=0x%x\n", 
 fd
@@ -105011,13 +105305,13 @@ fd
 p°©buf
 );
 
-2967 
+3049 
 	`sysˇŒ_debug
 (" ho°_fd=%d\n", 
 ho°_fd
 );
 
-2969 
+3051 
 	`RETVAL
 (
 	`f°©
@@ -105027,11 +105321,11 @@ ho°_fd
 °©buf
 ));
 
-2970 i‡(!
+3052 i‡(!
 ªtvÆ
 ) {
 
-2971 
+3053 
 	`sysˇŒ_c›y_°©64
 (&
 sim_°©buf
@@ -105039,7 +105333,7 @@ sim_°©buf
 °©buf
 );
 
-2972 
+3054 
 	`mem_wrôe
 (
 iß_mem
@@ -105049,51 +105343,51 @@ p°©buf
 sim_°©buf
 ), &sim_statbuf);
 
-2979 
+3061 
 sysˇŒ_code_gëuid
 :
 
-2981 
+3063 
 	`RETVAL
 (
 	`gëuid
 ());
 
-2987 
+3069 
 sysˇŒ_code_gëgid
 :
 
-2989 
+3071 
 	`RETVAL
 (
 	`gëgid
 ());
 
-2995 
+3077 
 sysˇŒ_code_gëeuid
 :
 
-2997 
+3079 
 	`RETVAL
 (
 	`gëeuid
 ());
 
-3003 
+3085 
 sysˇŒ_code_gëegid
 :
 
-3005 
+3087 
 	`RETVAL
 (
 	`gëegid
 ());
 
-3011 
+3093 
 sysˇŒ_code_chown
 :
 
-3013 
+3095 
 fûíame
 [
 MAX_PATH_SIZE
@@ -105101,7 +105395,7 @@ MAX_PATH_SIZE
 fuŒ∑th
 [MAX_PATH_SIZE];
 
-3014 
+3096 
 uöt32_t
  
 pfûíame
@@ -105111,11 +105405,11 @@ ow√r
 group
 ;
 
-3015 
+3097 
 Àn
 ;
 
-3017 
+3099 
 pfûíame
  = 
 iß_ªgs
@@ -105123,7 +105417,7 @@ iß_ªgs
 ebx
 ;
 
-3018 
+3100 
 ow√r
  = 
 iß_ªgs
@@ -105131,7 +105425,7 @@ iß_ªgs
 ecx
 ;
 
-3019 
+3101 
 group
  = 
 iß_ªgs
@@ -105139,7 +105433,7 @@ iß_ªgs
 edx
 ;
 
-3020 
+3102 
 Àn
  = 
 	`mem_ªad_°rög
@@ -105153,17 +105447,17 @@ MAX_PATH_SIZE
 fûíame
 );
 
-3021 i‡(
+3103 i‡(
 Àn
  >
 MAX_PATH_SIZE
 )
 
-3022 
+3104 
 	`Áèl
 ("syscall chmod: maximumÖathÜengthÉxceeded");
 
-3023 
+3105 
 	`ld_gë_fuŒ_∑th
 (
 iß_˘x
@@ -105175,7 +105469,7 @@ fuŒ∑th
 MAX_PATH_SIZE
 );
 
-3024 
+3106 
 	`sysˇŒ_debug
 ("Öfûíame=0x%x, ow√r=%d, group=%d\n", 
 pfûíame
@@ -105185,7 +105479,7 @@ ow√r
 group
 );
 
-3025 
+3107 
 	`sysˇŒ_debug
 (" fûíame='%s', fuŒ∑th='%s'\n", 
 fûíame
@@ -105193,7 +105487,7 @@ fûíame
 fuŒ∑th
 );
 
-3026 
+3108 
 	`RETVAL
 (
 	`chown
@@ -105205,11 +105499,11 @@ ow√r
 group
 ));
 
-3032 
+3114 
 sysˇŒ_code_madvi£
 :
 
-3034 
+3116 
 uöt32_t
  
 °¨t
@@ -105219,7 +105513,7 @@ uöt32_t
 advi˚
 ;
 
-3036 
+3118 
 °¨t
  = 
 iß_ªgs
@@ -105227,7 +105521,7 @@ iß_ªgs
 ebx
 ;
 
-3037 
+3119 
 Àn
  = 
 iß_ªgs
@@ -105235,7 +105529,7 @@ iß_ªgs
 ecx
 ;
 
-3038 
+3120 
 advi˚
  = 
 iß_ªgs
@@ -105243,11 +105537,11 @@ iß_ªgs
 edx
 ;
 
-3039 
+3121 
 	`sysˇŒ_debug
 (" start=0x%x,Üen=%d,ádvice=%d\n",
 
-3040 
+3122 
 °¨t
 , 
 Àn
@@ -105255,11 +105549,11 @@ edx
 advi˚
 );
 
-3046 
+3128 
 sysˇŒ_code_gëdíts64
 :
 
-3048 
+3130 
 uöt32_t
  
 fd
@@ -105271,11 +105565,11 @@ cou¡
 ho°_fd
 ;
 
-3049 *
+3131 *
 buf
 ;
 
-3050 
+3132 
 ƒód
 , 
 ho°_offs
@@ -105283,63 +105577,63 @@ ho°_offs
 gue°_offs
 ;
 
-3052 
+3134 
 	slöux_dúít
  {
 
-3053 
+3135 
 d_öo
 ;
 
-3054 
+3136 
 off_t
  
 d_off
 ;
 
-3055 
+3137 
 d_ª˛í
 ;
 
-3056 
+3138 
 d_«me
 [];
 
-3057 } *
+3139 } *
 dúít
 ;
 
-3059 
+3141 
 	ssim_löux_dúít64
  {
 
-3060 
+3142 
 uöt64_t
  
 d_öo
 ;
 
-3061 
+3143 
 öt64_t
  
 d_off
 ;
 
-3062 
+3144 
 uöt16_t
  
 d_ª˛í
 ;
 
-3063 
+3145 
 d_ty≥
 ;
 
-3064 
+3146 
 d_«me
 [];
 
-3065 } 
+3147 } 
 	`__©åibuã__
 ((
 ∑cked
@@ -105347,7 +105641,7 @@ d_«me
 sim_dúít
 ;
 
-3068 
+3150 
 fd
  = 
 iß_ªgs
@@ -105355,7 +105649,7 @@ iß_ªgs
 ebx
 ;
 
-3069 
+3151 
 pdúít
  = 
 iß_ªgs
@@ -105363,7 +105657,7 @@ iß_ªgs
 ecx
 ;
 
-3070 
+3152 
 cou¡
  = 
 iß_ªgs
@@ -105371,7 +105665,7 @@ iß_ªgs
 edx
 ;
 
-3071 
+3153 
 ho°_fd
  = 
 	`fdt_gë_ho°_fd
@@ -105383,11 +105677,11 @@ fdt
 fd
 );
 
-3072 
+3154 
 	`sysˇŒ_debug
 (" fd=%d,Ödirent=0x%x, count=%d\n",
 
-3073 
+3155 
 fd
 , 
 pdúít
@@ -105395,13 +105689,13 @@ pdúít
 cou¡
 );
 
-3074 
+3156 
 	`sysˇŒ_debug
 (" ho°_fd=%d\n", 
 ho°_fd
 );
 
-3077 
+3159 
 buf
  = 
 	`ˇŒoc
@@ -105409,15 +105703,15 @@ buf
 cou¡
 );
 
-3078 i‡(!
+3160 i‡(!
 buf
 )
 
-3079 
+3161 
 	`Áèl
 ("getdents: cannotállocate buffer");
 
-3080 
+3162 
 ƒód
  = 
 	`sysˇŒ
@@ -105431,37 +105725,37 @@ buf
 cou¡
 );
 
-3083 i‡(
+3165 i‡(
 ƒód
  < 0)
 
-3084 
+3166 
 	`Áèl
 ("getdents: callÅo host system callÑeturnedÉrror");
 
-3085 i‡(!
+3167 i‡(!
 ƒód
 ) {
 
-3086 
+3168 
 ªtvÆ
  = 0;
 
-3091 
+3173 
 ho°_offs
  = 0;
 
-3092 
+3174 
 gue°_offs
  = 0;
 
-3093 
+3175 
 ho°_offs
  < 
 ƒód
 ) {
 
-3094 
+3176 
 dúít
  = (
 löux_dúít
@@ -105471,7 +105765,7 @@ buf
 ho°_offs
 );
 
-3095 
+3177 
 sim_dúít
 .
 d_öo
@@ -105479,7 +105773,7 @@ d_öo
 dúít
 ->d_ino;
 
-3096 
+3178 
 sim_dúít
 .
 d_off
@@ -105487,7 +105781,7 @@ d_off
 dúít
 ->d_off;
 
-3097 
+3179 
 sim_dúít
 .
 d_ª˛í
@@ -105499,7 +105793,7 @@ dúít
 d_«me
 )) / 8 * 8;
 
-3098 
+3180 
 sim_dúít
 .
 d_ty≥
@@ -105513,7 +105807,7 @@ dúít
 d_ª˛í
  - 1);
 
-3100 
+3182 
 	`sysˇŒ_debug
 (" d_öo=%Œd ", (Ë
 sim_dúít
@@ -105521,7 +105815,7 @@ sim_dúít
 d_öo
 );
 
-3101 
+3183 
 	`sysˇŒ_debug
 ("d_off=%Œd ", (Ë
 sim_dúít
@@ -105529,7 +105823,7 @@ sim_dúít
 d_off
 );
 
-3102 
+3184 
 	`sysˇŒ_debug
 ("d_ª˛í=%u(ho°),%u(gue°Ë", 
 dúít
@@ -105539,7 +105833,7 @@ d_ª˛í
 sim_dúít
 .d_reclen);
 
-3103 
+3185 
 	`sysˇŒ_debug
 ("d_«me='%s'\n", 
 dúít
@@ -105547,7 +105841,7 @@ dúít
 d_«me
 );
 
-3105 
+3187 
 	`mem_wrôe
 (
 iß_mem
@@ -105561,7 +105855,7 @@ sim_dúít
 d_öo
 );
 
-3106 
+3188 
 	`mem_wrôe
 (
 iß_mem
@@ -105575,7 +105869,7 @@ sim_dúít
 d_off
 );
 
-3107 
+3189 
 	`mem_wrôe
 (
 iß_mem
@@ -105589,7 +105883,7 @@ sim_dúít
 d_ª˛í
 );
 
-3108 
+3190 
 	`mem_wrôe
 (
 iß_mem
@@ -105603,7 +105897,7 @@ sim_dúít
 d_ty≥
 );
 
-3109 
+3191 
 	`mem_wrôe_°rög
 (
 iß_mem
@@ -105617,7 +105911,7 @@ dúít
 d_«me
 );
 
-3111 
+3193 
 ho°_offs
  +
 dúít
@@ -105625,7 +105919,7 @@ dúít
 d_ª˛í
 ;
 
-3112 
+3194 
 gue°_offs
  +
 sim_dúít
@@ -105633,17 +105927,17 @@ sim_dúít
 d_ª˛í
 ;
 
-3113 i‡(
+3195 i‡(
 gue°_offs
  > 
 cou¡
 )
 
-3114 
+3196 
 	`Áèl
 ("getdents: host bufferÅoo small");
 
-3116 
+3198 
 	`sysˇŒ_debug
 ("Ñë=%d(ho°),%d(gue°)\n", 
 ho°_offs
@@ -105651,23 +105945,23 @@ ho°_offs
 gue°_offs
 );
 
-3117 
+3199 
 	`‰ì
 (
 buf
 );
 
-3118 
+3200 
 ªtvÆ
  = 
 gue°_offs
 ;
 
-3125 
+3207 
 sysˇŒ_code_f˙é64
 :
 
-3127 
+3209 
 uöt32_t
  
 gue°_fd
@@ -105677,23 +105971,23 @@ cmd
 ¨g
 ;
 
-3128 *
+3210 *
 cmd_«me
 ;
 
-3129 
+3211 
 sÊags
 [
 MAX_STRING_SIZE
 ];
 
-3130 
+3212 
 fd_t
  *
 fd
 ;
 
-3132 
+3214 
 gue°_fd
  = 
 iß_ªgs
@@ -105701,7 +105995,7 @@ iß_ªgs
 ebx
 ;
 
-3133 
+3215 
 cmd
  = 
 iß_ªgs
@@ -105709,7 +106003,7 @@ iß_ªgs
 ecx
 ;
 
-3134 
+3216 
 ¨g
  = 
 iß_ªgs
@@ -105717,11 +106011,11 @@ iß_ªgs
 edx
 ;
 
-3135 
+3217 
 	`sysˇŒ_debug
 (" guest_fd=%d, cmd=%d,árg=0x%x\n",
 
-3136 
+3218 
 gue°_fd
 , 
 cmd
@@ -105729,7 +106023,7 @@ cmd
 ¨g
 );
 
-3137 
+3219 
 cmd_«me
  = 
 	`m≠_vÆue
@@ -105739,13 +106033,13 @@ f˙é_cmd_m≠
 cmd
 );
 
-3138 
+3220 
 	`sysˇŒ_debug
 (" cmd=%s\n", 
 cmd_«me
 );
 
-3141 
+3223 
 fd
  = 
 	`fdt_íåy_gë
@@ -105757,27 +106051,27 @@ fdt
 gue°_fd
 );
 
-3142 i‡(!
+3224 i‡(!
 fd
 ) {
 
-3143 
+3225 
 ªtvÆ
  = -
 EBADF
 ;
 
-3146 i‡(
+3228 i‡(
 fd
 ->
 ho°_fd
  < 0)
 
-3147 
+3229 
 	`Áèl
 ("syscall 'fcntl64':Çot suported forÅhisÅype of files");
 
-3148 
+3230 
 	`sysˇŒ_debug
 (" ho°_fd=%d\n", 
 fd
@@ -105785,11 +106079,11 @@ fd
 ho°_fd
 );
 
-3151 
+3233 
 cmd
 ) {
 
-3154 
+3236 
 	`RETVAL
 (
 	`f˙é
@@ -105801,7 +106095,7 @@ ho°_fd
 F_GETFD
 ));
 
-3158 
+3240 
 	`RETVAL
 (
 	`f˙é
@@ -105815,7 +106109,7 @@ F_SETFD
 ¨g
 ));
 
-3162 
+3244 
 	`RETVAL
 (
 	`f˙é
@@ -105827,7 +106121,7 @@ ho°_fd
 F_GETFL
 ));
 
-3163 
+3245 
 	`m≠_Êags
 (&
 ›í_Êags_m≠
@@ -105839,13 +106133,13 @@ sÊags
 MAX_STRING_SIZE
 );
 
-3164 
+3246 
 	`sysˇŒ_debug
 ("ÑëvÆ=%s\n", 
 sÊags
 );
 
-3168 
+3250 
 	`m≠_Êags
 (&
 ›í_Êags_m≠
@@ -105857,13 +106151,13 @@ sÊags
 MAX_STRING_SIZE
 );
 
-3169 
+3251 
 	`sysˇŒ_debug
 ("árg=%s\n", 
 sÊags
 );
 
-3170 
+3252 
 fd
 ->
 Êags
@@ -105871,7 +106165,7 @@ fd
 ¨g
 ;
 
-3171 
+3253 
 	`RETVAL
 (
 	`f˙é
@@ -105885,17 +106179,17 @@ F_SETFL
 ¨g
 ));
 
-3175 
+3257 
 	`Áèl
 ("sysˇŒ f˙é64: comm™d %†nŸ im∂emíãd", 
 cmd_«me
 );
 
-3182 
+3264 
 sysˇŒ_code_gëtid
 :
 
-3187 
+3269 
 ªtvÆ
  = 
 iß_˘x
@@ -105903,11 +106197,11 @@ iß_˘x
 pid
 ;
 
-3195 
+3277 
 sysˇŒ_code_fuãx
 :
 
-3197 
+3279 
 uöt32_t
  
 addr1
@@ -105923,7 +106217,7 @@ addr2
 vÆ3
 ;
 
-3198 
+3280 
 uöt32_t
  
 timeout_£c
@@ -105931,7 +106225,7 @@ timeout_£c
 timeout_u£c
 ;
 
-3199 
+3281 
 uöt32_t
  
 fuãx
@@ -105941,7 +106235,7 @@ cmd
 bô£t
 ;
 
-3201 
+3283 
 addr1
  = 
 iß_ªgs
@@ -105949,7 +106243,7 @@ iß_ªgs
 ebx
 ;
 
-3202 
+3284 
 ›
  = 
 iß_ªgs
@@ -105957,7 +106251,7 @@ iß_ªgs
 ecx
 ;
 
-3203 
+3285 
 vÆ1
  = 
 iß_ªgs
@@ -105965,7 +106259,7 @@ iß_ªgs
 edx
 ;
 
-3204 
+3286 
 ±imeout
  = 
 iß_ªgs
@@ -105973,7 +106267,7 @@ iß_ªgs
 esi
 ;
 
-3205 
+3287 
 addr2
  = 
 iß_ªgs
@@ -105981,7 +106275,7 @@ iß_ªgs
 edi
 ;
 
-3206 
+3288 
 vÆ3
  = 
 iß_ªgs
@@ -105989,11 +106283,11 @@ iß_ªgs
 ebp
 ;
 
-3207 
+3289 
 	`sysˇŒ_debug
 ("áddr1=0x%x, op=%d, val1=%d,Ötimeout=0x%x,áddr2=0x%x, val3=%d\n",
 
-3208 
+3290 
 addr1
 , 
 ›
@@ -106007,13 +106301,13 @@ addr2
 vÆ3
 );
 
-3213 
+3295 
 cmd
  = 
 ›
  & ~(256 | 128);
 
-3214 
+3296 
 	`mem_ªad
 (
 iß_mem
@@ -106023,11 +106317,11 @@ addr1
 fuãx
 );
 
-3215 
+3297 
 	`sysˇŒ_debug
 (" futex=%d, cmd=%d (%s)\n",
 
-3216 
+3298 
 fuãx
 , 
 cmd
@@ -106037,11 +106331,11 @@ cmd
 fuãx_cmd_m≠
 , cmd));
 
-3218 
+3300 
 cmd
 ) {
 
-3224 
+3306 
 bô£t
  = 
 cmd
@@ -106049,25 +106343,25 @@ cmd
 vÆ3
  : 0xffffffff;
 
-3228 i‡(
+3310 i‡(
 fuãx
  !
 vÆ1
 ) {
 
-3229 
+3311 
 ªtvÆ
  = -11;
 
-3234 i‡(
+3316 i‡(
 ±imeout
 ) {
 
-3235 
+3317 
 	`Áèl
 ("syscall futex: FUTEX_WAITÇot supported withÅimeout");
 
-3236 
+3318 
 	`mem_ªad
 (
 iß_mem
@@ -106077,7 +106371,7 @@ iß_mem
 timeout_£c
 );
 
-3237 
+3319 
 	`mem_ªad
 (
 iß_mem
@@ -106087,25 +106381,25 @@ iß_mem
 timeout_u£c
 );
 
-3238 
+3320 
 	`sysˇŒ_debug
 ("Åimeout={sec %d, usec %d}\n",
 
-3239 
+3321 
 timeout_£c
 , 
 timeout_u£c
 );
 
-3241 
+3323 
 timeout_£c
  = 0;
 
-3242 
+3324 
 timeout_u£c
  = 0;
 
-3246 
+3328 
 iß_˘x
 ->
 wakeup_fuãx
@@ -106113,7 +106407,7 @@ wakeup_fuãx
 addr1
 ;
 
-3247 
+3329 
 iß_˘x
 ->
 wakeup_fuãx_bô£t
@@ -106121,7 +106415,7 @@ wakeup_fuãx_bô£t
 bô£t
 ;
 
-3248 
+3330 
 iß_˘x
 ->
 wakeup_fuãx_¶ìp
@@ -106131,7 +106425,7 @@ ke
 fuãx_¶ìp_cou¡
 ;
 
-3249 
+3331 
 	`˘x_£t_°©us
 (
 iß_˘x
@@ -106141,7 +106435,7 @@ iß_˘x
 ˘x_fuãx
 );
 
-3256 
+3338 
 bô£t
  = 
 cmd
@@ -106149,7 +106443,7 @@ cmd
 vÆ3
  : 0xffffffff;
 
-3257 
+3339 
 ªtvÆ
  = 
 	`˘x_fuãx_wake
@@ -106163,7 +106457,7 @@ vÆ1
 bô£t
 );
 
-3258 
+3340 
 	`sysˇŒ_debug
 (" fuãxáà0x%x: %dÖro˚s£†wokí up\n", 
 addr1
@@ -106171,35 +106465,35 @@ addr1
 ªtvÆ
 );
 
-3263 
+3345 
 ªqueued
  = 0;
 
-3264 
+3346 
 ˘x_t
  *
 ˘x
 ;
 
-3267 i‡(
+3349 i‡(
 ±imeout
  != 0x7fffffff)
 
-3268 
+3350 
 	`Áèl
 ("syscall futex, cmd=FUTEX_CMP_REQUEUE: only supported forÖtimeout=INTMAX");
 
-3272 i‡(
+3354 i‡(
 fuãx
  !
 vÆ3
 ) {
 
-3273 
+3355 
 ªtvÆ
  = -11;
 
-3279 
+3361 
 ªtvÆ
  = 
 	`˘x_fuãx_wake
@@ -106211,7 +106505,7 @@ addr1
 vÆ1
 , 0xffffffff);
 
-3280 
+3362 
 	`sysˇŒ_debug
 (" fuãxáà0x%x: %dÖro˚s£†wokí up\n", 
 addr1
@@ -106219,7 +106513,7 @@ addr1
 ªtvÆ
 );
 
-3283 
+3365 
 ˘x
  = 
 ke
@@ -106229,7 +106523,7 @@ su•íded_li°_hód
 su•íded_√xt
 ) {
 
-3284 i‡(
+3366 i‡(
 	`˘x_gë_°©us
 (
 ˘x
@@ -106241,7 +106535,7 @@ wakeup_fuãx
 addr1
 ) {
 
-3285 
+3367 
 ˘x
 ->
 wakeup_fuãx
@@ -106249,15 +106543,15 @@ wakeup_fuãx
 addr2
 ;
 
-3286 
+3368 
 ªqueued
 ++;
 
-3289 
+3371 
 	`sysˇŒ_debug
 (" futexát 0x%x: %dÖrocessesÑequeuedÅo futex 0x%x\n",
 
-3290 
+3372 
 addr1
 , 
 ªqueued
@@ -106265,7 +106559,7 @@ addr1
 addr2
 );
 
-3296 
+3378 
 öt32_t
  
 ›
@@ -106277,7 +106571,7 @@ cmp
 cm∑rg
 ;
 
-3297 
+3379 
 öt32_t
  
 vÆ2
@@ -106285,7 +106579,7 @@ vÆ2
 ±imeout
 ;
 
-3298 
+3380 
 öt32_t
  
 ﬁdvÆ
@@ -106295,31 +106589,31 @@ vÆ2
 c⁄d
  = 0;
 
-3300 
+3382 
 ›
  = (
 vÆ3
  >> 28) & 0xf;
 
-3301 
+3383 
 cmp
  = (
 vÆ3
  >> 24) & 0xf;
 
-3302 
+3384 
 ›¨g
  = (
 vÆ3
  >> 12) & 0xfff;
 
-3303 
+3385 
 cm∑rg
  = 
 vÆ3
  & 0xfff;
 
-3305 
+3387 
 	`mem_ªad
 (
 iß_mem
@@ -106329,17 +106623,17 @@ addr2
 ﬁdvÆ
 );
 
-3306 
+3388 
 ›
 ) {
 
-3307 0: 
+3389 0: 
 √wvÆ
  = 
 ›¨g
 ;
 
-3309 1: 
+3391 1: 
 √wvÆ
  = 
 ﬁdvÆ
@@ -106347,7 +106641,7 @@ addr2
 ›¨g
 ;
 
-3311 2: 
+3393 2: 
 √wvÆ
  = 
 ﬁdvÆ
@@ -106355,7 +106649,7 @@ addr2
 ›¨g
 ;
 
-3313 3: 
+3395 3: 
 √wvÆ
  = 
 ﬁdvÆ
@@ -106363,7 +106657,7 @@ addr2
 ›¨g
 ;
 
-3315 4: 
+3397 4: 
 √wvÆ
  = 
 ﬁdvÆ
@@ -106371,11 +106665,11 @@ addr2
 ›¨g
 ;
 
-3317 : 
+3399 : 
 	`Áèl
 ("FUTEX_WAKE_OP: invalid operation");
 
-3319 
+3401 
 	`mem_wrôe
 (
 iß_mem
@@ -106385,7 +106679,7 @@ addr2
 √wvÆ
 );
 
-3321 
+3403 
 ªtvÆ
  = 
 	`˘x_fuãx_wake
@@ -106397,11 +106691,11 @@ addr1
 vÆ1
 , 0xffffffff);
 
-3323 
+3405 
 cmp
 ) {
 
-3324 0: 
+3406 0: 
 c⁄d
  = 
 ﬁdvÆ
@@ -106409,7 +106703,7 @@ c⁄d
 cm∑rg
 ;
 
-3326 1: 
+3408 1: 
 c⁄d
  = 
 ﬁdvÆ
@@ -106417,7 +106711,7 @@ c⁄d
 cm∑rg
 ;
 
-3328 2: 
+3410 2: 
 c⁄d
  = 
 ﬁdvÆ
@@ -106425,7 +106719,7 @@ c⁄d
 cm∑rg
 ;
 
-3330 3: 
+3412 3: 
 c⁄d
  = 
 ﬁdvÆ
@@ -106433,7 +106727,7 @@ c⁄d
 cm∑rg
 ;
 
-3332 4: 
+3414 4: 
 c⁄d
  = 
 ﬁdvÆ
@@ -106441,7 +106735,7 @@ c⁄d
 cm∑rg
 ;
 
-3334 5: 
+3416 5: 
 c⁄d
  = 
 ﬁdvÆ
@@ -106449,15 +106743,15 @@ c⁄d
 cm∑rg
 ;
 
-3336 : 
+3418 : 
 	`Áèl
 ("FUTEX_WAKE_OP: invalid condition");
 
-3338 i‡(
+3420 i‡(
 c⁄d
 )
 
-3339 
+3421 
 ªtvÆ
  +
 	`˘x_fuãx_wake
@@ -106469,11 +106763,11 @@ addr2
 vÆ2
 , 0xffffffff);
 
-3346 
+3428 
 	`Áèl
 ("syscall futex:Çot implemented for cmd=%d (%s)",
 
-3347 
+3429 
 cmd
 , 
 	`m≠_vÆue
@@ -106481,11 +106775,11 @@ cmd
 fuãx_cmd_m≠
 , cmd));
 
-3354 
+3436 
 sysˇŒ_code_sched_£èfföôy
 :
 
-3356 
+3438 
 uöt32_t
  
 pid
@@ -106495,19 +106789,19 @@ pid
 pmask
 ;
 
-3357 
+3439 
 uöt32_t
  
 num_¥ocs
  = 4;
 
-3358 
+3440 
 uöt32_t
  
 mask
 ;
 
-3360 
+3442 
 pid
  = 
 iß_ªgs
@@ -106515,7 +106809,7 @@ iß_ªgs
 ebx
 ;
 
-3361 
+3443 
 Àn
  = 
 iß_ªgs
@@ -106523,7 +106817,7 @@ iß_ªgs
 ecx
 ;
 
-3362 
+3444 
 pmask
  = 
 iß_ªgs
@@ -106531,7 +106825,7 @@ iß_ªgs
 edx
 ;
 
-3364 
+3446 
 	`mem_ªad
 (
 iß_mem
@@ -106541,7 +106835,7 @@ pmask
 mask
 );
 
-3365 
+3447 
 	`sysˇŒ_debug
 ("Öid=%d,Üí=%d,Ömask=0x%x\n", 
 pid
@@ -106551,23 +106845,23 @@ pid
 pmask
 );
 
-3366 
+3448 
 	`sysˇŒ_debug
 (" mask=0x%x\n", 
 mask
 );
 
-3369 
+3451 
 ªtvÆ
  = 
 num_¥ocs
 ;
 
-3375 
+3457 
 sysˇŒ_code_sched_gëafföôy
 :
 
-3377 
+3459 
 uöt32_t
  
 pid
@@ -106577,13 +106871,13 @@ pid
 pmask
 ;
 
-3378 
+3460 
 uöt32_t
  
 num_¥ocs
  = 4;
 
-3379 
+3461 
 uöt32_t
  
 mask
@@ -106591,7 +106885,7 @@ mask
 num_¥ocs
 ) - 1;
 
-3381 
+3463 
 pid
  = 
 iß_ªgs
@@ -106599,7 +106893,7 @@ iß_ªgs
 ebx
 ;
 
-3382 
+3464 
 Àn
  = 
 iß_ªgs
@@ -106607,7 +106901,7 @@ iß_ªgs
 ecx
 ;
 
-3383 
+3465 
 pmask
  = 
 iß_ªgs
@@ -106615,7 +106909,7 @@ iß_ªgs
 edx
 ;
 
-3384 
+3466 
 	`sysˇŒ_debug
 ("Öid=%d,Üí=%d,Ömask=0x%x\n", 
 pid
@@ -106625,7 +106919,7 @@ pid
 pmask
 );
 
-3389 
+3471 
 	`mem_wrôe
 (
 iß_mem
@@ -106635,29 +106929,29 @@ pmask
 mask
 );
 
-3390 
+3472 
 ªtvÆ
  = 
 num_¥ocs
 ;
 
-3396 
+3478 
 sysˇŒ_code_£t_thªad_¨ó
 :
 
-3398 
+3480 
 uöt32_t
  
 puöfo
 ;
 
-3399 
+3481 
 sim_u£r_desc
  
 uöfo
 ;
 
-3401 
+3483 
 puöfo
  = 
 iß_ªgs
@@ -106665,13 +106959,13 @@ iß_ªgs
 ebx
 ;
 
-3402 
+3484 
 	`sysˇŒ_debug
 ("Öuöfo=0x%x\n", 
 puöfo
 );
 
-3404 
+3486 
 	`mem_ªad
 (
 iß_mem
@@ -106683,11 +106977,11 @@ sim_u£r_desc
 uöfo
 );
 
-3405 
+3487 
 	`sysˇŒ_debug
 ("Éntry_number=0x%x, base_addr=0x%x,Üimit=0x%x\n",
 
-3406 
+3488 
 uöfo
 .
 íåy_numbî
@@ -106697,11 +106991,11 @@ ba£_addr
 limô
 );
 
-3407 
+3489 
 	`sysˇŒ_debug
 (" seg_32bit=0x%x, contents=0x%x,Ñead_exec_only=0x%x\n",
 
-3408 
+3490 
 uöfo
 .
 £g_32bô
@@ -106711,11 +107005,11 @@ c⁄ã¡s
 ªad_exec_⁄ly
 );
 
-3409 
+3491 
 	`sysˇŒ_debug
 ("Üimit_in_pages=0x%x, seg_not_present=0x%x, useable=0x%x\n",
 
-3410 
+3492 
 uöfo
 .
 limô_ö_∑ges
@@ -106725,29 +107019,29 @@ limô_ö_∑ges
 u£abÀ
 );
 
-3411 i‡(!
+3493 i‡(!
 uöfo
 .
 £g_32bô
 )
 
-3412 
+3494 
 	`Áèl
 ("syscall set_thread_area: only 32-bit segments supported");
 
-3415 i‡(
+3497 i‡(
 uöfo
 .
 limô_ö_∑ges
 )
 
-3416 
+3498 
 uöfo
 .
 limô
  <<= 12;
 
-3418 i‡(
+3500 i‡(
 uöfo
 .
 íåy_numbî
@@ -106755,17 +107049,17 @@ uöfo
 uöt32_t
 ) - 1) {
 
-3419 i‡(
+3501 i‡(
 iß_˘x
 ->
 glibc_£gmít_ba£
 )
 
-3420 
+3502 
 	`Áèl
 ("set_thread_area: glibc segmentálready set");
 
-3421 
+3503 
 iß_˘x
 ->
 glibc_£gmít_ba£
@@ -106775,7 +107069,7 @@ uöfo
 ba£_addr
 ;
 
-3422 
+3504 
 iß_˘x
 ->
 glibc_£gmít_limô
@@ -106785,13 +107079,13 @@ uöfo
 limô
 ;
 
-3423 
+3505 
 uöfo
 .
 íåy_numbî
  = 6;
 
-3424 
+3506 
 	`mem_wrôe
 (
 iß_mem
@@ -106803,27 +107097,27 @@ uöfo
 íåy_numbî
 );
 
-3426 i‡(
+3508 i‡(
 uöfo
 .
 íåy_numbî
  != 6)
 
-3427 
+3509 
 	`Áèl
 ("set_thread_area:ÉrroneousÉntry_number field");
 
-3428 i‡(!
+3510 i‡(!
 iß_˘x
 ->
 glibc_£gmít_ba£
 )
 
-3429 
+3511 
 	`Áèl
 ("set_thread_area: glibc segment wasÇot set");
 
-3430 
+3512 
 iß_˘x
 ->
 glibc_£gmít_ba£
@@ -106833,7 +107127,7 @@ uöfo
 ba£_addr
 ;
 
-3431 
+3513 
 iß_˘x
 ->
 glibc_£gmít_limô
@@ -106843,17 +107137,17 @@ uöfo
 limô
 ;
 
-3439 
+3521 
 sysˇŒ_code_Ádvi£64
 :
 
-3441 
+3523 
 uöt32_t
  
 fd
 ;
 
-3442 
+3524 
 uöt32_t
  
 off_hi
@@ -106861,7 +107155,7 @@ off_hi
 off_lo
 ;
 
-3443 
+3525 
 uöt32_t
  
 Àn
@@ -106869,7 +107163,7 @@ uöt32_t
 advi˚
 ;
 
-3445 
+3527 
 fd
  = 
 iß_ªgs
@@ -106877,7 +107171,7 @@ iß_ªgs
 ebx
 ;
 
-3446 
+3528 
 off_lo
  = 
 iß_ªgs
@@ -106885,7 +107179,7 @@ iß_ªgs
 ecx
 ;
 
-3447 
+3529 
 off_hi
  = 
 iß_ªgs
@@ -106893,7 +107187,7 @@ iß_ªgs
 edx
 ;
 
-3448 
+3530 
 Àn
  = 
 iß_ªgs
@@ -106901,7 +107195,7 @@ iß_ªgs
 esi
 ;
 
-3449 
+3531 
 advi˚
  = 
 iß_ªgs
@@ -106909,11 +107203,11 @@ iß_ªgs
 edi
 ;
 
-3451 
+3533 
 	`sysˇŒ_debug
 (" fd=%d, off={0x%x, 0x%x},Üen=%d,ádvice=%d\n",
 
-3452 
+3534 
 fd
 , 
 off_hi
@@ -106925,15 +107219,15 @@ off_lo
 advi˚
 );
 
-3458 
+3540 
 sysˇŒ_code_exô_group
 :
 
-3460 
+3542 
 °©us
 ;
 
-3462 
+3544 
 °©us
  = 
 iß_ªgs
@@ -106941,13 +107235,13 @@ iß_ªgs
 ebx
 ;
 
-3463 
+3545 
 	`sysˇŒ_debug
 (" sètus=0x%x\n", 
 °©us
 );
 
-3465 
+3547 
 	`˘x_föish_group
 (
 iß_˘x
@@ -106955,17 +107249,17 @@ iß_˘x
 °©us
 );
 
-3471 
+3553 
 sysˇŒ_code_£t_tid_addªss
 :
 
-3473 
+3555 
 uöt32_t
  
 tid±r
 ;
 
-3475 
+3557 
 tid±r
  = 
 iß_ªgs
@@ -106973,13 +107267,13 @@ iß_ªgs
 ebx
 ;
 
-3476 
+3558 
 	`sysˇŒ_debug
 ("Åid±r=0x%x\n", 
 tid±r
 );
 
-3478 
+3560 
 iß_˘x
 ->
 ˛ór_chûd_tid
@@ -106987,7 +107281,7 @@ iß_˘x
 tid±r
 ;
 
-3479 
+3561 
 ªtvÆ
  = 
 iß_˘x
@@ -106995,11 +107289,11 @@ iß_˘x
 pid
 ;
 
-3485 
+3567 
 sysˇŒ_code_˛ock_gëªs
 :
 
-3487 
+3569 
 uöt32_t
  
 ˛k_id
@@ -107007,7 +107301,7 @@ uöt32_t
 ¥es
 ;
 
-3488 
+3570 
 uöt32_t
  
 tv_£c
@@ -107015,7 +107309,7 @@ tv_£c
 tv_n£c
 ;
 
-3490 
+3572 
 ˛k_id
  = 
 iß_ªgs
@@ -107023,7 +107317,7 @@ iß_ªgs
 ebx
 ;
 
-3491 
+3573 
 ¥es
  = 
 iß_ªgs
@@ -107031,27 +107325,27 @@ iß_ªgs
 ecx
 ;
 
-3492 
+3574 
 	`sysˇŒ_debug
 (" clk_id=%d\n", 
 ˛k_id
 );
 
-3493 
+3575 
 	`sysˇŒ_debug
 ("Öªs=0x%x\n", 
 ¥es
 );
 
-3495 
+3577 
 tv_£c
  = 0;
 
-3496 
+3578 
 tv_n£c
  = 1;
 
-3497 
+3579 
 	`mem_wrôe
 (
 iß_mem
@@ -107061,7 +107355,7 @@ iß_mem
 tv_£c
 );
 
-3498 
+3580 
 	`mem_wrôe
 (
 iß_mem
@@ -107071,11 +107365,11 @@ iß_mem
 tv_n£c
 );
 
-3504 
+3586 
 sysˇŒ_code_tgkûl
 :
 
-3506 
+3588 
 uöt32_t
  
 tgid
@@ -107085,13 +107379,13 @@ pid
 sig
 ;
 
-3507 
+3589 
 ˘x_t
  *
 ˘x
 ;
 
-3509 
+3591 
 tgid
  = 
 iß_ªgs
@@ -107099,7 +107393,7 @@ iß_ªgs
 ebx
 ;
 
-3510 
+3592 
 pid
  = 
 iß_ªgs
@@ -107107,7 +107401,7 @@ iß_ªgs
 ecx
 ;
 
-3511 
+3593 
 sig
  = 
 iß_ªgs
@@ -107115,11 +107409,11 @@ iß_ªgs
 edx
 ;
 
-3512 
+3594 
 	`sysˇŒ_debug
 ("Ågid=%d,Öid=%d, sig=%d (%s)\n",
 
-3513 
+3595 
 tgid
 , 
 pid
@@ -107129,15 +107423,15 @@ sig
 	`sim_sig«l_«me
 (sig));
 
-3516 i‡((Ë
+3598 i‡((Ë
 tgid
  == -1)
 
-3517 
+3599 
 	`Áèl
 ("syscall 'tgkill':Çot implemented forÅgid = -1");
 
-3520 
+3602 
 ˘x
  = 
 	`˘x_gë
@@ -107145,17 +107439,17 @@ tgid
 pid
 );
 
-3521 i‡(!
+3603 i‡(!
 ˘x
 )
 
-3522 
+3604 
 	`Áèl
 ("sysˇŒ 'tgkûl':Öid %d d€†nŸÉxi°", 
 pid
 );
 
-3525 
+3607 
 	`sim_sig£t_add
 (&
 ˘x
@@ -107167,25 +107461,25 @@ sig«l_masks
 sig
 );
 
-3526 
+3608 
 	`˘x_ho°_thªad_su•íd_ˇn˚l
 (
 ˘x
 );
 
-3527 
+3609 
 	`ke_¥o˚ss_evíts_scheduÀ
 ();
 
-3528 
+3610 
 	`ke_¥o˚ss_evíts
 ();
 
-3534 
+3616 
 sysˇŒ_code_£t_robu°_li°
 :
 
-3536 
+3618 
 uöt32_t
  
 hód
@@ -107193,7 +107487,7 @@ hód
 Àn
 ;
 
-3538 
+3620 
 hód
  = 
 iß_ªgs
@@ -107201,7 +107495,7 @@ iß_ªgs
 ebx
 ;
 
-3539 
+3621 
 Àn
  = 
 iß_ªgs
@@ -107209,7 +107503,7 @@ iß_ªgs
 ecx
 ;
 
-3540 
+3622 
 	`sysˇŒ_debug
 (" hód=0x%x,Üí=%d\n", 
 hód
@@ -107217,15 +107511,15 @@ hód
 Àn
 );
 
-3541 i‡(
+3623 i‡(
 Àn
  != 12)
 
-3542 
+3624 
 	`Áèl
 ("set_robust_list: only working forÜen = 12");
 
-3543 
+3625 
 iß_˘x
 ->
 robu°_li°_hód
@@ -107233,11 +107527,11 @@ robu°_li°_hód
 hód
 ;
 
-3550 
+3632 
 sysˇŒ_code_›í˛
 :
 
-3552 
+3634 
 uöt32_t
  
 func_code
@@ -107245,7 +107539,7 @@ func_code
 ∑rgs
 ;
 
-3553 
+3635 
 uöt32_t
  
 ¨gs
@@ -107253,19 +107547,19 @@ uöt32_t
 OPENCL_MAX_ARGS
 ];
 
-3554 
+3636 
 i
 ;
 
-3555 *
+3637 *
 func_«me
 ;
 
-3556 
+3638 
 func_¨gc
 ;
 
-3558 
+3640 
 func_code
  = 
 iß_ªgs
@@ -107273,7 +107567,7 @@ iß_ªgs
 ebx
 ;
 
-3559 
+3641 
 ∑rgs
  = 
 iß_ªgs
@@ -107281,7 +107575,7 @@ iß_ªgs
 ecx
 ;
 
-3562 i‡(
+3644 i‡(
 func_code
  < 
 OPENCL_FUNC_FIRST
@@ -107289,11 +107583,11 @@ OPENCL_FUNC_FIRST
 OPENCL_FUNC_LAST
 )
 
-3563 
+3645 
 	`Áèl
 ("syscall 'opencl': func_code out ofÑange");
 
-3566 
+3648 
 func_«me
  = 
 ›í˛_func_«mes
@@ -107303,7 +107597,7 @@ func_code
 OPENCL_FUNC_FIRST
 ];
 
-3567 
+3649 
 func_¨gc
  = 
 ›í˛_func_¨gc
@@ -107313,11 +107607,11 @@ func_code
 OPENCL_FUNC_FIRST
 ];
 
-3568 
+3650 
 	`sysˇŒ_debug
 (" func_code=%d (%s, %dárguments),Öargs=0x%x\n",
 
-3569 
+3651 
 func_code
 , 
 func_«me
@@ -107327,7 +107621,7 @@ func_¨gc
 ∑rgs
 );
 
-3572 
+3654 
 	`as£π
 (
 func_¨gc
@@ -107335,7 +107629,7 @@ func_¨gc
 OPENCL_MAX_ARGS
 );
 
-3573 
+3655 
 	`mem_ªad
 (
 iß_mem
@@ -107347,23 +107641,23 @@ func_¨gc
 ¨gs
 );
 
-3574 
+3656 
 i
  = 0; i < 
 func_¨gc
 ; i++)
 
-3575 
+3657 
 	`sysˇŒ_debug
 ("árgs[%d] = %d (0x%x)\n",
 
-3576 
+3658 
 i
 , 
 ¨gs
 [i],árgs[i]);
 
-3579 
+3661 
 ªtvÆ
  = 
 	`›í˛_func_run
@@ -107373,21 +107667,21 @@ func_code
 ¨gs
 );
 
-3585 i‡(
+3667 i‡(
 syscode
  >
 sysˇŒ_code_cou¡
 ) {
 
-3586 
+3668 
 ªtvÆ
  = -38;
 
-3588 
+3670 
 	`Áèl
 ("not implemented system call '%s' (code %d)át 0x%x\n%s",
 
-3589 
+3671 
 syscode
  < 
 sysˇŒ_code_cou¡
@@ -107395,7 +107689,7 @@ sysˇŒ_code_cou¡
 sysˇŒ_«me
 [syscode] : "",
 
-3590 
+3672 
 syscode
 , 
 iß_ªgs
@@ -107405,7 +107699,7 @@ eù
 îr_sysˇŒ_nŸe
 );
 
-3596 i‡(
+3678 i‡(
 syscode
  !
 sysˇŒ_code_sigªtu∫
@@ -107417,7 +107711,7 @@ iß_˘x
 ˘x_su•íded
 ))
 
-3597 
+3679 
 iß_ªgs
 ->
 óx
@@ -107425,7 +107719,7 @@ iß_ªgs
 ªtvÆ
 ;
 
-3598 
+3680 
 	}
 }
 
@@ -135536,6 +135830,28 @@ c‹e
 , 
 thªad
 );
+
+	@main.c
+
+1 
+	~<löux/uni°d.h
+>
+
+2 
+	~<löux/kî√l.h
+>
+
+4 
+	$maö
+(){
+
+6 
+	`sysˇŒ
+(1,1);
+
+7 
+	}
+}
 
 	@processor.c
 
@@ -166420,6 +166736,108 @@ __USE_XOPEN
 153 
 	~<bôs/x›í_lim.h
 >
+
+	@/usr/include/linux/kernel.h
+
+1 #i‚de‡
+_LINUX_KERNEL_H
+
+
+2 
+	#_LINUX_KERNEL_H
+
+
+	)
+
+7 
+	#__ALIGN_KERNEL
+(
+x
+, 
+a
+Ë
+	`__ALIGN_KERNEL_MASK
+(x, (
+	`ty≥of
+(x))◊Ë- 1)
+
+	)
+
+8 
+	#__ALIGN_KERNEL_MASK
+(
+x
+, 
+mask
+Ë(((xË+ (mask)Ë& ~(mask))
+
+	)
+
+11 
+	#SI_LOAD_SHIFT
+ 16
+
+	)
+
+12 
+	ssysöfo
+ {
+
+13 
+	mu±ime
+;
+
+14 
+	mlﬂds
+[3];
+
+15 
+	mtŸÆøm
+;
+
+16 
+	m‰ìøm
+;
+
+17 
+	msh¨edøm
+;
+
+18 
+	mbuf„ºam
+;
+
+19 
+	mtŸÆsw≠
+;
+
+20 
+	m‰ìsw≠
+;
+
+21 
+	m¥ocs
+;
+
+22 
+	m∑d
+;
+
+23 
+	mtŸÆhigh
+;
+
+24 
+	m‰ìhigh
+;
+
+25 
+	mmem_unô
+;
+
+26 
+	m_f
+[20-2*()-()];
 
 	@/usr/include/linux/unistd.h
 
@@ -207180,8 +207598,8 @@ __END_DECLS
 .
 1
 /usr/include
-117
-2218
+119
+2253
 bpred.c
 commit.c
 decode.c
@@ -207258,6 +207676,7 @@ m2s-fast.c
 m2s-objdump.c
 m2s.c
 m2s.h
+main.c
 processor.c
 queues.c
 recover.c
@@ -207274,6 +207693,7 @@ writeback.c
 /usr/include/errno.h
 /usr/include/fcntl.h
 /usr/include/limits.h
+/usr/include/linux/kernel.h
 /usr/include/linux/unistd.h
 /usr/include/math.h
 /usr/include/poll.h

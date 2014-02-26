@@ -841,52 +841,77 @@ int handle_guest_syscalls() {
 	}
 	
 	case syscall_code_read_write_virtual_disk:
-	{
-		printf("read_write_virtual_disk : comes here\n");	
-		int op = isa_regs->ebx ; 
-		int nBytes = isa_regs->ecx ; 
-		int address = isa_regs->edx ;
-		int diskBlockNum = isa_regs->esi ;
-		int Offset = isa_regs->edi;
-		 
-		 if(op == 0){ //read 
-		 /* Get parameters */
-		 
-				int fd = fopen("Sim_disk" , 'r');
-				if (!fd) {
-                    printf("couldn't open file \n");
-                    break;
+	{	printf("Syscalled \n");
+		int op = isa_regs->ebx;
+		int bytes = isa_regs->ecx;
+		int address = isa_regs->edx;
+		int	BBn		= isa_regs->esi;
+		int offset	= isa_regs->edi;
+		
+		
+		printf("Parameters are : %d %d %d %d %d \n", op , bytes , address , BBn , offset);
+		
+		int blockSize = 512;
+		if(op==0){
+				printf("Came here into read\n");
+				//read from address and write to BBn
+				printf("here!!!\n");
+				/*char cwd[1024];
+				if (getcwd(cwd, sizeof(cwd)) != NULL)
+				   fprintf(stdout, "Current working dir: %s\n", cwd);
+				else
+				   perror("getcwd() error");
+			   */
+				//printf("process directory\n");
+				
+				FILE *fp= fopen("MySim_disk","w");
+				
+				if(fp==NULL){
+					printf("fp is NULL : \n");
+					exit(0);
 				}
-            
-				 char *buf = malloc(nBytes);
-				 if (!buf)
-						 fatal("syscall read: cannot allocate buffer");
-
-                /* Non-blocking read */
-                   RETVAL(read(fd, buf, nBytes));
-                   if (retval > 0) {
-                        mem_write(isa_mem, pbuf, retval, buf);
-                        syscall_debug_string("  buf", buf, nBytes, 1);
-                    }
-                    free(buf);
-                    break;
-                }
-
-                /* Blocking read - suspend thread */
-                syscall_debug("  blocking read - process suspended\n");
-                isa_ctx->wakeup_fd = guest_fd;
-                isa_ctx->wakeup_events = 1; /* POLLIN */
-                ctx_set_status(isa_ctx, ctx_suspended | ctx_read);
-                ke_process_events_schedule();
-
-                free(buf); 
-		  }
-		  
-		  else{ // if(op == 1)
- 
-		
-		
+				
+				//printf("here???\n");
+					
+				 //read a buffer from address
+				 void * buf = malloc(bytes);
+				 if(buf == NULL){
+					 printf("Malloc failed \n");
+					 exit(0);
+				}
+				 void* buf1 = malloc(bytes);
+				 //printf("2 %p\n",(void*)address);
+				 //memcpy(buf,(void*)address,bytes);
+				 mem_read(isa_mem,(void*)address,bytes,buf);
+				 //printf("3 \n");
+				  
+				 fseek(fp, SEEK_SET, BBn*blockSize + offset);
+				 //seek the pointer to correct position
+				 //printf("4 \n");
+				 //printf("Read num %d ",*(int*)buf);
+				 fwrite(buf,bytes,1,fp);
+				 
+				 //printf("Read num %d ",*(int*)buf1);
+			 
+				printf("Finished read\n");
+				fclose(fp);
 			}
+		else{
+			
+				printf("Came here into write\n");
+			 FILE *fp= fopen("MySim_disk",'r');
+			 //read a buffer from address
+			 char * buf = malloc(bytes);
+			 fseek(fp,SEEK_SET,BBn*blockSize + offset);
+			 fread(buf,bytes,1,fp);
+			 mem_write(isa_mem,(void*)address,bytes,buf);
+			 memcpy((void*)address,(void*) buf, bytes);
+			 printf("Finished write\n");
+			 fclose(fp);
+		}	 	 
+		
+		
+		
 		break;	
 	}
 	
