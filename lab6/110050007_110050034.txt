@@ -1,0 +1,67 @@
+
+1) Booting actions is done by the boot() function in guestos.c. The boot() functions calls the following
+   2 functions -  install_signals() and set_defaults(). 
+   install_signals() installs all the signals
+   and set_defaults() reads the configuration file and sets the parameters 
+			- INSTR_SLICE(Instruction slice) 
+			- NUM_HEADS (No of Heads) 
+			- NUM_TRACKS (No of Tracks) and
+			- NUM_SECTORS (No of Sectors)
+
+
+
+
+
+2)  INSTR_SLICE=5
+	NUM_HEADS=1
+	NUM_TRACKS=20
+	NUM_SECTORS=10
+
+
+
+
+
+
+3)
+
+
+	a) System calls are invoked in the sycall_do() function in m2skernel.h library(Definition is 
+	in the syscall.c in the library itself). The function which	handles all the Guest System 
+	calls is handle_guest_syscalls (this, too in syscall.c).
+	
+	b) 	System calls from 1-325 are sent to the host OS and system calls from 400-410 are handled by the Guest OS.
+	
+	c) If the code of the system call is less than(or equal to) 325 , then it is passed to the host.
+	  (Refer to syscall_do(else part) in syscall.c in libm2skernel).
+	  
+	  
+	d)  It gets a parameter , a file descriptor table (of type struct fdt_t) from isa_regs->ebx. It uses it obtain
+	 a file descriptor ("fd = fdt_entry_get(isa_ctx->fdt, guest_fd)"). 
+`
+
+
+
+
+4)
+
+    a) struct kernel_t ke;
+        is the global variable that has the ctx's of all the process running in different states
+        namely the part of the struct  context_list_head nad context_list_tail
+    
+    b) ctx->instr_slice variable in the struct ctx_t
+    
+    c) Round Robin scheduling, every process has a instr_slice variable for which the process is executed, and then the next process in ke->running_lisst_head is executed
+    look at function m2skernel.c:90:ke_run();
+    this fucntions gives a hint about that process are exectuted one after other.
+
+
+
+
+
+
+5) 
+
+
+
+
+
