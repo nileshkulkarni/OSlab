@@ -1,0 +1,14 @@
+
+
+
+
+Part 4:
+
+	a) struct kernel_t ke;
+		is the global variable that has the ctx's of all the process running in different states
+		namely the part of the struct  context_list_head nad context_list_tail
+	b) ctx->instr_slice variable in the struct ctx_t 
+	c) Round Robin scheduling, every process has a instr_slice variable for which the process is executed, and then the next process in ke->running_lisst_head is executed
+	look at function m2skernel.c:90:ke_run();
+	this fucntions gives a hint about that process are exectuted one after other.
+	

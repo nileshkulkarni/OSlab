@@ -818,6 +818,9 @@ void syscall_summary() {
 int get_pid() {
 	return isa_ctx->pid;
 }
+void set_instruction_slice(int slice) {
+	isa_ctx->instr_slice = slice;
+}
 
 int handle_guest_syscalls() {
     int syscode = isa_regs->eax;
@@ -828,17 +831,77 @@ int handle_guest_syscalls() {
 		retval=get_pid();
 		break;
 	}
+	case syscall_code_set_instruction_slice:
+	{	
+			printf("comes here\n");
+			int slice = isa_regs->ebx;
+			set_instruction_slice(slice);
+			break;
+		
+	}
+	
+	case syscall_code_read_write_virtual_disk:
+	{
+		printf("read_write_virtual_disk : comes here\n");	
+		int op = isa_regs->ebx ; 
+		int nBytes = isa_regs->ecx ; 
+		int address = isa_regs->edx ;
+		int diskBlockNum = isa_regs->esi ;
+		int Offset = isa_regs->edi;
+		 
+		 if(op == 0){ //read 
+		 /* Get parameters */
+		 
+				int fd = fopen("Sim_disk" , 'r');
+				if (!fd) {
+                    printf("couldn't open file \n");
+                    break;
+				}
+            
+				 char *buf = malloc(nBytes);
+				 if (!buf)
+						 fatal("syscall read: cannot allocate buffer");
 
-        default:
-            if (syscode >= syscall_code_count) {
-                retval = -38;
-            } else {
-                fatal("not implemented system call '%s' (code %d) at 0x%x\n%s",
-                        syscode < syscall_code_count ? syscall_name[syscode] : "",
-                        syscode, isa_regs->eip, err_syscall_note);
-            }
+                /* Non-blocking read */
+                   RETVAL(read(fd, buf, nBytes));
+                   if (retval > 0) {
+                        mem_write(isa_mem, pbuf, retval, buf);
+                        syscall_debug_string("  buf", buf, nBytes, 1);
+                    }
+                    free(buf);
+                    break;
+                }
 
-    }
+                /* Blocking read - suspend thread */
+                syscall_debug("  blocking read - process suspended\n");
+                isa_ctx->wakeup_fd = guest_fd;
+                isa_ctx->wakeup_events = 1; /* POLLIN */
+                ctx_set_status(isa_ctx, ctx_suspended | ctx_read);
+                ke_process_events_schedule();
+
+                free(buf); 
+		  }
+		  
+		  else{ // if(op == 1)
+ 
+		
+		
+			}
+		break;	
+	}
+	
+	
+	default:
+		printf("here with syscall %d \n",syscode);
+		if (syscode >= syscall_code_count) {
+			retval = -38;
+		} else {
+			fatal("not implemented system call '%s' (code %d) at 0x%x\n%s",
+					syscode < syscall_code_count ? syscall_name[syscode] : "",
+					syscode, isa_regs->eip, err_syscall_note);
+		}
+
+	}
 
 	return retval;
 }
