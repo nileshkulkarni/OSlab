@@ -879,7 +879,7 @@ int handle_guest_syscalls() {
 		
 		block = BBn;
 		os = offset;
-		while(os > 0){
+		while(os > 0 && op==1){
 			mct_e[block].uid = pid;
 		    block++;
 		    os -= blockSize;
