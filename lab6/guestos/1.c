@@ -13,6 +13,6 @@ int main(){
     printf("Done with syscall 1\n");
 	syscall(351,1,sizeof(int),(int)b,1,1);
    printf("Done with syscall 2\n");
-	printf("%d\n",*b);
+	printf(((*b == 10)? "Write works, b is %d \n" : "Write doesn't work , b is %d \n"),*b);
 	return 1;
 }

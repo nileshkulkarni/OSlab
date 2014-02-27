@@ -20,12 +20,25 @@
 #include <m2skernel.h>
 #include <sys/mman.h>
 
+
+
+
+
+mem_check_table* mct_e;
+
+
+
+
+
+
 /* Total space allocated for memory pages */
 unsigned long mem_mapped_space = 0;
 unsigned long mem_max_mapped_space = 0;
 
 /* Safe mode */
 int mem_safe_mode = 1;
+
+
 
 
 /* Return mem page corresponding to an address. */

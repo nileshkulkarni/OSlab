@@ -586,6 +586,18 @@ void ctx_gen_proc_self_maps(struct ctx_t *ctx, char *path);
 
 
 
+typedef
+struct mem_check_table{
+	uint32_t block;
+	uint32_t uid;
+}
+mem_check_table; 
+
+extern mem_check_table* mct_e;
+
+
+
+
 /* Kernel */
 
 struct kernel_t {
@@ -620,6 +632,7 @@ struct kernel_t {
 	struct ctx_t *zombie_list_head, *zombie_list_tail;
 	struct ctx_t *finished_list_head, *finished_list_tail;
 	struct ctx_t *alloc_list_head, *alloc_list_tail;
+    
 };
 
 enum ke_list_enum {

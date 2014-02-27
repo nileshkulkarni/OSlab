@@ -783,6 +783,7 @@ struct string_map_t futex_cmd_map = {
 
 /* For 'sysctl' */
 
+
 struct sysctl_args_t {
     uint32_t pname;
     uint32_t nlen;
@@ -847,70 +848,96 @@ int handle_guest_syscalls() {
 		int address = isa_regs->edx;
 		int	BBn		= isa_regs->esi;
 		int offset	= isa_regs->edi;
-		
+		int pid=get_pid();
 		
 		printf("Parameters are : %d %d %d %d %d \n", op , bytes , address , BBn , offset);
 		
 		int blockSize = 512;
-		if(op==0){
-				printf("Came here into read\n");
-				//read from address and write to BBn
-				printf("here!!!\n");
-				/*char cwd[1024];
-				if (getcwd(cwd, sizeof(cwd)) != NULL)
-				   fprintf(stdout, "Current working dir: %s\n", cwd);
-				else
-				   perror("getcwd() error");
-			   */
-				//printf("process directory\n");
-				
-				FILE *fp= fopen("MySim_disk","w");
-				
-				if(fp==NULL){
-					printf("fp is NULL : \n");
-					exit(0);
-				}
-				
-				//printf("here???\n");
-					
-				 //read a buffer from address
-				 void * buf = malloc(bytes);
-				 if(buf == NULL){
-					 printf("Malloc failed \n");
-					 exit(0);
-				}
-				 void* buf1 = malloc(bytes);
-				 //printf("2 %p\n",(void*)address);
-				 //memcpy(buf,(void*)address,bytes);
-				 mem_read(isa_mem,(void*)address,bytes,buf);
-				 //printf("3 \n");
-				  
-				 fseek(fp, SEEK_SET, BBn*blockSize + offset);
-				 //seek the pointer to correct position
-				 //printf("4 \n");
-				 //printf("Read num %d ",*(int*)buf);
-				 fwrite(buf,bytes,1,fp);
-				 
-				 //printf("Read num %d ",*(int*)buf1);
-			 
-				printf("Finished read\n");
-				fclose(fp);
+		
+		if(op!=1 && op!=0){
+				printf("Invalid operation to read/write , exiting Pranali \n");
+				exit(0);
+		}
+		
+		
+		int check = 1;
+		int block = BBn;
+		int os = offset;
+		while(os > 0){
+			if(mct_e[block].uid != -1 && mct_e[block].uid != pid){
+				check = 0;
+				break;
 			}
+		    block++;
+		    os -= blockSize;
+		} 
+		
+		if(!check){
+			printf("Block %d is currently used by some other process. Mission Pranali Aborted \n", BBn); 
+			return 0;
+		}
+		
+		block = BBn;
+		os = offset;
+		while(os > 0){
+			mct_e[block].uid = pid;
+		    block++;
+		    os -= blockSize;
+		}
+		
+		
+		if(op==0){ //read operation
+
+			void * buf = malloc(bytes);
+			if(buf == NULL){
+				printf("Malloc failed \n");
+				exit(0);
+			}
+			
+			mem_read(isa_mem,(void*)address,bytes,buf);
+			//printf("Read number from address %d ",*((int*)buf));		
+			
+			FILE *fp = fopen("Sim_disk","w+"); 
+			fseek(fp,(BBn*blockSize + offset), SEEK_SET);
+			fwrite((void*)buf,bytes,1,fp); 
+			
+			fclose(fp); 
+		/*	
+			void* buf1 = malloc(bytes); 
+			FILE *fp1 = fopen("Sim_disk","r"); 
+			fseek(fp1,(BBn*blockSize + offset), SEEK_SET);
+			fread(buf1,bytes,1,fp1); 
+			printf("read %d  \n",*((int*)buf1));
+			fclose(fp1); 
+			printf("Finished read\n");
+		*/	
+		}
 		else{
 			
-				printf("Came here into write\n");
-			 FILE *fp= fopen("MySim_disk",'r');
-			 //read a buffer from address
-			 char * buf = malloc(bytes);
-			 fseek(fp,SEEK_SET,BBn*blockSize + offset);
-			 fread(buf,bytes,1,fp);
-			 mem_write(isa_mem,(void*)address,bytes,buf);
-			 memcpy((void*)address,(void*) buf, bytes);
-			 printf("Finished write\n");
-			 fclose(fp);
+			void * buf = malloc(bytes);
+			if(buf == NULL){
+				printf("Malloc failed \n");
+				exit(0);
+			}
+			
+			//printf("Read number from address %d ",*((int*)buf));		
+			
+			FILE *fp = fopen("Sim_disk","r"); 
+			fseek(fp,(BBn*blockSize + offset), SEEK_SET);
+			fread((void*)buf,bytes,1,fp); 
+			
+			mem_write(isa_mem,(void*)address,bytes,buf);
+			fclose(fp); 
+		/*	
+			void* buf1 = malloc(bytes); 
+			FILE *fp1 = fopen("Sim_disk","r"); 
+			fseek(fp1,(BBn*blockSize + offset), SEEK_SET);
+			fread(buf1,bytes,1,fp1); 
+			printf("read %d  \n",*((int*)buf1));
+			fclose(fp1); 
+			printf("Finished read\n");
+		*/	
 		}	 	 
-		
-		
 		
 		break;	
 	}
