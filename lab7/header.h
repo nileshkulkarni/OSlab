@@ -2,9 +2,9 @@
 #define MAX_BUFFER_SIZE 20
 
 
-enum message_type{SEND , RECEIVE};
-
-
+//enum message_type{SEND , RECEIVE};
+#define SEND 1
+#define RECEIVE 0
 
 void strip(char *s){
 	int i = strlen(s)-1;
@@ -20,7 +20,7 @@ void strip(char *s){
 typedef
 struct message{
 	char msg[100];
-	message_type type;
+	int type;
 	int receiver; //if type = SEND
 }
 message;
