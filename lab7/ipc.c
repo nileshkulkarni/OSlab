@@ -12,10 +12,13 @@ message messages[NUM_THREADS];
 void *process_code(void *arg){ //reads a file for commands and adds it to messages(global variable)
 
 	int thread_id = (int) arg;
+	char file[100];
+	
 	
 	pthread_mutex_lock(&mutex_var[thread_id]);
 	
-	FILE *fp = fopen(itoa(thread_id) , "r");
+	snprintf(file, sizeof(file), "%d", thread_id);
+	FILE *fp = fopen(file , "r");
 	
 	char op[256];
 	char receiver[10];
