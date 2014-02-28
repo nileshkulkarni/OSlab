@@ -26,34 +26,46 @@ void* process_code(void *arg){ //reads a file for commands and adds it to messag
 	
 	char op[256];
 	char receiver[10];
+	msg[thread_id].sender = thread_id;
 	
 	while (fgets(op, sizeof(op), fp)){
+		
 		strip(op);
+		printf("Thread %d %s \n", thread_id ,op);
 		if(strcmp(op , "S") == 0){ 
-			fgets(messages[thread_id].msg, sizeof(messages[thread_id].msg), fp);
-			strip(messages[thread_id].msg);
+			fgets(msg[thread_id].msg, sizeof(msg[thread_id].msg), fp);
+			strip(msg[thread_id].msg);
 			fgets(receiver, sizeof(receiver), fp);
 			strip(receiver);
-			messages[thread_id].receiver = atoi(receiver);
-			messages[thread_id].type = SEND;
+			msg[thread_id].receiver = atoi(receiver);
+			msg[thread_id].type = SEND;
+				msg[thread_id].sender = thread_id;
+
 		}	
 		else if(strcmp(op , "R") == 0){ 
-			messages[thread_id].type = RECEIVE;
+			msg[thread_id].type = RECEIVE;
 		}
 		else{
 			printf("Invalid file : Aborting Thread %d \n" , thread_id);;
 			exit(0);
 		}
-	
+	//	printf("Thread %d is waiting \n", thread_id ,op);
 	    pthread_cond_wait(&sem_var[thread_id], &mutex_var[thread_id]); //mutex is temporarily locked at this point
+	//	printf("Thread %d has waited \n", thread_id ,op);
 		
 		if(strcmp(op , "R") == 0){
 			printf("Received message(--%s--)  at Thread: %d from Thread: %d \n" , 
-								messages[thread_id].msg , thread_id , messages[thread_id].receiver);
+								msg[thread_id].msg , thread_id , msg[thread_id].sender);
+		}
+		else if(strcmp(op , "S") == 0){
+			printf("I am thread %d and msg has been sent \n",thread_id);
 		}
 	
 	}
 	
+	
+	msg[thread_id].type = -1;
+	printf("THread %d is exiting \n", thread_id);
 	pthread_mutex_unlock(&mutex_var[thread_id]);
 	pthread_exit((void*) 0);
 }
@@ -62,41 +74,51 @@ void* ipc_controller(void *arg){
 	
     printf("Hello from ipc %d \n", (int)arg);
     
-    
+    start_block =0;
+    empty_block =0;
     while(1){
         int i =0;
+        int deadlock = 0;
         
-        for(i=0;i<4;i++){
-           
+        for(i=0;i<NUM_THREADS;i++){
             if(pthread_mutex_trylock(&mutex_var[i]) == 0){
+   //             printf("IPC :: Wait for thread %d\n",i);
+   //             printf("OP is %d \n" ,msg[i].type);
                 // updated struct is here now, read it.
                 if(msg[i].type == SEND){ 
                     if(bufferFull ==0){
                       messages[empty_block] = msg[i]; 
                       empty_block = (empty_block+1)%MAX_BUFFER_SIZE;
                       if(empty_block == start_block){
+     //                       printf("Buffer full is happening here \n");
                             bufferFull = 1;
                       }
-                    printf("Process %d wants to send a message\n ",i); 
+                    msg[i].type =-1;
+     //               printf("Process %d wants to send a message\n ",i); 
                     pthread_cond_signal(&sem_var[i]); //mutex is temporarily locked at this point
+                    pthread_mutex_unlock(&mutex_var[i]);
+   //                 printf("Process %d sent a message\n ",i); 
                     }
                     else{
-						printf("Process %d wants to send a message but the buffer is full! Sorry\n ",i); 
-                       continue; //dont signal the process here let it wait for the buffer to get empty
+	//					printf("Process %d wants to send a message but the buffer is full! Sorry\n ",i); 
+                        deadlock++;
+                        continue; //dont signal the process here let it wait for the buffer to get empty
                     }
                 }
-                if(msg[i].type ==RECEIVE){
+                else if(msg[i].type ==RECEIVE){
                    int j = start_block;
+                   int flag = 0;
                    for(;j!=empty_block;j=(j+1)%MAX_BUFFER_SIZE){
                         if(messages[j].receiver == i){
-                            msg[i] = messages[j];
+                            strcpy(msg[i].msg ,  messages[j].msg);
+                            msg[i].sender = messages[j].sender;
+                            //msg[i].type = RECEIVE;
+      //                      printf("Process %d wants to recieve a message, message to receive %s\n ",i,messages[j].msg); 
                             if(j ==start_block){
                                 start_block = (start_block +1) %MAX_BUFFER_SIZE;
                                 if(start_block !=empty_block){
                                     bufferFull = 0;
                                 }
-                                printf("Process %d wants to recieve a message\n ",i); 
-                            
                             }
                             else{
                                 int k=0;
@@ -108,13 +130,29 @@ void* ipc_controller(void *arg){
                                     bufferFull =0;
                                 }
                             }
+                            flag=1;
                             pthread_cond_signal(&sem_var[i]); //mutex is temporarily locked at this point
+                            pthread_mutex_unlock(&mutex_var[i]);
                             break;
                         }
                    }
+                   if(flag==0){
+					pthread_mutex_unlock(&mutex_var[i]);
+					deadlock++;
+					}
                 }
+                else{
+					//printf("No request from thread %d \n",i);
+					deadlock++;
+					pthread_mutex_unlock(&mutex_var[i]);
+					continue;
+				}
             }
         }
+        
+        //printf("deadlock is %d\n",deadlock);
+        if(deadlock==NUM_THREADS)
+			pthread_exit (NULL);	
     }
 } 
 
@@ -135,7 +173,7 @@ int main(){
 	for(i=0;i<NUM_THREADS;i++){  
 	  pthread_create(&threads[i], &attr, process_code, (void *)i);
 	}	
-	i=4;
+	i=NUM_THREADS;
 	
 	pthread_create(&threads[i], &attr, ipc_controller , (void *)i);
 	
@@ -150,6 +188,10 @@ int main(){
 		pthread_mutex_destroy(&mutex_var[i]);
 		pthread_cond_destroy(&sem_var[i]);
 	}
+	
+	printf("Exiting main Thread :\n");
+	
+//	pthread_cancel(threads[NUM_THREADS]);
 	pthread_exit (NULL);	
 	
 	

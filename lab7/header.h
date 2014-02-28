@@ -1,4 +1,4 @@
-#define NUM_THREADS  4
+#define NUM_THREADS  2
 #define MAX_BUFFER_SIZE 20
 
 
@@ -21,6 +21,7 @@ typedef
 struct message{
 	char msg[100];
 	int type;
+	int sender;
 	int receiver; //if type = SEND
 }
 message;
