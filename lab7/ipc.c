@@ -77,7 +77,7 @@ void* ipc_controller(void *arg){
                        continue; //dont signal the process here let it wait for the buffer to get empty
                     }
                 }
-                if(msg[i].type ==RECIEVE){
+                if(msg[i].type ==RECEIVE){
                    int j = start_block;
                    for(;j!=empty_block;j=(j+1)%MAX_BUFFER_SIZE){
                         if(messages[j].receiver == i){
