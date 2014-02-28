@@ -71,11 +71,11 @@ void* ipc_controller(void *arg){
                       if(empty_block == start_block){
                             bufferFull = 1;
                       }
-                    printf("Process %d wants to send a message\n ",d); 
+                    printf("Process %d wants to send a message\n ",i); 
                     pthread_cond_signal(&sem_var[i]); //mutex is temporarily locked at this point
                     }
                     else{
-						printf("Process %d wants to send a message but the buffer is full! Sorry\n ",d); 
+						printf("Process %d wants to send a message but the buffer is full! Sorry\n ",i); 
                        continue; //dont signal the process here let it wait for the buffer to get empty
                     }
                 }
@@ -89,7 +89,7 @@ void* ipc_controller(void *arg){
                                 if(start_block !=empty_block){
                                     bufferFull = 0;
                                 }
-                                printf("Process %d wants to recieve a message\n ",d); 
+                                printf("Process %d wants to recieve a message\n ",i); 
                             
                             }
                             else{
