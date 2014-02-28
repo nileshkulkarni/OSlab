@@ -30,8 +30,8 @@ void* process_code(void *arg){ //reads a file for commands and adds it to messag
 		if(strcmp(op , "S") == 0){ 
 			fgets(messages[thread_id].msg, sizeof(messages[thread_id].msg), fp);
 			strip(messages[thread_id].msg);
-			fgets(recSend, sizeof(recSend), fp);
-			strip(recSend);
+			fgets(receiver, sizeof(receiver), fp);
+			strip(receiver);
 			messages[thread_id].receiver = atoi(receiver);
 			messages[thread_id].type = SEND;
 		}	
