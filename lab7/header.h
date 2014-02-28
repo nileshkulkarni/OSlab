@@ -2,7 +2,7 @@
 #define MAX_BUFFER_SIZE 20
 
 
-enum message_type{SEND , RECIEVE};
+enum message_type{SEND , RECEIVE};
 
 
 typedef
