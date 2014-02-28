@@ -62,7 +62,7 @@ void* ipc_controller(void *arg){
         
         for(i=0;i<4;i++){
            
-            if( pthread_mutex_trylock(&mutex_var[i]) == 0){
+            if(pthread_mutex_trylock(&mutex_var[i]) == 0){
                 // updated struct is here now, read it.
                 if(msg[i].type == SEND){ 
                     if(bufferFull ==0){
@@ -71,9 +71,11 @@ void* ipc_controller(void *arg){
                       if(empty_block == start_block){
                             bufferFull = 1;
                       }
+                    printf("Process %d wants to send a message\n ",d); 
                     pthread_cond_signal(&sem_var[i]); //mutex is temporarily locked at this point
                     }
                     else{
+						printf("Process %d wants to send a message but the buffer is full! Sorry\n ",d); 
                        continue; //dont signal the process here let it wait for the buffer to get empty
                     }
                 }
@@ -82,16 +84,16 @@ void* ipc_controller(void *arg){
                    for(;j!=empty_block;j=(j+1)%MAX_BUFFER_SIZE){
                         if(messages[j].receiver == i){
                             msg[i] = messages[j];
-                            int k=0;
                             if(j ==start_block){
                                 start_block = (start_block +1) %MAX_BUFFER_SIZE;
                                 if(start_block !=empty_block){
                                     bufferFull = 0;
                                 }
+                                printf("Process %d wants to recieve a message\n ",d); 
                             
                             }
                             else{
-
+                                int k=0;
                                 for(k=j;k!=(empty_block-1 + MAX_BUFFER_SIZE)%MAX_BUFFER_SIZE;k=((k+1)%MAX_BUFFER_SIZE)){
                                     messages[k] = messages[k+1];
                                 }
