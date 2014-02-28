@@ -114,9 +114,37 @@ void* ipc_controller(void *arg){
 
 int main(){
 	
+	pthread_t threads[NUM_THREADS+1];
+	pthread_attr_t attr;
+	int i;
+	  /* Initialize mutex and condition variable objects */
+	for(i=0;i<NUM_THREADS;i++){ 
+			  pthread_mutex_init(&mutex_var[i], NULL);
+			  pthread_cond_init (&sem_var[i], NULL);
+	}
+	  /* For portability, explicitly create threads in a joinable state */
+	pthread_attr_init(&attr);
+	pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_JOINABLE);
+	
+	for(i=0;i,NUM_THREADS;i++){  
+	  pthread_create(&threads[i], &attr, process_code, (void *)i);
+	}	
+	i=4;
+	
+	pthread_create(&threads[i], &attr, ipc_controller , (void *)i);
+	
+	 /* Wait for all threads to complete */
+	for (i = 0; i < NUM_THREADS; i++) {
+		pthread_join(threads[i], NULL);
+	}
 	
 	
-	
+	pthread_attr_destroy(&attr);
+	for(i=0; i<NUM_THREADS;i++){
+		pthread_mutex_destroy(&mutex_var[i]);
+		pthread_cond_destroy(&sem_var[i]);
+	}
+	pthread_exit (NULL);	
 	
 	
 	return 0;
