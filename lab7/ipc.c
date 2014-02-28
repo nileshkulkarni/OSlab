@@ -1,34 +1,35 @@
 #include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
-
-
-#define NUM_THREADS  4
-#define MAX_BUFFER_SIZE 20
-
-
-
-
-
-typedef
-struct message{
-	char *msg[100];
-	int receiver;
-	int sender;
-}
-message;
+#include "header.h"
 
 
 pthread_mutex_t mutex_var[NUM_THREADS];
 pthread_cond_t sem_var[NUM_THREADS];
+message messages[NUM_THREADS];
+
 
 void *process_code(void *arg){ //reads a file for commands and adds it to messages(global variable)
 
 	int thread_id = (int) arg;
+	pthread_mutex_lock(&mutex_var[thread_id]);
 	
+	FILE *fp = fopen(itoa(thread_index) , "r");
 	
-
+	char op[256];
+	char recSend;
+	
+	while (fgets(op, sizeof(op), fp)){
+		strip(op);
+		if(strcmp(op , "R") == 0){ 
+			fgets(messages[thread_id].msg, sizeof(messages[thread_id].msg), fp);
+			fgets(recSend, sizeof(recSend), fp);
+		}	
+		
+		
+	}
 }
+
 
 void *ipc_controller(void *arg); 
 
