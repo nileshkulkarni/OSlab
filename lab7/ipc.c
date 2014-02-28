@@ -22,6 +22,8 @@ void* process_code(void *arg){ //reads a file for commands and adds it to messag
 	snprintf(file, sizeof(file), "%d", thread_id);
 	FILE *fp = fopen(file , "r");
 	
+	printf("Hello from thread %d \n", thread_id);
+	
 	char op[256];
 	char receiver[10];
 	
@@ -57,6 +59,10 @@ void* process_code(void *arg){ //reads a file for commands and adds it to messag
 }
 
 void* ipc_controller(void *arg){
+	
+    printf("Hello from ipc %d \n", (int)arg);
+    
+    
     while(1){
         int i =0;
         
@@ -126,7 +132,7 @@ int main(){
 	pthread_attr_init(&attr);
 	pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_JOINABLE);
 	
-	for(i=0;i,NUM_THREADS;i++){  
+	for(i=0;i<NUM_THREADS;i++){  
 	  pthread_create(&threads[i], &attr, process_code, (void *)i);
 	}	
 	i=4;
