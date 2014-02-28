@@ -9,7 +9,7 @@ typedef
 struct message{
 	char msg[100];
 	message_type type;
-	int receiver; //if type = RECIEVE
+	int receiver; //if type = SEND
 }
 message;
 
