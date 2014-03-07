@@ -842,7 +842,23 @@ int handle_guest_syscalls() {
 	}
 	
 	case syscall_code_read_write_virtual_disk:
-	{	printf("Syscalled \n");
+
+	{	
+		// insert an element in the priority queue for the interrupt of the process. 
+		// global priority queue
+		// get the max no of blocks block no and tracks etc
+		// block the current process which made the syscall.
+		// ctx  changes
+		
+		
+		//trackNo = BBn/no_of_sectors;
+		//sectorNo = BBn%no_of_sectors;
+		
+		
+		
+		
+		
+		printf("Syscalled \n");
 		int op = isa_regs->ebx;
 		int bytes = isa_regs->ecx;
 		int address = isa_regs->edx;
