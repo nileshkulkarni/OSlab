@@ -98,7 +98,7 @@ void ke_run(void)
 
 		for ( i = 0 ; i < ctx->instr_slice ; ++i) {
 			ctx_execute_inst(ctx);
-
+			ke->instruction_no++;
 			if (ctx!=ke->running_list_head)
 				break;
 		}
