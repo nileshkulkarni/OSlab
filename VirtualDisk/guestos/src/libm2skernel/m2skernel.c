@@ -158,7 +158,7 @@ interrupt_t* getNextInterrupt(){
     interrupt_t* minInterrupt = ke->interrupt_list_head;
     int minInstrNo = -1;
     if(start ==NULL){
-        printf("No IO interrupt present\n");               
+       // printf("No IO interrupt present\n");               
     }
     else{
            minInstrNo = start->instruction_no;
@@ -205,6 +205,7 @@ void ke_run(void)
 			
 
 			while(next_interrupt != NULL && next_interrupt->instruction_no == ke->instruction_no){
+				printf("Executing a interrupt\n at time %d" , ke->instruction_no);
 				ke_list_insert_tail(ke_list_running , next_interrupt->context);
 				ke_list_remove(ke_list_suspended , next_interrupt->context);
 				//LIST_REMOVE(interrupt , next_interrupt);
