@@ -209,6 +209,16 @@ void ke_run(void)
 	struct ctx_t *ctx, *ctx_trav; 
 	int flag = 0;
 
+   if(ke->running_list_head == NULL){
+	interrupt_t *next_interrupt = getNextInterrupt();
+	if(next_interrupt != NULL){
+		ke->instruction_no = next_interrupt->instruction_no;
+		ke_handle_interrupts();
+		goto RUN;
+	}
+  }
+
+
 	/* Run an instruction from every running process */
 RUN :
 	for (ctx = ke->running_list_head; ctx; ctx = ctx->running_next) {
@@ -230,12 +240,6 @@ RUN :
 	}
 	
 	
-	interrupt_t *next_interrupt = getNextInterrupt();
-	if(next_interrupt != NULL){
-		ke->instruction_no = next_interrupt->instruction_no;
-		ke_handle_interrupts();
-		goto RUN;
-	}
 	
 			
 	/* Free finished contexts */
