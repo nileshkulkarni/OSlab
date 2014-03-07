@@ -884,7 +884,8 @@ int handle_guest_syscalls() {
 		
 		ke_list_insert_tail(ke_list_interrupt,isa_ctx);
 		
-		newInterrupt->instruction_no = ke->instruction_no + trackNo  + sectorNo; 
+		//newInterrupt->instruction_no = ke->instruction_no + trackNo  + sectorNo; 
+		newInterrupt->instruction_no = ke->instruction_no + 1; 
 		newInterrupt->context = isa_ctx;
 		newInterrupt->type = op>0?OUTPUT:INPUT;
 		
@@ -899,7 +900,7 @@ int handle_guest_syscalls() {
 		else{
 			ke->interrupt_list_head = newInterrupt;
 			ke->interrupt_list_tail = newInterrupt;
-			newI nterrupt->interrupt_next =NULL;
+			newInterrupt->interrupt_next =NULL;
 			
 		}
 		ke_list_remove(ke_list_running,isa_ctx);

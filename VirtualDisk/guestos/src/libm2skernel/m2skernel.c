@@ -115,8 +115,42 @@ void ke_done(void)
 	syscall_summary();
 }
 
+void insertInterrupt(interrupt_t* intpt){
+    if(ke->interrupt_list_head == NULL){
+        ke->interrupt_list_head = intpt;
+        ke->interrupt_list_tail = intpt;
+    }
+    ke->interrupt_list_tail->interrupt_next = intpt;
+    ke->interrupt_list_tail = intpt;
+    ke->interrupt_list_tail->interrupt_next = NULL;
+}
+void deleteInterrupt(interrupt_t* del_ptr){
+    if(!ke->interrupt_list_head){
+        printf("No interrupt present\n");
+        return;
+    }
+    interrupt_t* temp = ke->interrupt_list_head;
+    //printf("there%d\n", temp->interrupt_next->instruction_no);
+    if(temp == del_ptr){
+        ke->interrupt_list_head = temp->interrupt_next;
+        return;
+    }
+    while(temp->interrupt_next){
+       // printf("loop%d\n",temp->instruction_no );
+        if(temp->interrupt_next == del_ptr){
+            temp->interrupt_next = del_ptr->interrupt_next;
+            if(del_ptr == ke->interrupt_list_tail){
+                ke->interrupt_list_tail = temp;
+                printf("here%d\n", ke->interrupt_list_head->instruction_no);
+                break;
+            }
+            
+        }
+        temp = temp->interrupt_next;
+    }
+    return;
 
-
+}
 
 
 interrupt_t* getNextInterrupt(){
@@ -173,7 +207,8 @@ void ke_run(void)
 			while(next_interrupt != NULL && next_interrupt->instruction_no == ke->instruction_no){
 				ke_list_insert_tail(ke_list_running , next_interrupt->context);
 				ke_list_remove(ke_list_suspended , next_interrupt->context);
-				LIST_REMOVE(interrupt , next_interrupt);
+				//LIST_REMOVE(interrupt , next_interrupt);
+				deleteInterrupt(next_interrupt);
 				next_interrupt = getNextInterrupt();
 				assert(next_interrupt == NULL || next_interrupt->instruction_no >= ke->instruction_no);
 			}	
