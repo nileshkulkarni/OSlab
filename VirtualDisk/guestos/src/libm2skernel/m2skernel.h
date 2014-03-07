@@ -598,6 +598,27 @@ extern mem_check_table* mct_e;
 
 
 
+
+
+
+/* Interrrupt */
+
+enum interrupt_type{INPUT , OUTPUT};
+
+
+typedef 
+struct interrupt_t {
+	
+	int instruction_no;
+	struct ctx_t *context;
+	interrupt_type type;
+}
+interrupt_t;
+
+
+
+
+
 /* Kernel */
 
 struct kernel_t {
@@ -619,6 +640,9 @@ struct kernel_t {
 	/* Flag set when any context changes any status other than 'specmode' */
 	int context_reschedule;
 
+	long long instruction_no;
+
+
 	/* Lists of contexts */
 	int context_count, context_max;
 	int running_count, running_max;
@@ -632,7 +656,7 @@ struct kernel_t {
 	struct ctx_t *zombie_list_head, *zombie_list_tail;
 	struct ctx_t *finished_list_head, *finished_list_tail;
 	struct ctx_t *alloc_list_head, *alloc_list_tail;
-    
+    struct interrupt_t *interrupts;
 };
 
 enum ke_list_enum {
