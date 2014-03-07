@@ -103,8 +103,9 @@ void ke_run(void)
 			assert(next_interrupt == NULL || next_interrupt->instruction_no >= instruction_no);
 			
 			while(next_interrupt != NULL && next_interrupt->instruction_no == instruction_no){
-				//do something
-				popMinInterrupt();
+				ke_list_insert_tail(ke_list_running , next_interrupt->contet);
+				ke_list_remove(ke_list_suspended , next_interrupt->context);
+				deleteInterrupt();
 				next_interrupt = getNextInterrupt();
 				assert(next_interrupt == NULL || next_interrupt->instruction_no >= instruction_no);
 			}	
