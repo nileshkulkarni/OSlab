@@ -27,6 +27,9 @@
 mem_check_table* mct_e;
 
 
+int NUM_HEADS;
+int NUM_TRACKS;
+int NUM_SECTORS;
 
 
 

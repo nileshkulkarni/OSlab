@@ -823,6 +823,8 @@ void set_instruction_slice(int slice) {
 	isa_ctx->instr_slice = slice;
 }
 
+
+
 int handle_guest_syscalls() {
     int syscode = isa_regs->eax;
     int retval = 0;
@@ -850,11 +852,6 @@ int handle_guest_syscalls() {
 		// ctx  changes
 		
 		
-		//trackNo = BBn/no_of_sectors;
-		//sectorNo = BBn%no_of_sectors;
-		
-		
-		
 		
 		
 		printf("Syscalled \n");
@@ -865,14 +862,40 @@ int handle_guest_syscalls() {
 		int offset	= isa_regs->edi;
 		int pid=get_pid();
 		
-		printf("Parameters are : %d %d %d %d %d \n", op , bytes , address , BBn , offset);
 		
-		int blockSize = 512;
+		
+		printf("Parameters are : %d %d %d %d %d \n", op , bytes , address , BBn , offset);
 		
 		if(op!=1 && op!=0){
 				printf("Invalid operation to read/write , exiting Pranali \n");
 				exit(0);
 		}
+		
+		int trackNo = BBn/NUM_SECTORS;
+		int sectorNo = BBn%NUM_SECTORS;
+		
+		
+		
+		struct interrupt_t *newInterrupt = malloc(sizeof(struct interrupt_t));
+		struct interrupt_t *tempTail;
+		
+		/* replace with appropriate function for the proiorty queue */
+		
+		newInterrupt->instruction_no = ke->instruction_no + trackNo  + sectorNo; 
+		newInterrupt->context = isa_ctx;
+		newInterrupt->type = op>0?OUTPUT:INPUT;
+		
+		
+		tempTail = ke->interrupt_tail;
+		ke->interrupt_tail = newInterrupt;
+		tempTail->next = newInterrupt;
+		
+		ke_list_remove(ke_list_running,isa_ctx);
+		ke_list_insert_tail(ke_list_suspended,isa_ctx);
+		
+		int blockSize = 512;
+		
+	
 		
 		
 		int check = 1;
