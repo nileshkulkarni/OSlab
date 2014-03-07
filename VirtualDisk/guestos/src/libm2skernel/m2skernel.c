@@ -106,7 +106,7 @@ void ke_run(void)
 			while(next_interrupt != NULL && next_interrupt->instruction_no == instruction_no){
 				ke_list_insert_tail(ke_list_running , next_interrupt->contet);
 				ke_list_remove(ke_list_suspended , next_interrupt->context);
-				deleteInterrupt();
+				ke_list_remove(ke_list_interrupt , next_interrupt);
 				next_interrupt = getNextInterrupt();
 				assert(next_interrupt == NULL || next_interrupt->instruction_no >= ke->instruction_no);
 			}	
@@ -184,6 +184,7 @@ void ke_list_insert_head(enum ke_list_enum list, struct ctx_t *ctx)
 	case ke_list_zombie: LIST_INSERT_HEAD(zombie, ctx); break;
 	case ke_list_suspended: LIST_INSERT_HEAD(suspended, ctx); break;
 	case ke_list_alloc: LIST_INSERT_HEAD(alloc, ctx); break;
+	case ke_list_interrupt : LIST_INSERT_HEAD(interrupt, ctx); break;
 	}
 }
 
@@ -198,6 +199,8 @@ void ke_list_insert_tail(enum ke_list_enum list, struct ctx_t *ctx)
 	case ke_list_zombie: LIST_INSERT_TAIL(zombie, ctx); break;
 	case ke_list_suspended: LIST_INSERT_TAIL(suspended, ctx); break;
 	case ke_list_alloc: LIST_INSERT_TAIL(alloc, ctx); break;
+	case ke_list_interrupt : LIST_INSERT_TAIL(interrupt, ctx); break;
+
 	}
 }
 
@@ -212,6 +215,7 @@ void ke_list_remove(enum ke_list_enum list, struct ctx_t *ctx)
 	case ke_list_zombie: LIST_REMOVE(zombie, ctx); break;
 	case ke_list_suspended: LIST_REMOVE(suspended, ctx); break;
 	case ke_list_alloc: LIST_REMOVE(alloc, ctx); break;
+	case ke_list_interrupt : LIST_REMOVE(interrupt, ctx); break;
 	}
 }
 
@@ -225,6 +229,7 @@ int ke_list_member(enum ke_list_enum list, struct ctx_t *ctx)
 	case ke_list_zombie: return LIST_MEMBER(zombie, ctx);
 	case ke_list_suspended: return LIST_MEMBER(suspended, ctx);
 	case ke_list_alloc: return LIST_MEMBER(alloc, ctx);
+	case ke_list_interrupt : return LIST_MEMBER(interrupt, ctx); 
 	}
 	return 0;
 }

@@ -614,9 +614,9 @@ typedef struct interrupt_t {
 	int instruction_no;
 	struct ctx_t *context;
 	interrupt_type type;
-	
-	struct interrupt_t * next;
-} interrupt_t;
+	struct interrupt_t *next;
+}
+interrupt_t;
 
 
 
@@ -659,7 +659,7 @@ struct kernel_t {
 	struct ctx_t *zombie_list_head, *zombie_list_tail;
 	struct ctx_t *finished_list_head, *finished_list_tail;
 	struct ctx_t *alloc_list_head, *alloc_list_tail;
-    struct interrupt_t *interrupt_head , *interrupt_tail;
+    struct interrupt_t *interrupt_list_head , *interrupt_list_tail;
 };
 
 enum ke_list_enum {
