@@ -838,7 +838,6 @@ int handle_guest_syscalls() {
 			int slice = isa_regs->ebx;
 			set_instruction_slice(slice);
 			break;
-		
 	}
 	
 	case syscall_code_read_write_virtual_disk:

@@ -41,6 +41,7 @@ void ke_init(void)
 	isa_init();
 	ke = calloc(1, sizeof(struct kernel_t));
 	ke->current_pid = 1000;  /* Initial assigned pid */
+	ke->instruction_no = 0;
 	
 	/* Initialize mutex for variables controlling calls to 'ke_process_events()' */
 	pthread_mutex_init(&ke->process_events_mutex, NULL);
