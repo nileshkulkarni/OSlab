@@ -97,6 +97,20 @@ void ke_run(void)
 		//printf ("out - %p\n", ctx);
 
 		for ( i = 0 ; i < ctx->instr_slice ; ++i) {
+			
+			//Handle Interrupts
+			interrupt_t *next_interrupt = getNextInterrupt();
+			assert(next_interrupt == NULL || next_interrupt->instruction_no >= instruction_no);
+			
+			while(next_interrupt != NULL && next_interrupt->instruction_no == instruction_no){
+				//do something
+				popMinInterrupt();
+				next_interrupt = getNextInterrupt();
+				assert(next_interrupt == NULL || next_interrupt->instruction_no >= instruction_no);
+			}	
+			//Interrupt Handling done
+			
+				
 			ctx_execute_inst(ctx);
 			ke->instruction_no++;
 			if (ctx!=ke->running_list_head)
