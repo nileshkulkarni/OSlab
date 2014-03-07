@@ -9,6 +9,7 @@ int main(){
    // printf("Typecasted check : %p %d %p \n" , a , c , (void *)c); 
     
     //printf("About to make syscall's  %d\n", (int) a);
+      
     syscall(351,0,sizeof(int),(int)a,1,1);
     //printf("Done with syscall 1\n");
 	syscall(351,1,sizeof(int),(int)b,1,1);

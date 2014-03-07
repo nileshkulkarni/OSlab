@@ -598,21 +598,23 @@ extern mem_check_table* mct_e;
 
 
 
+extern int NUM_HEADS ;
+extern int NUM_SECTORS;
+extern int NUM_TRACKS;
+
 
 
 
 /* Interrrupt */
 
-enum interrupt_type{INPUT , OUTPUT};
+typedef enum {INPUT , OUTPUT} interrupt_type;
 
 
-typedef 
-struct interrupt_t {
-	
+typedef struct interrupt_t {
 	int instruction_no;
 	struct ctx_t *context;
 	interrupt_type type;
-	interrupt_t *next;
+	struct interrupt_t *next;
 }
 interrupt_t;
 

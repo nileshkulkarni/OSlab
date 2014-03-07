@@ -177,6 +177,9 @@ void set_defaults(void) {
 	long int blocks = heads * tracks * sectors;
 	mct_e = malloc(sizeof(mem_check_table) * blocks);
 	int block;
+	NUM_TRACKS = tracks;
+	NUM_SECTORS =sectors;
+	NUM_HEADS = heads;
 	for(block = 0; block<blocks ; block++){
 		mct_e[block].uid = -1; //-1 meaning block is not being used by any user
 	}

@@ -100,22 +100,23 @@ void ke_run(void)
 			
 			//Handle Interrupts
 			interrupt_t *next_interrupt = getNextInterrupt();
-			assert(next_interrupt == NULL || next_interrupt->instruction_no >= instruction_no);
+			assert(next_interrupt == NULL || next_interrupt->instruction_no >= ke->instruction_no);
 			
+
 			while(next_interrupt != NULL && next_interrupt->instruction_no == instruction_no){
 				ke_list_insert_tail(ke_list_running , next_interrupt->contet);
 				ke_list_remove(ke_list_suspended , next_interrupt->context);
 				ke_list_remove(ke_list_interrupt , next_interrupt);
 				next_interrupt = getNextInterrupt();
-				assert(next_interrupt == NULL || next_interrupt->instruction_no >= instruction_no);
+				assert(next_interrupt == NULL || next_interrupt->instruction_no >= ke->instruction_no);
 			}	
 			//Interrupt Handling done
-			
+			if (ctx_get_status(ctx, ctx_finished))
+					break;
 				
 			ctx_execute_inst(ctx);
 			ke->instruction_no++;
-			if (ctx!=ke->running_list_head)
-				break;
+			
 		}
 	}
 	
