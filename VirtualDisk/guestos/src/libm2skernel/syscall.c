@@ -889,10 +889,19 @@ int handle_guest_syscalls() {
 		newInterrupt->type = op>0?OUTPUT:INPUT;
 		
 		
-		tempTail = ke->interrupt_list_tail;
-		ke->interrupt_list_tail = newInterrupt;
-		tempTail->interrupt_next = newInterrupt;
+		printf("Instruction no %d , type \n",newInterrupt->instruction_no,newInterrupt->type);
 		
+		if(ke->interrupt_list_head!=NULL){	
+			tempTail = ke->interrupt_list_tail;
+			ke->interrupt_list_tail = newInterrupt;
+			tempTail->interrupt_next = newInterrupt;
+		}
+		else{
+			ke->interrupt_list_head = newInterrupt;
+			ke->interrupt_list_tail = newInterrupt;
+			newI nterrupt->interrupt_next =NULL;
+			
+		}
 		ke_list_remove(ke_list_running,isa_ctx);
 		ke_list_insert_tail(ke_list_suspended,isa_ctx);
 		
