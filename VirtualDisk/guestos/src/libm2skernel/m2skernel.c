@@ -25,6 +25,36 @@
 struct kernel_t *ke;
 
 
+
+
+#define LIST_INSERT_HEAD(name, ctx) { \
+	assert(!ctx->name##_next && !ctx->name##_prev); \
+	ctx->name##_next = ke->name##_list_head; \
+	if (ctx->name##_next) ctx->name##_next->name##_prev = ctx; \
+	ke->name##_list_head = ctx; \
+	if (!ke->name##_list_tail) ke->name##_list_tail = ctx; \
+	ke->name##_count++; \
+	ke->name##_max = MAX(ke->name##_max, ke->name##_count); }
+
+#define LIST_INSERT_TAIL(name, ctx) { \
+	assert(!ctx->name##_next && !ctx->name##_prev); \
+	ctx->name##_prev = ke->name##_list_tail; \
+	if (ctx->name##_prev) ctx->name##_prev->name##_next = ctx; \
+	ke->name##_list_tail = ctx; \
+	if (!ke->name##_list_head) ke->name##_list_head = ctx; \
+	ke->name##_count++; }
+
+#define LIST_REMOVE(name, ctx) { \
+	if (ctx == ke->name##_list_head) ke->name##_list_head = ke->name##_list_head->name##_next; \
+	if (ctx == ke->name##_list_tail) ke->name##_list_tail = ke->name##_list_tail->name##_prev; \
+	if (ctx->name##_prev) ctx->name##_prev->name##_next = ctx->name##_next; \
+	if (ctx->name##_next) ctx->name##_next->name##_prev = ctx->name##_prev; \
+	ctx->name##_prev = ctx->name##_next = NULL; \
+	ke->name##_count--; }
+
+#define LIST_MEMBER(name, ctx) \
+	(ke->name##_list_head == ctx || ctx->name##_prev || ctx->name##_next)
+	
 /* Initialization */
 
 static uint64_t ke_init_time = 0;
@@ -90,8 +120,8 @@ void ke_done(void)
 
 
 interrupt_t* getNextInterrupt(){
-    interrupt_t* start = ke->interrupt_head;
-    interrupt_t* minInterrupt = ke->interrupt_head;
+    interrupt_t* start = ke->interrupt_list_head;
+    interrupt_t* minInterrupt = ke->interrupt_list_head;
     int minInstrNo = -1;
     if(start ==NULL){
         printf("No IO interrupt present\n");               
@@ -99,8 +129,8 @@ interrupt_t* getNextInterrupt(){
     else{
            minInstrNo = start->instruction_no;
            minInterrupt = start;
-           start = start->next;
-           for(;start!=ke->interrupt_tail;start = start->next){
+           start = start->interrupt_next;
+           for(;start;start = start->interrupt_next){
                    
                if(minInstrNo > start->instruction_no){
                        minInstrNo = start->instruction_no;
@@ -133,26 +163,28 @@ void ke_run(void)
 		int i;
 		//printf ("out - %p\n", ctx);
 
-		for ( i = 0 ; i < ctx->instr_slice ; ++i) {
+		for ( i = 0 ; i < ctx->instr_slice; ++i) {
 			
 			//Handle Interrupts
 			interrupt_t *next_interrupt = getNextInterrupt();
 			assert(next_interrupt == NULL || next_interrupt->instruction_no >= ke->instruction_no);
 			
 
-			while(next_interrupt != NULL && next_interrupt->instruction_no == instruction_no){
-				ke_list_insert_tail(ke_list_running , next_interrupt->contet);
+			while(next_interrupt != NULL && next_interrupt->instruction_no == ke->instruction_no){
+				ke_list_insert_tail(ke_list_running , next_interrupt->context);
 				ke_list_remove(ke_list_suspended , next_interrupt->context);
-				LIST_REMOVE(ke_list_interrupt , next_interrupt);
+				LIST_REMOVE(interrupt , next_interrupt);
 				next_interrupt = getNextInterrupt();
 				assert(next_interrupt == NULL || next_interrupt->instruction_no >= ke->instruction_no);
 			}	
 			//Interrupt Handling done
-			
+			     if (ctx_get_status(ctx, ctx_finished))
+                               break;
 			ctx_execute_inst(ctx);
 			ke->instruction_no++;
-			if(ctx!=ke->running_list_head)
+			/*if(ctx!=ke->running_list_head)
 				break;
+				* */
 		}
 	}
 	
@@ -181,34 +213,6 @@ void ke_dump(FILE *f)
 }
 
 
-#define LIST_INSERT_HEAD(name, ctx) { \
-	assert(!ctx->name##_next && !ctx->name##_prev); \
-	ctx->name##_next = ke->name##_list_head; \
-	if (ctx->name##_next) ctx->name##_next->name##_prev = ctx; \
-	ke->name##_list_head = ctx; \
-	if (!ke->name##_list_tail) ke->name##_list_tail = ctx; \
-	ke->name##_count++; \
-	ke->name##_max = MAX(ke->name##_max, ke->name##_count); }
-
-#define LIST_INSERT_TAIL(name, ctx) { \
-	assert(!ctx->name##_next && !ctx->name##_prev); \
-	ctx->name##_prev = ke->name##_list_tail; \
-	if (ctx->name##_prev) ctx->name##_prev->name##_next = ctx; \
-	ke->name##_list_tail = ctx; \
-	if (!ke->name##_list_head) ke->name##_list_head = ctx; \
-	ke->name##_count++; }
-
-#define LIST_REMOVE(name, ctx) { \
-	if (ctx == ke->name##_list_head) ke->name##_list_head = ke->name##_list_head->name##_next; \
-	if (ctx == ke->name##_list_tail) ke->name##_list_tail = ke->name##_list_tail->name##_prev; \
-	if (ctx->name##_prev) ctx->name##_prev->name##_next = ctx->name##_next; \
-	if (ctx->name##_next) ctx->name##_next->name##_prev = ctx->name##_prev; \
-	ctx->name##_prev = ctx->name##_next = NULL; \
-	ke->name##_count--; }
-
-#define LIST_MEMBER(name, ctx) \
-	(ke->name##_list_head == ctx || ctx->name##_prev || ctx->name##_next)
-
 
 void ke_list_insert_head(enum ke_list_enum list, struct ctx_t *ctx)
 {
@@ -220,7 +224,7 @@ void ke_list_insert_head(enum ke_list_enum list, struct ctx_t *ctx)
 	case ke_list_zombie: LIST_INSERT_HEAD(zombie, ctx); break;
 	case ke_list_suspended: LIST_INSERT_HEAD(suspended, ctx); break;
 	case ke_list_alloc: LIST_INSERT_HEAD(alloc, ctx); break;
-	case ke_list_interrupt : LIST_INSERT_HEAD(interrupt, ctx); break;
+	//case ke_list_interrupt : LIST_INSERT_HEAD(interrupt, ctx); break;
 	}
 }
 
@@ -235,7 +239,7 @@ void ke_list_insert_tail(enum ke_list_enum list, struct ctx_t *ctx)
 	case ke_list_zombie: LIST_INSERT_TAIL(zombie, ctx); break;
 	case ke_list_suspended: LIST_INSERT_TAIL(suspended, ctx); break;
 	case ke_list_alloc: LIST_INSERT_TAIL(alloc, ctx); break;
-	case ke_list_interrupt : LIST_INSERT_TAIL(interrupt, ctx); break;
+//	case ke_list_interrupt : LIST_INSERT_TAIL(interrupt, ctx); break;
 
 	}
 }
@@ -251,7 +255,7 @@ void ke_list_remove(enum ke_list_enum list, struct ctx_t *ctx)
 	case ke_list_zombie: LIST_REMOVE(zombie, ctx); break;
 	case ke_list_suspended: LIST_REMOVE(suspended, ctx); break;
 	case ke_list_alloc: LIST_REMOVE(alloc, ctx); break;
-	case ke_list_interrupt : LIST_REMOVE(interrupt, ctx); break;
+	//case ke_list_interrupt : LIST_REMOVE(interrupt, ctx); break;
 	}
 }
 
@@ -265,7 +269,7 @@ int ke_list_member(enum ke_list_enum list, struct ctx_t *ctx)
 	case ke_list_zombie: return LIST_MEMBER(zombie, ctx);
 	case ke_list_suspended: return LIST_MEMBER(suspended, ctx);
 	case ke_list_alloc: return LIST_MEMBER(alloc, ctx);
-	case ke_list_interrupt : return LIST_MEMBER(interrupt, ctx); 
+	//case ke_list_interrupt : return LIST_MEMBER(interrupt, ctx); 
 	}
 	return 0;
 }

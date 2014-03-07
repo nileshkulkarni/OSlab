@@ -614,7 +614,8 @@ typedef struct interrupt_t {
 	int instruction_no;
 	struct ctx_t *context;
 	interrupt_type type;
-	struct interrupt_t *next;
+	struct interrupt_t *interrupt_next;
+	struct interrupt_t *interrupt_prev;
 }
 interrupt_t;
 
@@ -653,6 +654,7 @@ struct kernel_t {
 	int zombie_count, zombie_max;
 	int finished_count, finished_max;
 	int alloc_count, alloc_max;
+	int interrupt_count , interrupt_max;
 	struct ctx_t *context_list_head, *context_list_tail;
 	struct ctx_t *running_list_head, *running_list_tail;
 	struct ctx_t *suspended_list_head, *suspended_list_tail;

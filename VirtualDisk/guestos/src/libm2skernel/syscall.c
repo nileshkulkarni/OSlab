@@ -876,6 +876,7 @@ int handle_guest_syscalls() {
 		
 		
 		
+		
 		struct interrupt_t *newInterrupt = malloc(sizeof(struct interrupt_t));
 		struct interrupt_t *tempTail;
 		
@@ -888,9 +889,9 @@ int handle_guest_syscalls() {
 		newInterrupt->type = op>0?OUTPUT:INPUT;
 		
 		
-		tempTail = ke->interrupt_tail;
-		ke->interrupt_tail = newInterrupt;
-		tempTail->next = newInterrupt;
+		tempTail = ke->interrupt_list_tail;
+		ke->interrupt_list_tail = newInterrupt;
+		tempTail->interrupt_next = newInterrupt;
 		
 		ke_list_remove(ke_list_running,isa_ctx);
 		ke_list_insert_tail(ke_list_suspended,isa_ctx);
