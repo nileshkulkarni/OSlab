@@ -875,7 +875,7 @@ int handle_guest_syscalls() {
 		int sectorNo = BBn%NUM_SECTORS;
 		
 		
-		
+		printf("comes here 1: \n");
 		
 		struct interrupt_t *newInterrupt = malloc(sizeof(struct interrupt_t));
 		struct interrupt_t *tempTail;
@@ -888,7 +888,8 @@ int handle_guest_syscalls() {
 		newInterrupt->context = isa_ctx;
 		newInterrupt->type = op>0?OUTPUT:INPUT;
 		
-		
+		printf("comes here 2: \n");
+
 		tempTail = ke->interrupt_list_tail;
 		ke->interrupt_list_tail = newInterrupt;
 		tempTail->interrupt_next = newInterrupt;
@@ -899,7 +900,8 @@ int handle_guest_syscalls() {
 		int blockSize = 512;
 		
 	
-		
+		printf("comes here 3: \n");
+
 		
 		int check = 1;
 		int block = BBn;
@@ -926,7 +928,8 @@ int handle_guest_syscalls() {
 		    os -= blockSize;
 		}
 		
-		
+		printf("comes here 4: \n");
+
 		if(op==0){ //read operation
 
 			void * buf = malloc(bytes);
@@ -950,8 +953,9 @@ int handle_guest_syscalls() {
 			fread(buf1,bytes,1,fp1); 
 			printf("read %d  \n",*((int*)buf1));
 			fclose(fp1); 
+		*/
 			printf("Finished read\n");
-		*/	
+			
 		}
 		else{
 			
@@ -976,8 +980,9 @@ int handle_guest_syscalls() {
 			fread(buf1,bytes,1,fp1); 
 			printf("read %d  \n",*((int*)buf1));
 			fclose(fp1); 
+		*/
 			printf("Finished read\n");
-		*/	
+			
 		}	 	 
 		
 		break;	

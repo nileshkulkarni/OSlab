@@ -120,6 +120,7 @@ void ke_done(void)
 
 
 interrupt_t* getNextInterrupt(){
+    
     interrupt_t* start = ke->interrupt_list_head;
     interrupt_t* minInterrupt = ke->interrupt_list_head;
     int minInstrNo = -1;
@@ -131,7 +132,7 @@ interrupt_t* getNextInterrupt(){
            minInterrupt = start;
            start = start->interrupt_next;
            for(;start;start = start->interrupt_next){
-                   
+               
                if(minInstrNo > start->instruction_no){
                        minInstrNo = start->instruction_no;
                        minInterrupt = start;
@@ -140,13 +141,29 @@ interrupt_t* getNextInterrupt(){
            
     }
     return minInterrupt;
-
 }
 
 
 
 
 
+
+
+
+int ke_handle_interrupts(void){
+
+	interrupt_t *next_interrupt = getNextInterrupt();
+	assert(next_interrupt == NULL || next_interrupt->instruction_no >= ke->instruction_no);
+	
+
+	while(next_interrupt != NULL && next_interrupt->instruction_no == ke->instruction_no){
+		ke_list_insert_tail(ke_list_running , next_interrupt->context);
+		ke_list_remove(ke_list_suspended , next_interrupt->context);
+		LIST_REMOVE(interrupt , next_interrupt);
+		next_interrupt = getNextInterrupt();
+		assert(next_interrupt == NULL || next_interrupt->instruction_no >= ke->instruction_no);
+	}	
+}
 
 
 
@@ -159,27 +176,16 @@ void ke_run(void)
 	int flag = 0;
 
 	/* Run an instruction from every running process */
+RUN :
 	for (ctx = ke->running_list_head; ctx; ctx = ctx->running_next) {
 		int i;
 		//printf ("out - %p\n", ctx);
 
 		for ( i = 0 ; i < ctx->instr_slice; ++i) {
 			
-			//Handle Interrupts
-			interrupt_t *next_interrupt = getNextInterrupt();
-			assert(next_interrupt == NULL || next_interrupt->instruction_no >= ke->instruction_no);
-			
-
-			while(next_interrupt != NULL && next_interrupt->instruction_no == ke->instruction_no){
-				ke_list_insert_tail(ke_list_running , next_interrupt->context);
-				ke_list_remove(ke_list_suspended , next_interrupt->context);
-				LIST_REMOVE(interrupt , next_interrupt);
-				next_interrupt = getNextInterrupt();
-				assert(next_interrupt == NULL || next_interrupt->instruction_no >= ke->instruction_no);
-			}	
-			//Interrupt Handling done
-			     if (ctx_get_status(ctx, ctx_finished))
-                               break;
+			ke_handle_interrupts();
+	    	if (ctx_get_status(ctx, ctx_finished))
+                break;
 			ctx_execute_inst(ctx);
 			ke->instruction_no++;
 			/*if(ctx!=ke->running_list_head)
@@ -188,6 +194,16 @@ void ke_run(void)
 		}
 	}
 	
+	
+	interrupt_t *next_interrupt = getNextInterrupt();
+	if(next_interrupt != NULL){
+		ke_handle_interrupts();
+		goto RUN;
+	}
+	
+	
+	printf(" 4 \n");
+			
 	/* Free finished contexts */
 	while (ke->finished_list_head)
 		ctx_free(ke->finished_list_head);
