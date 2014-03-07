@@ -881,6 +881,8 @@ int handle_guest_syscalls() {
 		
 		/* replace with appropriate function for the proiorty queue */
 		
+		ke_list_insert_tail(ke_list_interrupt,isa_ctx);
+		
 		newInterrupt->instruction_no = ke->instruction_no + trackNo  + sectorNo; 
 		newInterrupt->context = isa_ctx;
 		newInterrupt->type = op>0?OUTPUT:INPUT;

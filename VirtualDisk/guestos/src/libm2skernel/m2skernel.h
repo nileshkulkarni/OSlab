@@ -668,7 +668,8 @@ enum ke_list_enum {
 	ke_list_suspended,
 	ke_list_zombie,
 	ke_list_finished,
-	ke_list_alloc
+	ke_list_alloc,
+	ke_list_interrupt
 };
 
 void ke_list_insert_head(enum ke_list_enum list, struct ctx_t *ctx);
