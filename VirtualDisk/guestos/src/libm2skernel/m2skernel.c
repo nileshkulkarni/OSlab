@@ -85,6 +85,43 @@ void ke_done(void)
 	syscall_summary();
 }
 
+
+
+
+
+interrupt_t* getNextInterrupt(){
+    interrupt_t* start = ke->interrupt_head;
+    interrupt_t* minInterrupt = ke->interrupt_head;
+    int minInstrNo = -1;
+    if(start ==NULL){
+        printf("No IO interrupt present\n");               
+    }
+    else{
+           minInstrNo = start->instruction_no;
+           minInterrupt = start;
+           start = start->next;
+           for(;start!=ke->interrupt_tail;start = start->next){
+                   
+               if(minInstrNo > start->instruction_no){
+                       minInstrNo = start->instruction_no;
+                       minInterrupt = start;
+               }
+           }
+           
+    }
+    return minInterrupt;
+
+}
+
+
+
+
+
+
+
+
+
+
 /* Execute one instruction from each running context. */
 void ke_run(void)
 {
@@ -106,17 +143,16 @@ void ke_run(void)
 			while(next_interrupt != NULL && next_interrupt->instruction_no == instruction_no){
 				ke_list_insert_tail(ke_list_running , next_interrupt->contet);
 				ke_list_remove(ke_list_suspended , next_interrupt->context);
-				ke_list_remove(ke_list_interrupt , next_interrupt);
+				LIST_REMOVE(ke_list_interrupt , next_interrupt);
 				next_interrupt = getNextInterrupt();
 				assert(next_interrupt == NULL || next_interrupt->instruction_no >= ke->instruction_no);
 			}	
 			//Interrupt Handling done
-			if (ctx_get_status(ctx, ctx_finished))
-					break;
-				
+			
 			ctx_execute_inst(ctx);
 			ke->instruction_no++;
-			
+			if(ctx!=ke->running_list_head)
+				break;
 		}
 	}
 	
