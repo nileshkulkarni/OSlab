@@ -612,6 +612,7 @@ struct interrupt_t {
 	int instruction_no;
 	struct ctx_t *context;
 	interrupt_type type;
+	interrupt_t *next;
 }
 interrupt_t;
 
@@ -656,7 +657,7 @@ struct kernel_t {
 	struct ctx_t *zombie_list_head, *zombie_list_tail;
 	struct ctx_t *finished_list_head, *finished_list_tail;
 	struct ctx_t *alloc_list_head, *alloc_list_tail;
-    struct interrupt_t *interrupt_head , *interrupt_tail;
+    struct interrupt_t *interrupt_list_head , *interrupt_list_tail;
 };
 
 enum ke_list_enum {
@@ -665,7 +666,8 @@ enum ke_list_enum {
 	ke_list_suspended,
 	ke_list_zombie,
 	ke_list_finished,
-	ke_list_alloc
+	ke_list_alloc,
+	ke_list_interrupt
 };
 
 void ke_list_insert_head(enum ke_list_enum list, struct ctx_t *ctx);
