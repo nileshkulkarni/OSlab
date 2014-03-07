@@ -875,7 +875,6 @@ int handle_guest_syscalls() {
 		int sectorNo = BBn%NUM_SECTORS;
 		
 		
-		printf("comes here 1: \n");
 		
 		struct interrupt_t *newInterrupt = malloc(sizeof(struct interrupt_t));
 		struct interrupt_t *tempTail;
@@ -884,25 +883,33 @@ int handle_guest_syscalls() {
 		
 		ke_list_insert_tail(ke_list_interrupt,isa_ctx);
 		
-		newInterrupt->instruction_no = ke->instruction_no + trackNo  + sectorNo; 
+		
+		
+		newInterrupt->instruction_no = ke->instruction_no + 10 + abs(trackNo - ke->current_track)  + sectorNo; 
+		ke->current_track = trackNo;	
+		//newInterrupt->instruction_no = ke->instruction_no + 2; 
 		newInterrupt->context = isa_ctx;
 		newInterrupt->type = op>0?OUTPUT:INPUT;
 		
-		printf("comes here 2: \n");
-
-		tempTail = ke->interrupt_list_tail;
-		ke->interrupt_list_tail = newInterrupt;
-		tempTail->interrupt_next = newInterrupt;
+		printf("Instruction no %d , type \n",ke->instruction_no,newInterrupt->type);
 		
+		if(ke->interrupt_list_head!=NULL){	
+			tempTail = ke->interrupt_list_tail;
+			ke->interrupt_list_tail = newInterrupt;
+			tempTail->interrupt_next = newInterrupt;
+		}
+		else{
+			ke->interrupt_list_head = newInterrupt;
+			ke->interrupt_list_tail = newInterrupt;
+			newInterrupt->interrupt_next =NULL;
+			
+		}
 		ke_list_remove(ke_list_running,isa_ctx);
 		ke_list_insert_tail(ke_list_suspended,isa_ctx);
 		
 		int blockSize = 512;
 		
 	
-		printf("comes here 3: \n");
-
-		
 		int check = 1;
 		int block = BBn;
 		int os = offset;
@@ -928,8 +935,6 @@ int handle_guest_syscalls() {
 		    os -= blockSize;
 		}
 		
-		printf("comes here 4: \n");
-
 		if(op==0){ //read operation
 
 			void * buf = malloc(bytes);
@@ -1000,7 +1005,6 @@ int handle_guest_syscalls() {
 		}
 
 	}
-
 	return retval;
 }
 

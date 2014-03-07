@@ -72,6 +72,7 @@ void ke_init(void)
 	ke = calloc(1, sizeof(struct kernel_t));
 	ke->current_pid = 1000;  /* Initial assigned pid */
 	ke->instruction_no = 0;
+	ke->current_track = 0;
 	
 	/* Initialize mutex for variables controlling calls to 'ke_process_events()' */
 	pthread_mutex_init(&ke->process_events_mutex, NULL);
@@ -115,8 +116,42 @@ void ke_done(void)
 	syscall_summary();
 }
 
+void insertInterrupt(interrupt_t* intpt){
+    if(ke->interrupt_list_head == NULL){
+        ke->interrupt_list_head = intpt;
+        ke->interrupt_list_tail = intpt;
+    }
+    ke->interrupt_list_tail->interrupt_next = intpt;
+    ke->interrupt_list_tail = intpt;
+    ke->interrupt_list_tail->interrupt_next = NULL;
+}
+void deleteInterrupt(interrupt_t* del_ptr){
+    if(!ke->interrupt_list_head){
+        printf("No interrupt present\n");
+        return;
+    }
+    interrupt_t* temp = ke->interrupt_list_head;
+    //printf("there%d\n", temp->interrupt_next->instruction_no);
+    if(temp == del_ptr){
+        ke->interrupt_list_head = temp->interrupt_next;
+        return;
+    }
+    while(temp->interrupt_next){
+       // printf("loop%d\n",temp->instruction_no );
+        if(temp->interrupt_next == del_ptr){
+            temp->interrupt_next = del_ptr->interrupt_next;
+            if(del_ptr == ke->interrupt_list_tail){
+                ke->interrupt_list_tail = temp;
+                printf("here%d\n", ke->interrupt_list_head->instruction_no);
+                break;
+            }
+            
+        }
+        temp = temp->interrupt_next;
+    }
+    return;
 
-
+}
 
 
 interrupt_t* getNextInterrupt(){
@@ -125,7 +160,7 @@ interrupt_t* getNextInterrupt(){
     interrupt_t* minInterrupt = ke->interrupt_list_head;
     int minInstrNo = -1;
     if(start ==NULL){
-        printf("No IO interrupt present\n");               
+       // printf("No IO interrupt present\n");               
     }
     else{
            minInstrNo = start->instruction_no;
@@ -154,12 +189,11 @@ int ke_handle_interrupts(void){
 
 	interrupt_t *next_interrupt = getNextInterrupt();
 	assert(next_interrupt == NULL || next_interrupt->instruction_no >= ke->instruction_no);
-	
-
 	while(next_interrupt != NULL && next_interrupt->instruction_no == ke->instruction_no){
+		//printf("Executing interrupt : %d %d \n" , ke->instruction_no , next_interrupt->context->pid);
 		ke_list_insert_tail(ke_list_running , next_interrupt->context);
 		ke_list_remove(ke_list_suspended , next_interrupt->context);
-		LIST_REMOVE(interrupt , next_interrupt);
+		deleteInterrupt(next_interrupt);
 		next_interrupt = getNextInterrupt();
 		assert(next_interrupt == NULL || next_interrupt->instruction_no >= ke->instruction_no);
 	}	
@@ -181,28 +215,28 @@ RUN :
 		int i;
 		//printf ("out - %p\n", ctx);
 
-		for ( i = 0 ; i < ctx->instr_slice; ++i) {
+		for (i = 0 ; i < ctx->instr_slice; ++i) {
 			
 			ke_handle_interrupts();
 	    	if (ctx_get_status(ctx, ctx_finished))
                 break;
+
 			ctx_execute_inst(ctx);
 			ke->instruction_no++;
-			/*if(ctx!=ke->running_list_head)
+			if(ctx!=ke->running_list_head)
 				break;
-				* */
+			
 		}
 	}
 	
 	
 	interrupt_t *next_interrupt = getNextInterrupt();
 	if(next_interrupt != NULL){
+		ke->instruction_no = next_interrupt->instruction_no;
 		ke_handle_interrupts();
 		goto RUN;
 	}
 	
-	
-	printf(" 4 \n");
 			
 	/* Free finished contexts */
 	while (ke->finished_list_head)

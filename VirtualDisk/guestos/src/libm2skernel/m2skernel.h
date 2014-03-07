@@ -470,6 +470,9 @@ struct ctx_t {
 	struct ctx_t *parent;
 	int exit_signal;  /* Signal to send parent when finished */
 	int exit_code;  /* For zombie processes */
+	
+	
+	
 	uint32_t backup_eip;  /* Saved eip when in specmode */
 	uint32_t set_child_tid, clear_child_tid;
 	uint32_t robust_list_head;  /* robust futex list */
@@ -645,6 +648,7 @@ struct kernel_t {
 	int context_reschedule;
 
 	long long instruction_no;
+	int current_track;
 
 
 	/* Lists of contexts */
