@@ -125,6 +125,7 @@ void insertInterrupt(interrupt_t* intpt){
     ke->interrupt_list_tail = intpt;
     ke->interrupt_list_tail->interrupt_next = NULL;
 }
+
 void deleteInterrupt(interrupt_t* del_ptr){
     if(!ke->interrupt_list_head){
         printf("No interrupt present\n");
@@ -190,7 +191,12 @@ int ke_handle_interrupts(void){
 	interrupt_t *next_interrupt = getNextInterrupt();
 	assert(next_interrupt == NULL || next_interrupt->instruction_no >= ke->instruction_no);
 	while(next_interrupt != NULL && next_interrupt->instruction_no == ke->instruction_no){
-		//printf("Executing interrupt : %d %d \n" , ke->instruction_no , next_interrupt->context->pid);
+		
+		//printf("Handling interrupt. Instruction_no: %d, Process_id: %d \n" , ke->instruction_no , (next_interrupt->context)->pid);
+		//***************DEBUG IF YOU CAN************************
+		printf("Handling interrupt. Instruction_no: %d, " , ke->instruction_no);
+		printf("Process_Id : %d, Interrupt_type: ",(next_interrupt->context)->pid);
+		printf(next_interrupt->type==INPUT?"INPUT \n":"OUTPUT \n");
 		ke_list_insert_tail(ke_list_running , next_interrupt->context);
 		ke_list_remove(ke_list_suspended , next_interrupt->context);
 		deleteInterrupt(next_interrupt);

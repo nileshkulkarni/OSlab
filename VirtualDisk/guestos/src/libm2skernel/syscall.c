@@ -836,7 +836,7 @@ int handle_guest_syscalls() {
 	}
 	case syscall_code_set_instruction_slice:
 	{	
-			printf("comes here\n");
+			//printf("comes here\n");
 			int slice = isa_regs->ebx;
 			set_instruction_slice(slice);
 			break;
@@ -864,7 +864,7 @@ int handle_guest_syscalls() {
 		
 		
 		
-		printf("Parameters are : %d %d %d %d %d \n", op , bytes , address , BBn , offset);
+		//printf("Parameters are : %d %d %d %d %d \n", op , bytes , address , BBn , offset);
 		
 		if(op!=1 && op!=0){
 				printf("Invalid operation to read/write , exiting Pranali \n");
@@ -881,18 +881,16 @@ int handle_guest_syscalls() {
 		
 		/* replace with appropriate function for the proiorty queue */
 		
-		ke_list_insert_tail(ke_list_interrupt,isa_ctx);
-		
-		
-		
 		newInterrupt->instruction_no = ke->instruction_no + 10 + abs(trackNo - ke->current_track)  + sectorNo; 
 		ke->current_track = trackNo;	
 		//newInterrupt->instruction_no = ke->instruction_no + 2; 
 		newInterrupt->context = isa_ctx;
+		printf("PID is %d \n" , isa_ctx->pid);
 		newInterrupt->type = op>0?OUTPUT:INPUT;
 		
 		printf("Instruction no %d , type \n",ke->instruction_no,newInterrupt->type);
 		
+/*		
 		if(ke->interrupt_list_head!=NULL){	
 			tempTail = ke->interrupt_list_tail;
 			ke->interrupt_list_tail = newInterrupt;
@@ -904,8 +902,7 @@ int handle_guest_syscalls() {
 			newInterrupt->interrupt_next =NULL;
 			
 		}
-		ke_list_remove(ke_list_running,isa_ctx);
-		ke_list_insert_tail(ke_list_suspended,isa_ctx);
+*/ 
 		
 		int blockSize = 512;
 		
@@ -926,6 +923,11 @@ int handle_guest_syscalls() {
 			printf("Block %d is currently used by some other process. Mission Pranali Aborted \n", BBn); 
 			return 0;
 		}
+		
+		ke_list_remove(ke_list_running,isa_ctx);
+		ke_list_insert_tail(ke_list_suspended,isa_ctx);
+	    //ke_list_insert_tail(ke_list_interrupt,isa_ctx);
+		insertInterrupt(newInterrupt);
 		
 		block = BBn;
 		os = offset;
@@ -958,9 +960,9 @@ int handle_guest_syscalls() {
 			fread(buf1,bytes,1,fp1); 
 			printf("read %d  \n",*((int*)buf1));
 			fclose(fp1); 
-		*/
+		
 			printf("Finished read\n");
-			
+		*/	
 		}
 		else{
 			
@@ -985,9 +987,8 @@ int handle_guest_syscalls() {
 			fread(buf1,bytes,1,fp1); 
 			printf("read %d  \n",*((int*)buf1));
 			fclose(fp1); 
-		*/
 			printf("Finished read\n");
-			
+		*/	
 		}	 	 
 		
 		break;	

@@ -683,6 +683,7 @@ void ke_list_insert_tail(enum ke_list_enum list, struct ctx_t *ctx);
 void ke_list_remove(enum ke_list_enum list, struct ctx_t *ctx);
 int ke_list_member(enum ke_list_enum list, struct ctx_t *ctx);
 
+void insertInterrupt(interrupt_t* intpt);
 
 /* Global Multi2Sim
  * Kernel Variable */

@@ -355,7 +355,7 @@ void shell() {
         scanf("%s", user_prog_path);
 	printf ("Enter Uid for process: ");
 	scanf("%d", &uid);
-        printf("\n The entered file path is : %s", user_prog_path);
+     //   printf("\n The entered file path is : %s", user_prog_path);
         sprintf(temp, "\n[ Context %d ]", i);
         fputs(temp, f_in);
         sprintf(temp, "\nExe = %s\n", user_prog_path);
