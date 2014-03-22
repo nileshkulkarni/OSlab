@@ -1,0 +1,102 @@
+\documentclass[a4paper]{article}
+
+\usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage[colorinlistoftodos]{todonotes}
+
+\title{Preliminary Design Document , Operating Systems}
+
+\author{Nilesh Kulkarni(110050007), \\Rajlaxmi(110050087), \\Sushant Hiray(110050009), \\Deepali Adlakha(11d170020), \\Sanchit Garg(110050035), \\Vipul Harsh(110050034)}
+
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+The aim of the project is to implement the undersaid things. Allocation of swap space to a process, loading of code of a process in its swap space, allocation of page frames to processes, loading of initial page(s) in memory, raising of page faults during operation of a process, etc.
+\end{abstract}
+
+
+
+\section{Tasks}
+
+
+\subsection{Memory Management Unit}
+ A Memory Management unit with the following functionalities.
+    \begin{enumerate}
+        \item Normal Page Table for translating Logical addresses to Physical addresses. 
+        \item Raise Page fault interrupt and execute the VM routine for Page handling, in case of a missing Page table entry.
+        \item Page Table Entry will encapsulate following attributes: valid bit, dirty bit, reference bit(s)(required for LRU), *\footnote{Things marked in asterisk would be implemented if time permits}sharing information(linked list of process).      
+        \item Page Table will be stored in the OS's RAM 
+        \item *Inverted Page Table
+    \end{enumerate}
+   
+   
+\subsection{Virtual Memory Manager}
+   \begin{enumerate}
+        \item Routine for Page fault Handling.
+        \item Handling Protection Issues
+        \item Process Creation: Copy on Write
+        \item Preferred Page replacement Policies : LRU using local replacement and global replacement.
+        \item *Implementing Working set for a process, along with promotion \& demotion (initial allocation taken from config file)
+        
+   \end{enumerate}
+  
+\subsection{Shared Memory Management}
+    \begin{enumerate}
+        \item Allow Process to share pages among them.
+        \item Will especially come into play when process will Fork
+        \item Will be signalled by MMU if a particular shared page is written by a process, so that copy on write can be implemented.
+        
+    \end{enumerate}
+    
+\subsection{Swap Space Manager}
+    \begin{enumerate}
+        \item Keeping track of Swap Space
+        \item Support Page In \& Page Out functionality 
+        \item Process swaped in \& swapped out when given calls by Medium Term Scheduler
+        \item Pages swapped in and swapped out when asked by the VM Manager
+        
+    \end{enumerate}
+    
+    
+\subsection{Medium Term Scheduler}
+    \begin{enumerate}
+        \item Perform Swap in and Swap out of a process, blocked or dormant                 \item Signal swap space manager to swap in \& swap out a Process 
+    \end{enumerate}
+
+\section{Handling Events}
+    
+    
+    \subsection{Page Fault Event}
+        \begin{enumerate}
+            \item Block the faulting process \& estimate the time for page fault and create an interrupt accordingly to make the process "Ready". 
+            \item MMU will signal the VM 
+            \item VM will look up the replacement policy offered by the OS
+            \item Depending on whether the allocation strategy is global or local, it will iterate over all the page tables and get the page to be replaced .
+            \item The page should be swapped in, and the required page(which caused the page fault) to be swapped out.
+            \item Update page table entries accordingly( processes to be kept in mind)
+        \end{enumerate}
+     \subsection{Protection Violation}
+        \begin{enumerate}
+            \item MMU will signal the VM 
+            \item Process will be abort immediately on a violation of memory access
+        \end{enumerate}
+        
+     \subsection{*Writing on Shared Memory}
+        \begin{enumerate}
+            \item Create a copy of the page that was shared, and make the process that wants to write to point to it.
+            \item Update Page Table
+            
+         \end{enumerate}
+  
+
+
+
+\section{Deadline}
+    Expected to be completed by 15th April. Incase the Design is too ambitious please suggest.
+    
+\end{document}
