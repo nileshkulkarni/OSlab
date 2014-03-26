@@ -46,7 +46,7 @@
 
     a) struct kernel_t ke;
         is the global variable that has the ctx's of all the process running in different states
-        namely the part of the struct  context_list_head nad context_list_tail
+        namely the part of the struct  context_list_head and context_list_tail
     
     b) ctx->instr_slice variable in the struct ctx_t
     
