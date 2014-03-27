@@ -43,6 +43,7 @@
 
 struct page_table_entry;
 struct page_table;
+struct page_fault;
 struct vm_page;
 struct main_memory;
 struct sharing
@@ -56,6 +57,16 @@ struct page_table_entry{
 	struct *mem_page_t;
 };
 
+
+
+struct page_fault{
+	
+	int dirty_flag;
+	int valid_flag;
+	int reference_flag;
+	struct *vm_page;
+	struct *mem_page_t;
+};
 
 
 #endif
