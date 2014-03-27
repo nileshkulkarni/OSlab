@@ -1,0 +1,30 @@
+libvmm:
+
+   page_fault_manager
+   free_frame_manager
+   IO_manager
+   mmu
+
+   memory_protection
+
+   swap_space_manager
+
+structs: 
+    main_memory
+    page_in_main_memory
+    page_table_entry
+    page_table
+    
+     
+
+loading of programs in OS
+    allocate_pages_on_swap_disk
+    allocate_pages_in_main_memory
+    initialize the pages
+
+
+
+
+
+   
+
