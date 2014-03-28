@@ -1,0 +1,25 @@
+Work Allocation:
+
+   1)PageFault Routine: Call an interrupt : Sanchit Rajlaxmi  
+   
+   2)Swap In & Swap out : Loading program into swap : Nilesh Sushant
+
+   3)VM Manager : Vipul Deepali 
+        a) PageTable Management
+        b) Changes in running of the current code    
+
+   4)Free Space Manager: Random page removal : Sanchit Rajlaxmi
+
+
+
+Changes to be made:
+
+    loading program: loader.c
+    ke_run, ke_init
+    syscalls
+    run_init
+    add a new module for implementing vmm and its related function.
+
+    
+
+
