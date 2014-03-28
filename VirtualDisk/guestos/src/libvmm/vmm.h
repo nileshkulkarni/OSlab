@@ -11,9 +11,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- */
+ *  along with this program; 
+ */ 
 
 #ifndef VMM_H
 #define VMM_H
@@ -43,25 +42,67 @@
 struct page_table_entry;
 struct page_table;
 struct page_fault;
-struct vm_page;
-struct main_memory;
+struct vmem_page_t;
+struct vmem_t;
 struct sharing
+
+
+
+struct page_table{
+	
+	
+	
+	
+};
+
+
 
 struct page_table_entry{
 	int dirty_flag;
 	int valid_flag;
 	int reference_flag;
-	struct *vm_page;
+	struct *vmem_page_t;
 	struct *mem_page_t;
 };
 
 struct page_fault{
-	int dirty_flag;
-	int valid_flag;
-	int reference_flag;
-	struct *vm_page;
-	struct *mem_page_t;
+	
+	struct *vmem_page_t;
+	ctx_t *context;
 };
+
+
+struct vmem_t {
+	struct vmem_page_t *pages[MEM_PAGE_COUNT];
+	int sharing;  /* Number of contexts sharing memory map */
+	uint32_t last_address;  /* Address of last access */
+	int safe;  /* Safe mode */
+};
+
+
+struct vmem_page_t{
+	uint32_t tag;
+	enum mem_access_enum perm;  /* Access permissions; combination of flags */
+	struct vmem_page_t *next;
+	unsigned char *data;
+};
+
+
+
+
+
+/**
+ * PAGE FAULT ROUTINE
+ */ 
+int page_fault_routine(struct page_fault pf);
+
+
+/**
+ * SWAP SPACE ROUTINE
+ */ 
+void swap_space(struct ctx_t *context);
+void load_program_to_swap(struct ctx_t* ctx);
+
 
 
 #endif

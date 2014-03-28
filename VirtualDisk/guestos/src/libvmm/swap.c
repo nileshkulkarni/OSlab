@@ -11,5 +11,4 @@ void load_program_into_sim_disk(struct ctx_t * ctx){
 
 }
 
-void  
 
