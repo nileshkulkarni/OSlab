@@ -52,6 +52,8 @@ static struct ctx_t *ctx_do_create()
 
 	/* Create context and set its status */
 	ctx = calloc(1, sizeof(struct ctx_t));
+	//TODO: Add aliter stuff here
+
 	ctx->pid = ke->current_pid++;
 	ctx->instr_slice = instr_slice;
 
@@ -75,6 +77,7 @@ struct ctx_t *ctx_create()
 	struct ctx_t *ctx;
 	
 	ctx = ctx_do_create();
+	//TODO: aliter stuff inside this
 
 	/* A new parent context has a new memory map, a new
 	 * set of signal handlers, a new file descriptor table. */

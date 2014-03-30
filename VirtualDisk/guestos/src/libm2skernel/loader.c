@@ -467,10 +467,13 @@ void ld_load_prog_from_ctxconfig(char *ctxconfig)
 	char *exe, *cwd;
 	char *in, *out;
 	char section[MAX_STRING_SIZE];
-////	strcpy(ctxconfig,"ctxconfig");
-	/////printf("\n Entered ld_load_prog_from_ctxconfig\n\n");
+
+////strcpy(ctxconfig,"ctxconfig");
+/////printf("\n Entered ld_load_prog_from_ctxconfig\n\n");
 ///	printf("\n Entered ld_load_prog_from_ctxconfig\n\n");
 ///	printf("\n Value of ctxconfig has come as %s\n\n",ctxconfig);
+
+
 	/* Open context config file */
 	config = config_create("configfile");
 	if (!config_load(config))
@@ -522,25 +525,35 @@ void ld_load_prog_from_ctxconfig(char *ctxconfig)
 ///	printf("\n exitng from ld_load _prog\n");
 }
 
-
+//yahan pe khelna hain :P
 void ld_load_prog_from_cmdline(int argc, char **argv)
 {
 	struct ctx_t *ctx;
-	struct loader_t *ld;
+	struct loader_t *ld; //contains program data->(elf pointers,stdin/out thingy) 
+						 // and code pointers->(stack pointers)
 	
+
 	/* Create context */
 	ctx = ctx_create();
+	//TODO: aliter stuff inside this
+
+
+	
+	//ctx contains a new memory map, a new set of signal handlers and a file descriptor table
 	ld = ctx->loader;
+
 	char mypath[1][200];
-	///printf("\n Give path :");
-        ////fgets(mypath[0],200,stdin);	
+	
+
 	/* Arguments and environment */
 	ld_add_args_vector(ctx, argc,argv);
-///	ld_add_args_vector(ctx, 1,mypath);
+	///	ld_add_args_vector(ctx, 1,mypath);
 	ld_add_environ(ctx, "");
          
 	/* Current working directory */
 	ld->cwd = calloc(1, MAX_STRING_SIZE);
+	//TODO: Add aliter stuff here
+
 	ld->cwd = getcwd(ld->cwd, MAX_STRING_SIZE);
 	if (!ld->cwd)
 		fatal("loader: cannot retrieve current directory; increase MAX_STRING_SIZE");
