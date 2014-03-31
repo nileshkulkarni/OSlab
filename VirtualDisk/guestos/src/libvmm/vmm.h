@@ -102,7 +102,7 @@ int page_fault_routine(struct page_fault pf);
  */ 
 void swap_space(struct ctx_t *context);
 void load_program_to_swap(struct ctx_t* ctx);
-
+void swap_mem_page_get(struct mem_t* mem, 
 
 
 #endif

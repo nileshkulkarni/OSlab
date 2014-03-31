@@ -27,4 +27,4 @@ loading of programs in OS
 
 
    
-
+struct ctx_t has a member mem of type struct mem_t* 

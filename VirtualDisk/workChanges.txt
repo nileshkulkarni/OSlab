@@ -21,5 +21,7 @@ Changes to be made:
     add a new module for implementing vmm and its related function.
 
     
-
-
+WorkExpected to be done:
+    loading into swap
+    Free Space Manager
+    Api's of VM Manager
