@@ -84,6 +84,7 @@ struct ctx_t *ctx_create()
 	ld_init(ctx);
 	ctx->mid = ke->current_mid++;
 	ctx->mem = mem_create();
+	
 	ctx->signal_handlers = install_signal_handlers();
 	ctx->fdt = fdt_create();
 	

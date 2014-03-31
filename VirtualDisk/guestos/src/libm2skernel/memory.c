@@ -347,6 +347,20 @@ struct mem_t *mem_create()
 }
 
 
+
+/* Creation and destruction of swap space*/
+struct swap_mem_t *swap_mem_create()
+{
+	struct swap_mem_t *swap_mem;
+	//swap_mem = calloc(1, sizeof(struct mem_t));
+
+	swap_mem->sharing = 1;
+	swap_mem->safe = mem_safe_mode;
+	return swap_mem;
+}
+
+
+
 void mem_free(struct mem_t *mem)
 {
 	int i;
