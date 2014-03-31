@@ -3,7 +3,7 @@
  *  Copyright (C) 2007  Rafael Ubal Tena (raurte@gap.upv.es)
  *
  *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
+swap_ *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
  *  (at your option) any later version.
  *
@@ -41,8 +41,7 @@ unsigned long mem_max_mapped_space = 0;
 /* Safe mode */
 int mem_safe_mode = 1;
 
-
-
+FILE* swap_fd; 
 
 /* Return mem page corresponding to an address. */
 struct mem_page_t *mem_page_get(struct mem_t *mem, uint32_t addr)
@@ -460,6 +459,24 @@ void mem_map(struct mem_t *mem, uint32_t addr, int size,
 	}
 }
 
+void swap_mem_map(struct swap_mem_t *swap_mem, uint32_t addr, int size,
+	enum mem_access_enum perm)
+{
+	uint32_t tag1, tag2, tag;
+	struct mem_page_t *page;
+
+	/* Calculate page boundaries */
+	tag1 = addr & ~(MEM_PAGESIZE-1);
+	tag2 = (addr + size - 1) & ~(MEM_PAGESIZE-1);
+
+	/* Allocate pages */
+	for (tag = tag1; tag <= tag2; tag += MEM_PAGESIZE) {
+		page = mem_page_get(mem, tag);
+		if (!page)
+			page = mem_page_create(mem, tag, perm);
+		page->perm |= perm;
+	}
+}
 
 /* Deallocate memory pages. The addr and size parameters must be both
  * multiple of the page size.

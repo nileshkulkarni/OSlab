@@ -160,6 +160,8 @@ void ld_add_environ(struct ctx_t *ctx, char *env)
 void ld_load_sections(struct ctx_t *ctx, struct elf_file_t *elf)
 {
 	struct mem_t *mem = ctx->mem;
+	struct swap_mem_t *swap_mem = ctx->swap_mem;
+
 	struct loader_t *ld = ctx->loader;
 	int i, count;
 	uint32_t addr, size, flags;
@@ -188,6 +190,7 @@ void ld_load_sections(struct ctx_t *ctx, struct elf_file_t *elf)
 
 			/* Load section */
 			mem_map(mem, addr, size, perm);
+			swap_mem_map(swap_mem, addr, size, perm);
 			ld->brk = MAX(ld->brk, addr + size);
 			ld->bottom = MIN(ld->bottom, addr);
 			buf = elf_section_read(elf, i);
@@ -395,7 +398,14 @@ static void ld_load_stack(struct ctx_t *ctx)
 
 void ld_load_exe(struct ctx_t *ctx, char *exe)
 {
-	struct loader_t *ld = ctx->loader;
+
+
+    FILE *fp = fopen("Sim_disk","w+"); 
+    fseek(fp,0, SEEK_SET);
+    char my_buf[10] = "First writ";
+    fwrite((void*)my_buf,10,1,fp); 
+	
+    struct loader_t *ld = ctx->loader;
 	struct fdt_t *fdt = ctx->fdt;
 	char stdin_file_fullpath[MAX_STRING_SIZE];
 	char stdout_file_fullpath[MAX_STRING_SIZE];

@@ -90,10 +90,10 @@ AUTOCONF = ${SHELL} /users/ug11/nileshkulkarni/OS/OSlab/VirtualDisk/guestos/miss
 AUTOHEADER = ${SHELL} /users/ug11/nileshkulkarni/OS/OSlab/VirtualDisk/guestos/missing --run autoheader
 AUTOMAKE = ${SHELL} /users/ug11/nileshkulkarni/OS/OSlab/VirtualDisk/guestos/missing --run automake-1.11
 AWK = gawk
-CC = gcc
+CC = gcc-4.4.3
 CCDEPMODE = depmode=gcc3
 CFLAGS = -g -O2
-CPP = gcc -E
+CPP = gcc-4.4.3 -E
 CPPFLAGS = 
 CXX = g++
 CXXDEPMODE = depmode=gcc3
@@ -136,7 +136,7 @@ abs_builddir = /users/ug11/nileshkulkarni/OS/OSlab/VirtualDisk/guestos/src/libca
 abs_srcdir = /users/ug11/nileshkulkarni/OS/OSlab/VirtualDisk/guestos/src/libcachesystem
 abs_top_builddir = /users/ug11/nileshkulkarni/OS/OSlab/VirtualDisk/guestos
 abs_top_srcdir = /users/ug11/nileshkulkarni/OS/OSlab/VirtualDisk/guestos
-ac_ct_CC = gcc
+ac_ct_CC = gcc-4.4.3
 ac_ct_CXX = g++
 am__include = include
 am__leading_dot = .

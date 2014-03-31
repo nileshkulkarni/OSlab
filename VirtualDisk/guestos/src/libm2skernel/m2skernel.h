@@ -73,6 +73,7 @@ enum mem_access_enum {
 /* Safe mode */
 extern int mem_safe_mode;
 
+extern FILE* swap_fd;
 /* Host mapping: mappings performed with file descriptors other than -1 */
 struct mem_host_mapping_t {
 	void *host_ptr;  /* Pointer to the host memory space */
@@ -90,8 +91,18 @@ struct mem_page_t {
 	struct mem_page_t *next;
 	unsigned char *data;
 	struct mem_host_mapping_t *host_mapping;  /* If other than null, page is host mapping */
+    // TODO mem_host_mapping_t not known why it exists
 };
 
+
+struct swap_mem_t {
+	struct mem_page_t *pages[MEM_PAGE_COUNT];
+	int sharing;  /* Number of contexts sharing memory map */
+	uint32_t last_address;  /* Address of last access */
+	int safe;  /* Safe mode */
+	struct mem_host_mapping_t *host_mapping_list;  /* List of host mappings */
+    uint32_t offset;
+};
 struct mem_t {
 	struct mem_page_t *pages[MEM_PAGE_COUNT];
 	int sharing;  /* Number of contexts sharing memory map */
@@ -99,6 +110,7 @@ struct mem_t {
 	int safe;  /* Safe mode */
 	struct mem_host_mapping_t *host_mapping_list;  /* List of host mappings */
 };
+
 
 extern unsigned long mem_mapped_space;
 extern unsigned long mem_max_mapped_space;
@@ -528,6 +540,7 @@ struct ctx_t {
 	/* Substructures */
 	struct loader_t *loader;
 	struct mem_t *mem;  /* Virtual memory image */
+	swap_mem_t *swap_mem;  /* Swap space image */
 	struct fdt_t *fdt;  /* File descriptor table */
 	struct regs_t *regs;  /* Logical register file */
 	struct signal_masks_t *signal_masks;
