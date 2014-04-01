@@ -471,9 +471,9 @@ void swap_mem_map(struct swap_mem_t *swap_mem, uint32_t addr, int size,
 
 	/* Allocate pages */
 	for (tag = tag1; tag <= tag2; tag += MEM_PAGESIZE) {
-		page = mem_page_get(mem, tag);
+		page = swap_mem_page_get(swap_mem, tag);
 		if (!page)
-			page = mem_page_create(mem, tag, perm);
+			page = swap_mem_page_create(swap_mem, tag, perm);
 		page->perm |= perm;
 	}
 }
