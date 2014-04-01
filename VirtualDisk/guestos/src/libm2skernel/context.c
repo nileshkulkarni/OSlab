@@ -83,7 +83,9 @@ struct ctx_t *ctx_create()
 	 * set of signal handlers, a new file descriptor table. */
 	ld_init(ctx);
 	ctx->mid = ke->current_mid++;
+	
 	ctx->mem = mem_create();
+	ctx->swap_mem = swap_mem_create();
 	
 	ctx->signal_handlers = install_signal_handlers();
 	ctx->fdt = fdt_create();
@@ -94,7 +96,7 @@ struct ctx_t *ctx_create()
 
 struct ctx_t *ctx_clone(struct ctx_t *ctx)
 {
-        struct ctx_t *new;
+       struct ctx_t *new;
 
 	new = ctx_do_create();
 

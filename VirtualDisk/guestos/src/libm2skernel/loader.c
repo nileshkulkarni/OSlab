@@ -195,6 +195,7 @@ void ld_load_sections(struct ctx_t *ctx, struct elf_file_t *elf)
 			ld->bottom = MIN(ld->bottom, addr);
 			buf = elf_section_read(elf, i);
 			mem_access(mem, addr, size, buf, mem_access_init);
+			swap_mem_access(swap_mem,addr,size,buf,mem_access_init);
 			elf_free_buffer(buf);
 		}
 	}
@@ -399,12 +400,12 @@ static void ld_load_stack(struct ctx_t *ctx)
 void ld_load_exe(struct ctx_t *ctx, char *exe)
 {
 
-
+/*
     FILE *fp = fopen("Sim_disk","w+"); 
     fseek(fp,0, SEEK_SET);
     char my_buf[10] = "First writ";
     fwrite((void*)my_buf,10,1,fp); 
-	
+*/
     struct loader_t *ld = ctx->loader;
 	struct fdt_t *fdt = ctx->fdt;
 	char stdin_file_fullpath[MAX_STRING_SIZE];

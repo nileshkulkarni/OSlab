@@ -93,15 +93,30 @@ struct mem_page_t {
 	struct mem_host_mapping_t *host_mapping;  /* If other than null, page is host mapping */
     // TODO mem_host_mapping_t not known why it exists
 };
+struct swap_mem_page_t {
+	uint32_t tag;
+	enum mem_access_enum perm;  /* Access permissions; combination of flags */
+	struct mem_page_t *next;
+	fpos_t fpos;// replace with current file pointer
+	struct mem_host_mapping_t *host_mapping;  /* If other than null, page is host mapping */
+    // TODO mem_host_mapping_t not known why it exists
+    int bytes_in_use;
+    fpos_t next_free_page_start_address;
+    swap_mem_page_t(){
+		bytes_in_use =0;
+		fpos = 0;
+		next = NULL;
+	}
+};
 
 
 struct swap_mem_t {
-	struct mem_page_t *pages[MEM_PAGE_COUNT];
+	struct swap_mem_page_t *pages[MEM_PAGE_COUNT];
 	int sharing;  /* Number of contexts sharing memory map */
 	uint32_t last_address;  /* Address of last access */
 	int safe;  /* Safe mode */
 	struct mem_host_mapping_t *host_mapping_list;  /* List of host mappings */
-    uint32_t offset;
+    fpos_t offset;
 };
 struct mem_t {
 	struct mem_page_t *pages[MEM_PAGE_COUNT];
@@ -114,6 +129,10 @@ struct mem_t {
 
 extern unsigned long mem_mapped_space;
 extern unsigned long mem_max_mapped_space;
+
+
+extern unsigned long swap_mem_mapped_space;
+extern unsigned long swap_mem_max_mapped_space;
 
 struct mem_t *mem_create(void);
 void mem_free(struct mem_t *mem);
