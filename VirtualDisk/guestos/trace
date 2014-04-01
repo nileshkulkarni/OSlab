@@ -1,0 +1,27 @@
+loader.c -> 500 (ctx_create)
+
+
+
+
+
+
+
+ld_load_sections()
+    |-> mem_map()
+        |-> mem_page_get() || mem_page_create()
+
+swap version created:
+mem_get
+mem_page_create
+mem_map
+mem_access
+mem_access_page_boundary
+open_swap_fd() // returns swap fd
+mem_free()
+mem_get_buffer()
+
+
+TODO:
+swap_free() //equivalent of free
+swap_open_disk() // returns file* of sim disk
+setting offset of swap_mem_t // possibly during calloc!
