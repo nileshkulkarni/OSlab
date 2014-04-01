@@ -25,3 +25,4 @@ TODO:
 swap_free() //equivalent of free
 swap_open_disk() // returns file* of sim disk
 setting offset of swap_mem_t // possibly during calloc!
+at places of accessing pages from the swap space, something has to be done regarding these access, routing these through the RAM
