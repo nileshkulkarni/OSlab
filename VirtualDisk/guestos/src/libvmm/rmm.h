@@ -14,8 +14,8 @@
  *  along with this program; 
  */ 
 
-#ifndef VMM_H
-#define VMM_H
+#ifndef RMM_H
+#define RMM_H
 
 #include <mhandle.h>
 #include <debug.h>
@@ -38,22 +38,9 @@
 #include <gpukernel.h>
 #include <sys/time.h>
 
-/*
-struct page_fault;
 
-struct page_fault{
-	
-	struct *swap_mem_page_t;
-	ctx_t *context;
-};
+void get_ram_page_to_replace(struct ram_mem_page_t*);
+void free_ram_page(struct ram_mem_page_t*);
+void insert_ram_page(struct swap_mem_page_t*);
 
-
-
-int page_fault_routine(struct page_fault pf);
-void vm_mem_access(struct ctx_t context, uint32_t addr, uint32_t size, mem_access_enum perm);
-*/
-
-
-
-#endif
 
