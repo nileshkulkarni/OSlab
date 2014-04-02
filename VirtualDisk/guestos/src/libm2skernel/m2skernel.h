@@ -118,12 +118,17 @@ struct swap_mem_t {
 	struct mem_host_mapping_t *host_mapping_list;  /* List of host mappings */
     fpos_t offset;
 };
+
 struct mem_t {
 	struct mem_page_t *pages[MEM_PAGE_COUNT];
 	int sharing;  /* Number of contexts sharing memory map */
 	uint32_t last_address;  /* Address of last access */
 	int safe;  /* Safe mode */
 	struct mem_host_mapping_t *host_mapping_list;  /* List of host mappings */
+	
+	
+	
+	
 };
 
 
