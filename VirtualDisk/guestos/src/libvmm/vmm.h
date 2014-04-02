@@ -38,30 +38,8 @@
 #include <gpukernel.h>
 #include <sys/time.h>
 
-
-struct page_table_entry;
-struct page_table;
+/*
 struct page_fault;
-
-
-
-
-struct page_table{
-	struct hashtable_t *hpt;
-	void insert_pte(struct swap_mem_page_t * key, struct page_table_entry *);
-	struct page_table_entry * get_pte(struct swap_mem_page_t *key);
-	struct page_table_entry * remove_pte(struct swap_mem_page_t *key);
-	struct page_table_entry * remove_ram_page_pte(struct ram_mem_page_t *key);
-	
-};
-
-
-
-struct page_table_entry{
-	int dirty_flag;
-	int valid_flag;
-	struct *ram_mem_page_t;
-};
 
 struct page_fault{
 	
@@ -73,7 +51,7 @@ struct page_fault{
 
 int page_fault_routine(struct page_fault pf);
 void vm_mem_access(struct ctx_t context, uint32_t addr, uint32_t size, mem_access_enum perm);
-
+*/
 
 
 

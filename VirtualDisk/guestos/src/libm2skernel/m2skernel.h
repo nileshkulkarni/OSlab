@@ -61,6 +61,7 @@ int instr_slice;
 #define MEM_PAGESIZE       (1<<MEM_LOGPAGESIZE)
 #define MEM_PAGEMASK       (~(MEM_PAGESIZE-1))
 #define MEM_PAGE_COUNT     1024
+#define RAM_MEM_PAGE_COUNT     20000
 
 enum mem_access_enum {
 	mem_access_read   = 0x01,
@@ -88,9 +89,15 @@ struct mem_host_mapping_t {
 struct mem_page_t {
 	uint32_t tag;
 	enum mem_access_enum perm;  /* Access permissions; combination of flags */
-	struct mem_page_t *next;
 	unsigned char *data;
 	struct mem_host_mapping_t *host_mapping;  /* If other than null, page is host mapping */
+
+	/* FOR RAM */
+    int freeFlag;
+
+	/* FOR PAGE TABLES */
+    struct mem_page_t *next;
+	
     // TODO mem_host_mapping_t not known why it exists
 };
 
@@ -98,22 +105,12 @@ struct mem_page_t {
 struct swap_mem_page_t {
 	uint32_t tag;
 	enum mem_access_enum perm;  /* Access permissions; combination of flags */
-	
 	struct swap_mem_page_t *next; /* Pointer to next page */
-	
-	
 	fpos_t fpos;// replace with current file pointer
-	
 	
 	struct mem_host_mapping_t *host_mapping;  /* If other than null, page is host mapping */
     // TODO mem_host_mapping_t not known why it exists
     int bytes_in_use; //0 if page is not used else no of bytes used
-    
-    swap_mem_page_t(){
-		bytes_in_use =0;
-		fpos = 0;
-		next = NULL;
-	}
 };
 
 
@@ -123,9 +120,7 @@ struct swap_mem_t {
 	uint32_t last_address;  /* Address of last access */
 	int safe;  /* Safe mode */
 	struct mem_host_mapping_t *host_mapping_list;  /* List of host mappings */
-    
     fpos_t offset; //offset of the first page in Sim_disk
-    
     fpos_t next_free_page_start_address; //next free page address
 };
 
@@ -135,9 +130,11 @@ struct mem_t {
 	uint32_t last_address;  /* Address of last access */
 	int safe;  /* Safe mode */
 	struct mem_host_mapping_t *host_mapping_list;  /* List of host mappings */
-	
-	
-	
+};
+
+
+struct ram_mem_t {
+	struct mem_page_t *pages;
 	
 };
 
@@ -154,6 +151,9 @@ void mem_free(struct mem_t *mem);
 
 struct mem_page_t *mem_page_get(struct mem_t *mem, uint32_t addr);
 struct mem_page_t *mem_page_get_next(struct mem_t *mem, uint32_t addr);
+struct mem_page_t* get_free_ram_page();
+
+
 
 uint32_t mem_map_space(struct mem_t *mem, uint32_t addr, int size);
 uint32_t mem_map_space_down(struct mem_t *mem, uint32_t addr, int size);
@@ -574,7 +574,7 @@ struct ctx_t {
 	/* Substructures */
 	struct loader_t *loader;
 	struct mem_t *mem;  /* Virtual memory image */
-	swap_mem_t *swap_mem;  /* Swap space image */
+	struct  swap_mem_t *swap_mem;  /* Swap space image */
 	struct fdt_t *fdt;  /* File descriptor table */
 	struct regs_t *regs;  /* Logical register file */
 	struct signal_masks_t *signal_masks;
@@ -713,6 +713,7 @@ struct kernel_t {
 	struct ctx_t *finished_list_head, *finished_list_tail;
 	struct ctx_t *alloc_list_head, *alloc_list_tail;
     struct interrupt_t *interrupt_list_head , *interrupt_list_tail;
+    struct ram_mem_t *ram;
 };
 
 enum ke_list_enum {
