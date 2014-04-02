@@ -14,8 +14,8 @@
  *  along with this program; 
  */ 
 
-#ifndef VMM_H
-#define VMM_H
+#ifndef RMM_H
+#define RMM_H
 
 #include <mhandle.h>
 #include <debug.h>
@@ -38,44 +38,33 @@
 #include <gpukernel.h>
 #include <sys/time.h>
 
+struct ram_mem_page_t {
+	uint32_t tag;
+	enum mem_access_enum perm;  /* Access permissions; combination of flags */
+	struct ram_mem_page_t *next;
+	unsigned char *data;
+	struct mem_host_mapping_t *host_mapping;  /* If other than null, page is host mapping */
+	struct ctx_t * context;
+    // TODO mem_host_mapping_t not known why it exists
+};
 
-struct page_table_entry;
-struct page_table;
-struct page_fault;
-
-
-
-
-struct page_table{
-	struct hashtable_t *hpt;
-	void insert_pte(struct swap_mem_page_t * key, struct page_table_entry *);
-	struct page_table_entry * get_pte(struct swap_mem_page_t *key);
-	struct page_table_entry * remove_pte(struct swap_mem_page_t *key);
-	struct page_table_entry * remove_ram_page_pte(struct ram_mem_page_t *key);
+struct ram_mem_t {
+	struct ram_mem_page_t *pages[MEM_PAGE_COUNT];
+	int sharing;  /* Number of contexts sharing memory map */
+	uint32_t last_address;  /* Address of last access */
+	int safe;  /* Safe mode */
+	struct mem_host_mapping_t *host_mapping_list;  /* List of host mappings */
+	
+	
+	struct ram_mem_page_t * free_list;
+	struct ram_mem_page_t * occupied_list;
+	
 	
 };
 
+struct ram_mem_page_t* get_free_ram_page();
+void get_ram_page_to_replace(struct ram_mem_page_t*);
+void free_ram_page(struct ram_mem_page_t*);
+void insert_ram_page(struct swap_mem_page_t*);
 
-
-struct page_table_entry{
-	int dirty_flag;
-	int valid_flag;
-	struct *ram_mem_page_t;
-};
-
-struct page_fault{
-	
-	struct *swap_mem_page_t;
-	ctx_t *context;
-};
-
-
-
-int page_fault_routine(struct page_fault pf);
-void vm_mem_access(struct ctx_t context, uint32_t addr, uint32_t size, mem_access_enum perm);
-
-
-
-
-#endif
 

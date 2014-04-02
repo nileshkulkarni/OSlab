@@ -93,15 +93,22 @@ struct mem_page_t {
 	struct mem_host_mapping_t *host_mapping;  /* If other than null, page is host mapping */
     // TODO mem_host_mapping_t not known why it exists
 };
+
+
 struct swap_mem_page_t {
 	uint32_t tag;
 	enum mem_access_enum perm;  /* Access permissions; combination of flags */
-	struct mem_page_t *next;
+	
+	struct swap_mem_page_t *next; /* Pointer to next page */
+	
+	
 	fpos_t fpos;// replace with current file pointer
+	
+	
 	struct mem_host_mapping_t *host_mapping;  /* If other than null, page is host mapping */
     // TODO mem_host_mapping_t not known why it exists
-    int bytes_in_use;
-    fpos_t next_free_page_start_address;
+    int bytes_in_use; //0 if page is not used else no of bytes used
+    
     swap_mem_page_t(){
 		bytes_in_use =0;
 		fpos = 0;
@@ -116,14 +123,22 @@ struct swap_mem_t {
 	uint32_t last_address;  /* Address of last access */
 	int safe;  /* Safe mode */
 	struct mem_host_mapping_t *host_mapping_list;  /* List of host mappings */
-    fpos_t offset;
+    
+    fpos_t offset; //offset of the first page in Sim_disk
+    
+    fpos_t next_free_page_start_address; //next free page address
 };
+
 struct mem_t {
 	struct mem_page_t *pages[MEM_PAGE_COUNT];
 	int sharing;  /* Number of contexts sharing memory map */
 	uint32_t last_address;  /* Address of last access */
 	int safe;  /* Safe mode */
 	struct mem_host_mapping_t *host_mapping_list;  /* List of host mappings */
+	
+	
+	
+	
 };
 
 
