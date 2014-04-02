@@ -172,8 +172,12 @@ void *swap_mem_get_buffer(struct swap_mem_t *swap_mem, uint32_t addr, int size,
 	if (page->bytes_in_use ==0){
 		swap_fd = open_swap_disk();
 		fpos_t new_page_start_address  = swap_mem->next_free_page_start_address;
+		//!TODO: swap manager se free address lo
+		
+		
 		fseek (swap_fd , new_page_start_address, SEEK_SET);
-		//fwrite (buf,size,1,swap_fd);
+		
+		//!TODO this should be removed and updated to swap manager
 		swap_mem->next_free_page_start_address = new_page_start_address + MEM_PAGESIZE;
 		page->bytes_in_use = MEM_PAGESIZE;
 		page->fpos = new_page_start_address;
@@ -233,7 +237,8 @@ static void swap_mem_access_page_boundary(struct swap_mem_t *swap_mem, uint32_t 
 	/* Read/execute access */
 	if (access == mem_access_read || access == mem_access_exec) {
 		if (page->bytes_in_use !=0){
-			memcpy(buf, page->data + offset, size);
+			
+			
 			//read from file 
 			swap_fd = open_swap_disk();
 			fpos_t read_start_offset = swap_mem->fpos + offset 
@@ -250,7 +255,8 @@ static void swap_mem_access_page_boundary(struct swap_mem_t *swap_mem, uint32_t 
 	if (access == mem_access_write || access == mem_access_init) {
 		swap_fd = open_swap_disk();
 		if (page->bytes_in_use ==0){
-			//page-> = calloc(1, MEM_PAGESIZE);
+			
+			//!TODO use free page manager here
 			fpos_t new_page_start_address  = swap_mem->next_free_page_start_address;
 			fseek (swap_fd , new_page_start_address, SEEK_SET);
 			fwrite (buf,size,1,swap_fd);
@@ -377,7 +383,7 @@ void swap_mem_write_string(struct swap_mem_t *swap_mem, uint32_t addr, char *str
 /* Read a string from memory and return the length of the read string.
  * If the return length is equal to max_size, it means that the string did not
  * fit in the destination buffer. */
-int swap_mem_read_string(struct mem_t *swap_mem, uint32_t addr, int size, char *str)
+int swap_mem_read_string(struct swap_mem_t *swap_mem, uint32_t addr, int size, char *str)
 {
 	int i;
 	for (i = 0; i < size; i++) {
