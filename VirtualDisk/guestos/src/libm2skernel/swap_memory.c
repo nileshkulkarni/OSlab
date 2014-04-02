@@ -18,7 +18,7 @@ struct swap_mem_page_t *swap_mem_page_get(struct swap_mem_t *swap_mem, uint32_t 
 	
 	prev = NULL;
 	
-	/* Look for page */
+	/* Look for page */0
 	while (page && page->tag != tag) {
 		prev = page;
 		page = page->next;
@@ -138,8 +138,9 @@ static void swap_mem_page_free(struct swap_mem_t *mem, uint32_t addr)
 		mem->pages[index] = page->next;
 		
 	swap_mem_mapped_space -= MEM_PAGESIZE;
-	if (page->bytes_in_use==0)
+	if (page->bytes_in_use!=0){
 		swap_free(page->fpos);
+	}
 	free(page);
 }
 
@@ -386,4 +387,17 @@ int swap_mem_read_string(struct mem_t *swap_mem, uint32_t addr, int size, char *
 			break;
 	}
 	return i;
+}
+
+
+
+FILE* open_swap_disk(){
+	
+	FILE* fp = fopen("Sim_disk","wr+");
+	return fp;
+}
+
+void swap_free(fpos_t fpos){
+	
+	
 }
