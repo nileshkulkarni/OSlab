@@ -70,6 +70,18 @@ void ke_init(void)
 	
 	isa_init();
 	ke = calloc(1, sizeof(struct kernel_t));
+	ke->ram = calloc(1, sizeof(struct ram_mem_t));
+	
+	ke->ram->pages = calloc(1, RAM_MEM_PAGE_COUNT * sizeof(struct mem_page_t));
+	int i;
+	
+	for(i=0;i<RAM_MEM_PAGE_COUNT;i++){
+		ke->ram->pages[i].freeFlag = 1;
+		ke->ram->pages[i].next = NULL;
+	}
+	
+	
+	
 	ke->current_pid = 1000;  /* Initial assigned pid */
 	ke->instruction_no = 0;
 	ke->current_track = 0;

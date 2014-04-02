@@ -43,6 +43,19 @@ unsigned long mem_max_mapped_space = 0;
 int mem_safe_mode = 1;
 
 
+
+struct mem_page_t* get_free_ram_page(){
+	
+	int i;
+	for(i=0;i<RAM_MEM_PAGE_COUNT;i++){
+		if(ke->ram->pages[i].freeFlag != 0)
+			return &(ke->ram->pages[i]);
+	}
+}
+
+
+
+
 struct mem_page_t *mem_page_get(struct mem_t *mem, uint32_t addr)
 {
 	uint32_t index, tag;
@@ -107,10 +120,11 @@ struct mem_page_t *mem_page_get_next(struct mem_t *mem, uint32_t addr)
 			}
 		}
 	}
-
 	/* Return the found page (or NULL) */
 	return minpage;
 }
+
+
 
 /* Create new mem page */
 static struct mem_page_t *mem_page_create(struct mem_t *mem, uint32_t addr, int perm)
@@ -122,7 +136,14 @@ static struct mem_page_t *mem_page_create(struct mem_t *mem, uint32_t addr, int 
 	index = (addr >> MEM_LOGPAGESIZE) % MEM_PAGE_COUNT;
 	
 	/* Create new page */
-	page = calloc(1, sizeof(struct mem_page_t));
+	page = get_free_ram_page();
+	
+	if(!page){
+		printf("COULD NOT FIND A FREE PAGE , ABORTING PRANALI \n");
+		exit(0);
+	}
+	
+	page->freeFlag = 0;
 	page->tag = tag;
 	page->perm = perm;
 	
@@ -175,9 +196,15 @@ static void mem_page_free(struct mem_t *mem, uint32_t addr)
 	else
 		mem->pages[index] = page->next;
 	mem_mapped_space -= MEM_PAGESIZE;
+
+/*
 	if (page->data)
 		free(page->data);
-	free(page);
+*/		
+	page->next = NULL;
+	page->freeFlag = 1;	
+			
+//	free(page);
 }
 
 
@@ -220,6 +247,9 @@ void mem_copy(struct mem_t *mem, uint32_t dest, uint32_t src, int size)
 		size -= MEM_PAGESIZE;
 	}
 }
+
+
+
 
 /* Return the buffer corresponding to address 'addr' in the simulated
  * mem. The returned buffer is null if addr+size exceeds the page
