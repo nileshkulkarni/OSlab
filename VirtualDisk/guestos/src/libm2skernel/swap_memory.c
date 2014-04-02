@@ -147,7 +147,7 @@ static void swap_mem_page_free(struct swap_mem_t *mem, uint32_t addr)
 /* Return the buffer corresponding to address 'addr' in the simulated
  * mem. The returned buffer is null if addr+size exceeds the page
  * boundaries. */
-void *swap_mem_get_buffer(struct swap_mem_t *mem, uint32_t addr, int size,
+void *swap_mem_get_buffer(struct swap_mem_t *swap_mem, uint32_t addr, int size,
 	enum mem_access_enum access)
 {
 	struct swap_mem_page_t *page;
@@ -159,12 +159,12 @@ void *swap_mem_get_buffer(struct swap_mem_t *mem, uint32_t addr, int size,
 		return NULL;
 	
 	/* Look for page */
-	page = swap_mem_page_get(mem, addr);
+	page = swap_mem_page_get(swap_mem, addr);
 	if (!page)
 		return NULL;
 	
 	/* Check page permissions */
-	if ((page->perm & access) != access && mem->safe)
+	if ((page->perm & access) != access && swap_mem->safe)
 		fatal("mem_get_buffer: permission denied at 0x%x", addr);
 	
 	void * buf = calloc(1,size);
