@@ -64,6 +64,9 @@ struct mem_page_t *mem_page_get(struct mem_t *mem, uint32_t addr)
 	tag = addr & ~(MEM_PAGESIZE - 1);
 	index = (addr >> MEM_LOGPAGESIZE) % MEM_PAGE_COUNT;
 	page = mem->pages[index];
+    if(page == NULL){
+        printf("mem page tag for the null page is %u \n", tag);
+    }
 	prev = NULL;
 	
 	/* Look for page */
@@ -339,7 +342,7 @@ static void mem_access_page_boundary(struct mem_t *mem, uint32_t addr,
 	if (access == mem_access_write || access == mem_access_init) {
 		if (!page->data){
 			page->data = calloc(1, MEM_PAGESIZE);
-            //printf("Creating page with tag as %d \n", page->tag);
+            //printf("Creating page with tag as %u \n", page->tag);
         }
 		memcpy(page->data + offset, buf, size);
 		return;
@@ -776,7 +779,9 @@ struct swap_mem_page_t *swap_mem_page_get(struct swap_mem_t *swap_mem, uint32_t 
 	tag = addr & ~(MEM_PAGESIZE - 1);
 	index = (addr >> MEM_LOGPAGESIZE) % MEM_PAGE_COUNT;
 	page = swap_mem->pages[index];
-	
+    if(page == NULL){
+        printf("SWAP page tag for the null page is %u \n", tag);
+    }
 	prev = NULL;
 	
 	/* Look for page */
@@ -933,7 +938,7 @@ void *swap_mem_get_buffer(struct swap_mem_t *swap_mem, uint32_t addr, int size, 
 	void * buf = calloc(1,size);
 	/* Allocate and initialize page data if it does not exist yet. */
 	if (page->bytes_in_use ==0){
-       // printf("page tag %d has bytes used 0  \n" ,page->tag); 
+       // printf("page tag %u has bytes used 0  \n" ,page->tag); 
         //printf("page to be created bytes in use =0\n");
 		swap_fd = open_swap_disk();
 		fpos_t new_page_start_address  = swap_mem->next_free_page_start_address;
@@ -995,7 +1000,7 @@ void swap_mem_access_page_boundary(struct swap_mem_t *swap_mem, uint32_t addr,in
 
 	/* If it is a write access, set the 'modified' flag in the page
 	 * attributes (perm). This is not done for 'initialize' access. */
-    printf("Swap mem page access %d \n", page->fpos);
+    printf("Swap mem page access %u \n", page->fpos);
 	if (access == mem_access_write)
 		page->perm |= mem_access_modif;
 
@@ -1039,7 +1044,7 @@ void swap_mem_access_page_boundary(struct swap_mem_t *swap_mem, uint32_t addr,in
                 //fseek (swap_fd , 0, SEEK_SET);           
                 fseek (swap_fd , new_page_start_address.__pos, SEEK_SET);           
                 char temp_buf[] = "Hi this should be written";
-                printf("page with tag %d, created \n",page->tag); 
+                printf("page with tag %u, created \n",page->tag); 
                 //fwrite (temp_buf,26,1,swap_fd);
                 fwrite (buf,size,1,swap_fd);
                 swap_mem->next_free_page_start_address.__pos = new_page_start_address.__pos +MEM_PAGESIZE;
@@ -1135,18 +1140,11 @@ void swap_mem_map(struct swap_mem_t *swap_mem, uint32_t addr, int size,
 		if (!page){
             numberPages++;
 			page = swap_mem_page_create(swap_mem, tag, perm);
-            //printf("Creating page for addr %d , on swap space, page number is %d\n " ,tag,numberPages);
+            //printf("Creating page for addr %u , on swap space, page number is %u\n " ,tag,numberPages);
         }
 		page->perm |= perm;
     
 	}
-    if(!swap_mem_page_get(swap_mem,addr)){
-       printf("failed to map page on addr %d\n",addr); 
-    }
-    else{
-
-       printf("Going good on addr %d\n",addr); 
-    }
 }
 
 

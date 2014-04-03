@@ -189,16 +189,18 @@ void ld_load_sections(struct ctx_t *ctx, struct elf_file_t *elf)
 				perm |= mem_access_exec;
 
 			/* Load section */
-			mem_map(mem, addr, size, perm);
 			swap_mem_map(swap_mem, addr, size, perm);
+			mem_map(mem, addr, size, perm);
 			ld->brk = MAX(ld->brk, addr + size);
 			ld->bottom = MIN(ld->bottom, addr);
 			buf = elf_section_read(elf, i);
-			mem_access(mem, addr, size, buf, mem_access_init);
 			swap_mem_access(swap_mem,addr,size,buf,mem_access_init);
+			//mem_access(mem, addr, size, buf, mem_access_init);
+            printf("going for swap_mem_access: ld_load_section \n");
 			elf_free_buffer(buf);
 		}
 	}
+    printf("Loading Sections Done!! \n");
 }
 
 

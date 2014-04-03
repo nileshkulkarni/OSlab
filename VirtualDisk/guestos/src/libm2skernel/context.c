@@ -213,7 +213,7 @@ void ctx_execute_inst(struct ctx_t *ctx)
     }
     //void* buf1 = mem_get_buffer(ctx->mem, ctx->regs->eip, 20, mem_access_exec);
    // printf("Buff1  is %s \n", buf);
-	void* buf2 = swap_mem_get_buffer(ctx->swap_mem, ctx->regs->eip, 20, mem_access_exec);
+	buf = swap_mem_get_buffer(ctx->swap_mem, ctx->regs->eip, 20, mem_access_exec);
  /*   if(!buf2){
         printf("Buf2 is nulllll!! woah!!aaha \n");
     }
@@ -228,10 +228,9 @@ void ctx_execute_inst(struct ctx_t *ctx)
     }
     */
  //   printf("before iff\n");
-    buf = buf2;
 	if (!buf) {
 		buf = &fixed;
-    	mem_access(ctx->mem, ctx->regs->eip, 20, buf, mem_access_exec);
+    	//mem_access(ctx->mem, ctx->regs->eip, 20, buf, mem_access_exec);
         printf("buf is null \n");
         printf("Buff1  is %s \n", buf);
 		swap_mem_access(ctx->swap_mem, ctx->regs->eip, 20, buf, mem_access_exec);
