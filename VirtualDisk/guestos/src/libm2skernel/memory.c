@@ -739,11 +739,10 @@ void mem_load(struct mem_t *mem, char *filename, uint32_t start)
 
 
 
+/* swap starts here  */
 
-
-//////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////// ////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////// ///////////////////////////////////////////////////////////////////////
 
 int swap_mem_safe_mode = 1;
 unsigned long swap_mem_mapped_space = 0;
@@ -832,7 +831,7 @@ struct swap_mem_page_t *swap_mem_page_get_next(struct swap_mem_t *swap_mem, uint
 
 
 /* Create new mem page */
-static struct swap_mem_page_t *swap_mem_page_create(struct swap_mem_t *swap_mem, uint32_t addr, int perm)
+struct swap_mem_page_t *swap_mem_page_create(struct swap_mem_t *swap_mem, uint32_t addr, int perm)
 {
 	uint32_t index, tag;
 	struct swap_mem_page_t *page;
@@ -854,7 +853,7 @@ static struct swap_mem_page_t *swap_mem_page_create(struct swap_mem_t *swap_mem,
 }
 
 /* Free mem pages */
-static void swap_mem_page_free(struct swap_mem_t *swap_mem, uint32_t addr)
+void swap_mem_page_free(struct swap_mem_t *swap_mem, uint32_t addr)
 {
 	uint32_t index, tag;
 	struct swap_mem_page_t *prev, *page;
@@ -902,8 +901,7 @@ static void swap_mem_page_free(struct swap_mem_t *swap_mem, uint32_t addr)
 /* Return the buffer corresponding to address 'addr' in the simulated
  * mem. The returned buffer is null if addr+size exceeds the page
  * boundaries. */
-void *swap_mem_get_buffer(struct swap_mem_t *swap_mem, uint32_t addr, int size,
-	enum mem_access_enum access)
+void *swap_mem_get_buffer(struct swap_mem_t *swap_mem, uint32_t addr, int size, enum mem_access_enum access)
 {
 	struct swap_mem_page_t *page;
 	uint32_t offset;
@@ -952,7 +950,7 @@ void *swap_mem_get_buffer(struct swap_mem_t *swap_mem, uint32_t addr, int size,
 
 
 /* Access memory without exceeding page boundaries. */
-static void swap_mem_access_page_boundary(struct swap_mem_t *swap_mem, uint32_t addr,
+void swap_mem_access_page_boundary(struct swap_mem_t *swap_mem, uint32_t addr,
 	int size, void *buf, enum mem_access_enum access)
 {
 	struct swap_mem_page_t *page;
@@ -981,6 +979,7 @@ static void swap_mem_access_page_boundary(struct swap_mem_t *swap_mem, uint32_t 
 
 	/* If it is a write access, set the 'modified' flag in the page
 	 * attributes (perm). This is not done for 'initialize' access. */
+    printf("Swap mem page access %d \n", page->tag);
 	if (access == mem_access_write)
 		page->perm |= mem_access_modif;
 
@@ -1045,8 +1044,9 @@ void swap_mem_access(struct swap_mem_t *swap_mem, uint32_t addr, int size, void 
 {
 	uint32_t offset;
 	int chunksize;
-
+    
 	swap_mem->last_address = addr;
+
 	while (size) {
 		offset = addr & (MEM_PAGESIZE - 1);
 		chunksize = MIN(size, MEM_PAGESIZE - offset);
@@ -1066,6 +1066,8 @@ struct swap_mem_t *swap_mem_create()
 	swap_mem = calloc(1, sizeof(struct swap_mem_t));
 	swap_mem->sharing = 1;
 	swap_mem->safe = mem_safe_mode;
+    //TODO edit here
+    // swap_mem->next_free_page_start_address =(fpos_t)0;
 	return swap_mem;
 	
 }
@@ -1104,10 +1106,14 @@ void swap_mem_map(struct swap_mem_t *swap_mem, uint32_t addr, int size,
 	tag2 = (addr + size - 1) & ~(MEM_PAGESIZE-1);
 
 	/* Allocate pages */
+    int numberPages =0;
 	for (tag = tag1; tag <= tag2; tag += MEM_PAGESIZE) {
 		page = swap_mem_page_get(swap_mem, tag);
-		if (!page)
+		if (!page){
+            numberPages++;
 			page = swap_mem_page_create(swap_mem, tag, perm);
+            printf("Creating page for addr %d , on swap space, page number is %d\n " ,tag,numberPages);
+        }
 		page->perm |= perm;
 	}
 }

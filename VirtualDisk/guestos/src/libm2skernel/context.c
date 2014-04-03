@@ -85,8 +85,8 @@ struct ctx_t *ctx_create()
 	ctx->mid = ke->current_mid++;
 	
 	ctx->mem = mem_create();
-	//ctx->swap_mem = swap_mem_create();
-	
+	ctx->swap_mem = swap_mem_create();
+    printf("Swap mem created !! \n");	
 	ctx->signal_handlers = install_signal_handlers();
 	ctx->fdt = fdt_create();
 	

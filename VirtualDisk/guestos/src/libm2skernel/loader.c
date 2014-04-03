@@ -168,7 +168,7 @@ void ld_load_sections(struct ctx_t *ctx, struct elf_file_t *elf)
 	enum mem_access_enum perm;
 	char sflags[200], *name;
 	void *buf;
-
+    printf("Came here in ld_load_sections\n");
 	ld_debug("\nLoading ELF sections\n");
 	ld->bottom = 0xffffffff;
 	count = elf_section_count(elf);
@@ -178,7 +178,7 @@ void ld_load_sections(struct ctx_t *ctx, struct elf_file_t *elf)
 		map_flags(&sectionflags_map, flags, sflags, 200);
 		ld_debug("  section '%s'; offs=0x%x; size=%u; flags=%s\n",
 			name, addr, size, sflags);
-
+        printf("Loading section ****** %s\n ", name);
 		/* Process section */
 		if (flags & SHF_ALLOC) {
 
@@ -190,12 +190,12 @@ void ld_load_sections(struct ctx_t *ctx, struct elf_file_t *elf)
 
 			/* Load section */
 			mem_map(mem, addr, size, perm);
-			//swap_mem_map(swap_mem, addr, size, perm);
+			swap_mem_map(swap_mem, addr, size, perm);
 			ld->brk = MAX(ld->brk, addr + size);
 			ld->bottom = MIN(ld->bottom, addr);
 			buf = elf_section_read(elf, i);
 			mem_access(mem, addr, size, buf, mem_access_init);
-			//swap_mem_access(swap_mem,addr,size,buf,mem_access_init);
+			swap_mem_access(swap_mem,addr,size,buf,mem_access_init);
 			elf_free_buffer(buf);
 		}
 	}

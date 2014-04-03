@@ -181,8 +181,28 @@ void mem_dump(struct mem_t *mem, char *filename, uint32_t start, uint32_t end);
 void mem_load(struct mem_t *mem, char *filename, uint32_t start);
 
 
+/* Swap */
 
 
+FILE* open_swap_disk();
+void swap_free(fpos_t fpos);
+struct swap_mem_page_t *swap_mem_page_get(struct swap_mem_t *swap_mem, uint32_t addr);
+
+struct swap_mem_page_t *swap_mem_page_get_next(struct swap_mem_t *swap_mem, uint32_t addr);
+struct swap_mem_page_t *swap_mem_page_create(struct swap_mem_t *swap_mem, uint32_t addr, int perm);
+void swap_mem_page_free(struct swap_mem_t *swap_mem, uint32_t addr);
+void *swap_mem_get_buffer(struct swap_mem_t *swap_mem, uint32_t addr, int size, enum mem_access_enum access);
+void swap_mem_access_page_boundary(struct swap_mem_t *swap_mem, uint32_t addr,
+	int size, void *buf, enum mem_access_enum access);
+void swap_mem_access(struct swap_mem_t *swap_mem, uint32_t addr, int size, void *buf,
+	enum mem_access_enum access);
+struct swap_mem_t *swap_mem_create();
+void swap_mem_free(struct swap_mem_t *swap_mem);
+void swap_mem_map(struct swap_mem_t *swap_mem, uint32_t addr, int size,
+	enum mem_access_enum perm);
+void swap_mem_unmap(struct swap_mem_t *swap_mem, uint32_t addr, int size);
+void swap_mem_write_string(struct swap_mem_t *swap_mem, uint32_t addr, char *str);
+int swap_mem_read_string(struct swap_mem_t *swap_mem, uint32_t addr, int size, char *str);
 /* Registers */
 
 struct regs_t {
