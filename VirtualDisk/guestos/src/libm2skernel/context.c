@@ -211,11 +211,31 @@ void ctx_execute_inst(struct ctx_t *ctx)
 		ctx->mem->safe = 0;
 		ctx->swap_mem->safe = 0;
     }
-	buf = mem_get_buffer(ctx->mem, ctx->regs->eip, 20, mem_access_exec);
+    //void* buf1 = mem_get_buffer(ctx->mem, ctx->regs->eip, 20, mem_access_exec);
+   // printf("Buff1  is %s \n", buf);
+	void* buf2 = swap_mem_get_buffer(ctx->swap_mem, ctx->regs->eip, 20, mem_access_exec);
+ /*   if(!buf2){
+        printf("Buf2 is nulllll!! woah!!aaha \n");
+    }
+*/
+    int i=0;
+    /*
+    for(i=0;i<20;i++){
+        if((*((char*)(buf1 + i))) != *((char*)(buf2 +i))){
+            printf("Exiting buffers not equal\n");
+            exit(1);
+        }
+    }
+    */
+ //   printf("before iff\n");
+    buf = buf2;
 	if (!buf) {
 		buf = &fixed;
-		mem_access(ctx->mem, ctx->regs->eip, 20, buf, mem_access_exec);
+    	mem_access(ctx->mem, ctx->regs->eip, 20, buf, mem_access_exec);
+        printf("buf is null \n");
+        printf("Buff1  is %s \n", buf);
 		swap_mem_access(ctx->swap_mem, ctx->regs->eip, 20, buf, mem_access_exec);
+        printf("Buff2  is %s \n", buf);
 	}
 	ctx->mem->safe = mem_safe_mode;
 	ctx->swap_mem->safe = swap_mem_safe_mode;
