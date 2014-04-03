@@ -75,6 +75,7 @@ enum mem_access_enum {
 extern int mem_safe_mode;
 
 extern FILE* swap_fd;
+
 /* Host mapping: mappings performed with file descriptors other than -1 */
 struct mem_host_mapping_t {
 	void *host_ptr;  /* Pointer to the host memory space */

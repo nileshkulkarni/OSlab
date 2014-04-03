@@ -750,6 +750,17 @@ unsigned long swap_mem_mapped_space = 0;
 unsigned long swap_mem_max_mapped_space = 0;
 FILE* swap_fd; 
 
+FILE* open_swap_disk(){
+	
+	FILE* fp = fopen("Sim_disk","wr+");
+	return fp;
+}
+
+void swap_free(fpos_t fpos){
+	
+	
+}
+
 /* Return mem page corresponding to an address. */
 struct swap_mem_page_t *swap_mem_page_get(struct swap_mem_t *swap_mem, uint32_t addr)
 {
@@ -824,7 +835,7 @@ struct swap_mem_page_t *swap_mem_page_get_next(struct swap_mem_t *swap_mem, uint
 static struct swap_mem_page_t *swap_mem_page_create(struct swap_mem_t *swap_mem, uint32_t addr, int perm)
 {
 	uint32_t index, tag;
-	struct mem_page_t *page;
+	struct swap_mem_page_t *page;
 
 	tag = addr & ~(MEM_PAGESIZE - 1);
 	index = (addr >> MEM_LOGPAGESIZE) % MEM_PAGE_COUNT;
