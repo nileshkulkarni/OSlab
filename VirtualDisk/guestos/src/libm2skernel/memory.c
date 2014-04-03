@@ -967,7 +967,7 @@ void swap_mem_access_page_boundary(struct swap_mem_t *swap_mem, uint32_t addr,
 	 * or create page with full privileges for writes in unsafe mode. */
 	if (!page) {
 		if (swap_mem->safe)
-			fatal("illegal access at 0x%x: page not allocated", addr);
+			fatal("Swap::illegal access at 0x%x: page not allocated", addr);
 		if (access == mem_access_read || access == mem_access_exec) {
 			memset(buf, 0, size);
 			return;
@@ -1073,7 +1073,7 @@ struct swap_mem_t *swap_mem_create()
 	struct swap_mem_t *swap_mem;
 	swap_mem = calloc(1, sizeof(struct swap_mem_t));
 	swap_mem->sharing = 1;
-	swap_mem->safe = mem_safe_mode;
+	swap_mem->safe = swap_mem_safe_mode;
     //TODO edit here
     // swap_mem->next_free_page_start_address =(fpos_t)0;
 	return swap_mem;
@@ -1123,7 +1123,15 @@ void swap_mem_map(struct swap_mem_t *swap_mem, uint32_t addr, int size,
             //printf("Creating page for addr %d , on swap space, page number is %d\n " ,tag,numberPages);
         }
 		page->perm |= perm;
+    
 	}
+    if(!swap_mem_page_get(swap_mem,addr)){
+       printf("failed to map page on addr %d\n",addr); 
+    }
+    else{
+
+       printf("Going good on addr %d\n",addr); 
+    }
 }
 
 

@@ -73,6 +73,7 @@ enum mem_access_enum {
 
 /* Safe mode */
 extern int mem_safe_mode;
+extern int swap_mem_safe_mode;
 
 extern FILE* swap_fd;
 
