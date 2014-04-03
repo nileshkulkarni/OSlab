@@ -402,6 +402,7 @@ static void ld_load_stack(struct ctx_t *ctx)
 		sp += strlen(str) + 1;
 	}
 	mem_write(mem, envp + i * 4, 4, &zero);
+	swap_mem_write(swap_mem, envp + i * 4, 4, &zero);
 
 	/* Check that we didn't overflow */
 	if (sp > LD_STACK_BASE)
