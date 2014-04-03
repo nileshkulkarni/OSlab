@@ -1020,7 +1020,7 @@ void swap_mem_access_page_boundary(struct swap_mem_t *swap_mem, uint32_t addr,
 			//!TODO use free page manager here
 			fpos_t new_page_start_address  = swap_mem->next_free_page_start_address;
 			//fseek (swap_fd , new_page_start_address.__pos, SEEK_SET);           
-                printf("*********************************** I am abouto write to disk \n");
+               // printf("*********************************** I am abouto write to disk \n");
                 //fseek (swap_fd , 0, SEEK_SET);           
                 fseek (swap_fd , new_page_start_address.__pos, SEEK_SET);           
                 char temp_buf[] = "Hi this should be written";
@@ -1120,7 +1120,7 @@ void swap_mem_map(struct swap_mem_t *swap_mem, uint32_t addr, int size,
 		if (!page){
             numberPages++;
 			page = swap_mem_page_create(swap_mem, tag, perm);
-            printf("Creating page for addr %d , on swap space, page number is %d\n " ,tag,numberPages);
+            //printf("Creating page for addr %d , on swap space, page number is %d\n " ,tag,numberPages);
         }
 		page->perm |= perm;
 	}

@@ -195,7 +195,7 @@ void ld_load_sections(struct ctx_t *ctx, struct elf_file_t *elf)
 			ld->bottom = MIN(ld->bottom, addr);
 			buf = elf_section_read(elf, i);
 			mem_access(mem, addr, size, buf, mem_access_init);
-			swap_mem_access(swap_mem,addr,size,buf,mem_access_init);
+			//swap_mem_access(swap_mem,addr,size,buf,mem_access_init);
 			elf_free_buffer(buf);
 		}
 	}
@@ -243,6 +243,7 @@ static void ld_load_phdt(struct ctx_t *ctx)
 {
 	struct loader_t *ld = ctx->loader;
 	struct mem_t *mem = ctx->mem;
+	struct swap_mem_t *swap_mem = ctx->swap_mem;
 	uint32_t phdt_base, phdt_size, phdr_count, phdr_size;
 	void *phdt;
 	Elf32_Phdr *phdr;
@@ -269,7 +270,8 @@ static void ld_load_phdt(struct ctx_t *ctx)
 
 		/* Load phdr */
 		phdr = phdt + i * phdr_size;
-		mem_access(mem, phdt_base + i * phdr_size, phdr_size, phdr, mem_access_init);
+	    mem_access(mem, phdt_base + i * phdr_size, phdr_size, phdr, mem_access_init);
+//		swap_mem_access(swap_mem, phdt_base + i * phdr_size, phdr_size, phdr, mem_access_init);
 
 		/* Debug */
 		map_value_string(&phdr_type_map, phdr->p_type, buf, sizeof(buf));

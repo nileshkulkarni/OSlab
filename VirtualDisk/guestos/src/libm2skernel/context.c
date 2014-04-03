@@ -212,6 +212,7 @@ void ctx_execute_inst(struct ctx_t *ctx)
 	if (!buf) {
 		buf = &fixed;
 		mem_access(ctx->mem, ctx->regs->eip, 20, buf, mem_access_exec);
+		//swap_mem_access(ctx->swap_mem, ctx->regs->eip, 20, buf, mem_access_exec);
 	}
 	ctx->mem->safe = mem_safe_mode;
 
