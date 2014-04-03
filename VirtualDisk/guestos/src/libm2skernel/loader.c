@@ -271,7 +271,7 @@ static void ld_load_phdt(struct ctx_t *ctx)
 		/* Load phdr */
 		phdr = phdt + i * phdr_size;
 	    mem_access(mem, phdt_base + i * phdr_size, phdr_size, phdr, mem_access_init);
-//		swap_mem_access(swap_mem, phdt_base + i * phdr_size, phdr_size, phdr, mem_access_init);
+		swap_mem_access(swap_mem, phdt_base + i * phdr_size, phdr_size, phdr, mem_access_init);
 
 		/* Debug */
 		map_value_string(&phdr_type_map, phdr->p_type, buf, sizeof(buf));
