@@ -193,8 +193,9 @@ struct swap_mem_page_t *swap_mem_page_get_next(struct swap_mem_t *swap_mem, uint
 struct swap_mem_page_t *swap_mem_page_create(struct swap_mem_t *swap_mem, uint32_t addr, int perm);
 void swap_mem_page_free(struct swap_mem_t *swap_mem, uint32_t addr);
 void *swap_mem_get_buffer(struct swap_mem_t *swap_mem, uint32_t addr, int size, enum mem_access_enum access);
-void swap_mem_access_page_boundary(struct swap_mem_t *swap_mem, uint32_t addr,
-	int size, void *buf, enum mem_access_enum access);
+void swap_mem_access_page_boundary(struct swap_mem_t *swap_mem, uint32_t addr, int size, void *buf, enum mem_access_enum access);
+#define swap_mem_read(swap_mem, addr, size, buf) swap_mem_access(swap_mem, addr, size, buf, mem_access_read)
+#define swap_mem_write(swap_mem, addr, size, buf) swap_mem_access(swap_mem, addr, size, buf, mem_access_write)
 void swap_mem_access(struct swap_mem_t *swap_mem, uint32_t addr, int size, void *buf,
 	enum mem_access_enum access);
 struct swap_mem_t *swap_mem_create();

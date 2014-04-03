@@ -266,6 +266,7 @@ static void ld_load_phdt(struct ctx_t *ctx)
 
 	/* Load program headers */
 	mem_map(mem, phdt_base, phdt_size, mem_access_init | mem_access_read);
+	swap_mem_map(mem, phdt_base, phdt_size, mem_access_init | mem_access_read);
 	for (i = 0; i < phdr_count; i++) {
 
 		/* Load phdr */
@@ -296,11 +297,12 @@ static void ld_load_phdt(struct ctx_t *ctx)
 
 /* Load auxiliary vector, and return its size in bytes. */
 #define LD_AV_ENTRY(t, v) { uint32_t a_type = t, a_value = v; \
-	mem_write(mem, sp, 4, &a_type); mem_write(mem, sp + 4, 4, &a_value); sp += 8; }
+	mem_write(mem, sp, 4, &a_type); swap_mem_write(swap_mem, sp, 4, &a_type);mem_write(mem, sp + 4, 4, &a_value); swap_mem_write(swap_mem, sp + 4, 4, &a_value); sp += 8; }
 static uint32_t ld_load_av(struct ctx_t *ctx, uint32_t where)
 {
 	struct loader_t *ld = ctx->loader;
 	struct mem_t *mem = ctx->mem;
+	struct swap_mem_t *swap_mem = ctx->swap_mem;
 	uint32_t sp = where;
 
 	ld_debug("Loading auxiliary vector at 0x%x\n", where);
@@ -339,6 +341,7 @@ static void ld_load_stack(struct ctx_t *ctx)
 {
 	struct loader_t *ld = ctx->loader;
 	struct mem_t *mem = ctx->mem;
+	struct swap_mem_t *swap_mem = ctx->swap_mem;
 	uint32_t sp, argc, argvp, envp;
 	uint32_t zero = 0;
 	char *str;
@@ -349,6 +352,7 @@ static void ld_load_stack(struct ctx_t *ctx)
 	ld->stack_size = LD_STACK_SIZE;
 	ld->stack_top = LD_STACK_BASE - LD_STACK_SIZE;
 	mem_map(mem, ld->stack_top, ld->stack_size, mem_access_read | mem_access_write);
+	swap_mem_map(swap_mem, ld->stack_top, ld->stack_size, mem_access_read | mem_access_write);
 	ld_debug("mapping region for stack from 0x%x to 0x%x\n",
 		ld->stack_top, ld->stack_base - 1);
 	
@@ -358,6 +362,7 @@ static void ld_load_stack(struct ctx_t *ctx)
 	argc = lnlist_count(ld->args);
 	ld_debug("  saved 'argc=%d' at 0x%x\n", argc, sp);
 	mem_write(mem, sp, 4, &argc);
+	swap_mem_write(swap_mem, sp, 4, &argc);
 	sp += 4;
 	argvp = sp;
 	sp = sp + (argc + 1) * 4;
@@ -375,11 +380,14 @@ static void ld_load_stack(struct ctx_t *ctx)
 		lnlist_goto(ld->args, i);
 		str = lnlist_get(ld->args);
 		mem_write(mem, argvp + i * 4, 4, &sp);
+		swap_mem_write(swap_mem, argvp + i * 4, 4, &sp);
 		mem_write_string(mem, sp, str);
+		swap_mem_write_string(swap_mem, sp, str);
 		ld_debug("  argument %d at 0x%x: '%s'\n", i, sp, str);
 		sp += strlen(str) + 1;
 	}
 	mem_write(mem, argvp + i * 4, 4, &zero);
+	swap_mem_write(swap_mem, argvp + i * 4, 4, &zero);
 
 	/* Write environment variables */
 	ld_debug("\nEnvironment variables:\n");
@@ -387,7 +395,9 @@ static void ld_load_stack(struct ctx_t *ctx)
 		lnlist_goto(ld->env, i);
 		str = lnlist_get(ld->env);
 		mem_write(mem, envp + i * 4, 4, &sp);
+		swap_mem_write(swap_mem, envp + i * 4, 4, &sp);
 		mem_write_string(mem, sp, str);
+		swap_mem_write_string(swap_mem, sp, str);
 		ld_debug("  env var %d at 0x%x: '%s'\n", i, sp, str);
 		sp += strlen(str) + 1;
 	}
