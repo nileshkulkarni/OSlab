@@ -56,160 +56,16 @@ struct mem_page_t* get_free_ram_page(){
 
 
 
-struct mem_page_t *mem_page_get(struct mem_t *mem, uint32_t addr)
-{
-	uint32_t index, tag;
-	struct mem_page_t *prev, *page;
-
-	tag = addr & ~(MEM_PAGESIZE - 1);
-	index = (addr >> MEM_LOGPAGESIZE) % MEM_PAGE_COUNT;
-	page = mem->pages[index];
-    if(page == NULL){
-        printf("mem page tag for the null page is %u \n", tag);
-    }
-	prev = NULL;
-	
-	/* Look for page */
-	while (page && page->tag != tag) {
-		prev = page;
-		page = page->next;
-	}
-	
-	/* Place page into list head */
-	if (prev && page) {
-		prev->next = page->next;
-		page->next = mem->pages[index];
-		mem->pages[index] = page;
-	}
-	
-	/* Return found page */
-	return page;
-}
-
-
-
 /* Return the memory page following addr in the current memory map. This function
  * is useful to reconstruct consecutive ranges of mapped pages. */
-struct mem_page_t *mem_page_get_next(struct mem_t *mem, uint32_t addr)
-{
-	uint32_t tag, index, mintag;
-	struct mem_page_t *prev, *page, *minpage;
 
-	/* Get tag of the page just following addr */
-	tag = (addr + MEM_PAGESIZE) & ~(MEM_PAGESIZE - 1);
-	if (!tag)
-		return NULL;
-	index = (tag >> MEM_LOGPAGESIZE) % MEM_PAGE_COUNT;
-	page = mem->pages[index];
-	prev = NULL;
-
-	/* Look for a page exactly following addr. If it is found, return it. */
-	while (page && page->tag != tag) {
-		prev = page;
-		page = page->next;
-	}
-	if (page)
-		return page;
-	
-	/* Page following addr is not found, so check all memory pages to find
-	 * the one with the lowest tag following addr. */
-	mintag = 0xffffffff;
-	minpage = NULL;
-	for (index = 0; index < MEM_PAGE_COUNT; index++) {
-		for (page = mem->pages[index]; page; page = page->next) {
-			if (page->tag > tag && page->tag < mintag) {
-				mintag = page->tag;
-				minpage = page;
-			}
-		}
-	}
-	/* Return the found page (or NULL) */
-	return minpage;
-}
 
 
 
 /* Create new mem page */
-static struct mem_page_t *mem_page_create(struct mem_t *mem, uint32_t addr, int perm)
-{
-	uint32_t index, tag;
-	struct mem_page_t *page;
-
-	tag = addr & ~(MEM_PAGESIZE - 1);
-	index = (addr >> MEM_LOGPAGESIZE) % MEM_PAGE_COUNT;
-	
-	/* Create new page */
-	page = get_free_ram_page();
-	
-	if(!page){
-		printf("COULD NOT FIND A FREE PAGE , ABORTING PRANALI \n");
-		exit(0);
-	}
-	
-	page->freeFlag = 0;
-	page->tag = tag;
-	page->perm = perm;
-	
-	/* Insert in pages hash table */
-	page->next = mem->pages[index];
-	mem->pages[index] = page;
-	mem_mapped_space += MEM_PAGESIZE;
-	mem_max_mapped_space = MAX(mem_max_mapped_space, mem_mapped_space);
-	return page;
-}
-
 
 
 /* Free mem pages */
-static void mem_page_free(struct mem_t *mem, uint32_t addr)
-{
-	uint32_t index, tag;
-	struct mem_page_t *prev, *page;
-	struct mem_host_mapping_t *hm;
-	
-	tag = addr & ~(MEM_PAGESIZE - 1);
-	index = (addr >> MEM_LOGPAGESIZE) % MEM_PAGE_COUNT;
-	prev = NULL;
-
-	/* Find page */
-	page = mem->pages[index];
-	while (page && page->tag != tag) {
-		prev = page;
-		page = page->next;
-	}
-	if (!page)
-		return;
-	
-	/* If page belongs to a host mapping, release it if
-	 * this is the last page allocated for it. */
-	hm = page->host_mapping;
-	if (hm) {
-		assert(hm->pages > 0);
-		assert(tag >= hm->addr && tag + MEM_PAGESIZE <= hm->addr + hm->size);
-		hm->pages--;
-		page->data = NULL;
-		page->host_mapping = NULL;
-		if (!hm->pages)
-			mem_unmap_host(mem, hm->addr);
-	}
-
-	/* Free page */
-	if (prev)
-		prev->next = page->next;
-	else
-		mem->pages[index] = page->next;
-	mem_mapped_space -= MEM_PAGESIZE;
-
-/*
-	if (page->data)
-		free(page->data);
-*/		
-	page->next = NULL;
-	page->freeFlag = 1;	
-			
-//	free(page);
-}
-
 
 /* Copy memory pages. All parameters must be multiple of the page size.
  * The pages in the source and destination interval must exist. */
@@ -251,254 +107,100 @@ void mem_copy(struct mem_t *mem, uint32_t dest, uint32_t src, int size)
 	}
 }
 
+uint32_t mem_map_space(struct mem_t *mem, uint32_t addr, int size)
+{
+    uint32_t tag_start, tag_end;
+
+    assert(!(addr & (MEM_PAGESIZE - 1)));
+    assert(!(size & (MEM_PAGESIZE - 1)));
+    tag_start = addr;
+    tag_end = addr;
+    for (;;) {
+
+        /* Address space overflow */
+        if (!tag_end)
+            return (uint32_t) -1;
+
+        /* Not enough free pages in current region */
+        if (mem_page_get(mem, tag_end)) {
+            tag_end += MEM_PAGESIZE;
+            tag_start = tag_end;
+            continue;
+        }
+
+        /* Enough free pages */
+        if (tag_end - tag_start + MEM_PAGESIZE == size)
+            break;
+        assert(tag_end - tag_start + MEM_PAGESIZE < size);
+
+        /* we have a new free page */
+        tag_end += MEM_PAGESIZE;
+    }
+
+
+    /* Return the start of the free space */
+    return tag_start;
+}
+uint32_t mem_map_space_down(struct mem_t *mem, uint32_t addr, int size)
+{
+    uint32_t tag_start, tag_end;
+
+    assert(!(addr & (MEM_PAGESIZE - 1)));
+    assert(!(size & (MEM_PAGESIZE - 1)));
+    tag_start = addr;
+    tag_end = addr;
+    for (;;) {
+
+        /* Address space overflow */
+        if (!tag_start)
+            return (uint32_t) -1; 
+    
+        /* Not enough free pages in current region */
+        if (mem_page_get(mem, tag_start)) {
+            tag_start -= MEM_PAGESIZE;
+            tag_end = tag_start;
+            continue;
+        }   
+    
+        /* Enough free pages */
+        if (tag_end - tag_start + MEM_PAGESIZE == size)
+            break;
+        assert(tag_end - tag_start + MEM_PAGESIZE < size);
+    
+        /* we have a new free page */
+        tag_start -= MEM_PAGESIZE;
+    }   
+
+    /* Return the start of the free space */
+    return tag_start;
+}
+
 
 
 
 /* Return the buffer corresponding to address 'addr' in the simulated
  * mem. The returned buffer is null if addr+size exceeds the page
  * boundaries. */
-void *mem_get_buffer(struct mem_t *mem, uint32_t addr, int size,
-	enum mem_access_enum access)
-{
-	struct mem_page_t *page;
-	uint32_t offset;
-
-	/* Get page offset and check page bounds */
-	offset = addr & (MEM_PAGESIZE - 1);
-	if (offset + size > MEM_PAGESIZE)
-		return NULL;
-	
-	/* Look for page */
-	page = mem_page_get(mem, addr);
-	if (!page)
-		return NULL;
-	
-	/* Check page permissions */
-	if ((page->perm & access) != access && mem->safe)
-		fatal("mem_get_buffer: permission denied at 0x%x", addr);
-	
-	/* Allocate and initialize page data if it does not exist yet. */
-	if (!page->data){
-		page->data = calloc(1, MEM_PAGESIZE);
-        printf("Data was null here in mem_get_buffer\n");
-    }
-	
-	/* Return pointer to page data */
-    if(!(page->data + offset)){
-        printf("pranali triumphs!! \n");
-    }
-	return page->data + offset;
-}
 
 /* Access memory without exceeding page boundaries. */
-static void mem_access_page_boundary(struct mem_t *mem, uint32_t addr,
-	int size, void *buf, enum mem_access_enum access)
-{
-	struct mem_page_t *page;
-	uint32_t offset;
-
-	/* Find memory page and compute offset. */
-	page = mem_page_get(mem, addr);
-	offset = addr & (MEM_PAGESIZE - 1);
-	assert(offset + size <= MEM_PAGESIZE);
-
-	/* On nonexistent page, raise segmentation fault in safe mode,
-	 * or create page with full privileges for writes in unsafe mode. */
-	if (!page) {
-		if (mem->safe)
-			fatal(" illegal access at 0x%x: page not allocated", addr);
-		if (access == mem_access_read || access == mem_access_exec) {
-			memset(buf, 0, size);
-			return;
-		}
-		if (access == mem_access_write || access == mem_access_init)
-			page = mem_page_create(mem, addr, mem_access_read |
-				mem_access_write | mem_access_exec |
-				mem_access_init);
-	}
-	assert(page);
-
-	/* If it is a write access, set the 'modified' flag in the page
-	 * attributes (perm). This is not done for 'initialize' access. */
-	if (access == mem_access_write)
-		page->perm |= mem_access_modif;
-
-	/* Check permissions in safe mode */
-	if (mem->safe && (page->perm & access) != access){
-		//fatal("mem_access: permission denied at 0x%x", addr);
-            raise(SIGSEGV);
-        }
-
-	/* Read/execute access */
-	if (access == mem_access_read || access == mem_access_exec) {
-		if (page->data)
-			memcpy(buf, page->data + offset, size);
-		else
-			memset(buf, 0, size);
-		return;
-	}
-
-	/* Write/initialize access */
-	if (access == mem_access_write || access == mem_access_init) {
-		if (!page->data){
-			page->data = calloc(1, MEM_PAGESIZE);
-            //printf("Creating page with tag as %u \n", page->tag);
-        }
-		memcpy(page->data + offset, buf, size);
-		return;
-	}
-
-	/* Shouldn't get here. */
-	abort();
-}
-
-
 
 /* Access mem at address 'addr'.
  * This access can cross page boundaries. */
-void mem_access(struct mem_t *mem, uint32_t addr, int size, void *buf,
-	enum mem_access_enum access)
-{
-	uint32_t offset;
-	int chunksize;
-
-	mem->last_address = addr;
-	while (size) {
-		offset = addr & (MEM_PAGESIZE - 1);
-		chunksize = MIN(size, MEM_PAGESIZE - offset);
-		mem_access_page_boundary(mem, addr, chunksize, buf, access);
-
-		size -= chunksize;
-		buf += chunksize;
-		addr += chunksize;
-	}
-}
 
 
 /* Creation and destruction */
-struct mem_t *mem_create()
-{
-	struct mem_t *mem;
-	mem = calloc(1, sizeof(struct mem_t));
-	mem->sharing = 1;
-	mem->safe = mem_safe_mode;
-	return mem;
-}
 
 
-
-
-void mem_free(struct mem_t *mem)
-{
-	int i;
-	
-	/* Free pages */
-	for (i = 0; i < MEM_PAGE_COUNT; i++)
-		while (mem->pages[i])
-			mem_page_free(mem, mem->pages[i]->tag);
-
-	/* This must have released all host mappings.
-	 * Now, free memory structure. */
-	assert(!mem->host_mapping_list);
-	free(mem);
-}
 
 
 /* This function finds a free memory region to allocate 'size' bytes
  * starting at address 'addr'. */
-uint32_t mem_map_space(struct mem_t *mem, uint32_t addr, int size)
-{
-	uint32_t tag_start, tag_end;
-
-	assert(!(addr & (MEM_PAGESIZE - 1)));
-	assert(!(size & (MEM_PAGESIZE - 1)));
-	tag_start = addr;
-	tag_end = addr;
-	for (;;) {
-
-		/* Address space overflow */
-		if (!tag_end)
-			return (uint32_t) -1;
-		
-		/* Not enough free pages in current region */
-		if (mem_page_get(mem, tag_end)) {
-			tag_end += MEM_PAGESIZE;
-			tag_start = tag_end;
-			continue;
-		}
-		
-		/* Enough free pages */
-		if (tag_end - tag_start + MEM_PAGESIZE == size)
-			break;
-		assert(tag_end - tag_start + MEM_PAGESIZE < size);
-		
-		/* we have a new free page */
-		tag_end += MEM_PAGESIZE;
-	}
-
-
-	/* Return the start of the free space */
-	return tag_start;
-}
-
-
-uint32_t mem_map_space_down(struct mem_t *mem, uint32_t addr, int size)
-{
-	uint32_t tag_start, tag_end;
-
-	assert(!(addr & (MEM_PAGESIZE - 1)));
-	assert(!(size & (MEM_PAGESIZE - 1)));
-	tag_start = addr;
-	tag_end = addr;
-	for (;;) {
-
-		/* Address space overflow */
-		if (!tag_start)
-			return (uint32_t) -1;
-		
-		/* Not enough free pages in current region */
-		if (mem_page_get(mem, tag_start)) {
-			tag_start -= MEM_PAGESIZE;
-			tag_end = tag_start;
-			continue;
-		}
-		
-		/* Enough free pages */
-		if (tag_end - tag_start + MEM_PAGESIZE == size)
-			break;
-		assert(tag_end - tag_start + MEM_PAGESIZE < size);
-		
-		/* we have a new free page */
-		tag_start -= MEM_PAGESIZE;
-	}
-
-	/* Return the start of the free space */
-	return tag_start;
-}
 
 
 /* Allocate (if not already allocated) all necessary memory pages to
  * access 'size' bytes at 'addr'. These two fields do not need to be
  * aligned to page boundaries.
  * If some page already exists, add permissions. */
-void mem_map(struct mem_t *mem, uint32_t addr, int size,
-	enum mem_access_enum perm)
-{
-	uint32_t tag1, tag2, tag;
-	struct mem_page_t *page;
-
-	/* Calculate page boundaries */
-	tag1 = addr & ~(MEM_PAGESIZE-1);
-	tag2 = (addr + size - 1) & ~(MEM_PAGESIZE-1);
-
-	/* Allocate pages */
-	for (tag = tag1; tag <= tag2; tag += MEM_PAGESIZE) {
-		page = mem_page_get(mem, tag);
-		if (!page)
-			page = mem_page_create(mem, tag, perm);
-		page->perm |= perm;
-	}
-}
 
 
 /* Deallocate memory pages. The addr and size parameters must be both
@@ -506,27 +208,13 @@ void mem_map(struct mem_t *mem, uint32_t addr, int size,
  * If some page was not allocated, the corresponding address range is skipped.
  * If a host mapping is caught in the range, it is deallocated with a call
  * to 'mem_unmap_host'. */
-void mem_unmap(struct mem_t *mem, uint32_t addr, int size)
-{
-	uint32_t tag1, tag2, tag;
-
-	/* Calculate page boundaries */
-	assert(!(addr & (MEM_PAGESIZE - 1)));
-	assert(!(size & (MEM_PAGESIZE - 1)));
-	tag1 = addr & ~(MEM_PAGESIZE-1);
-	tag2 = (addr + size - 1) & ~(MEM_PAGESIZE-1);
-
-	/* Deallocate pages */
-	for (tag = tag1; tag <= tag2; tag += MEM_PAGESIZE)
-		mem_page_free(mem, tag);
-}
-
 
 /* Map guest pages with the data allocated by a host 'mmap' call.
  * When this space is allocated with 'mem_unmap', the host memory
  * will be freed with a host call to 'munmap'.
  * Guest pages must already exist.
  * Both 'addr' and 'size' must be a multiple of the page size. */
+
 void mem_map_host(struct mem_t *mem, struct fd_t *fd, uint32_t addr, int size,
 	enum mem_access_enum perm, void *host_ptr)
 {
@@ -642,33 +330,19 @@ void mem_protect(struct mem_t *mem, uint32_t addr, int size, enum mem_access_enu
 }
 
 
-void mem_write_string(struct mem_t *mem, uint32_t addr, char *str)
-{
-	mem_access(mem, addr, strlen(str) + 1, str, mem_access_write);
-}
 
 
 
 /* Read a string from memory and return the length of the read string.
  * If the return length is equal to max_size, it means that the string did not
  * fit in the destination buffer. */
-int mem_read_string(struct mem_t *mem, uint32_t addr, int size, char *str)
-{
-	int i;
-	for (i = 0; i < size; i++) {
-		mem_access(mem, addr + i, 1, str + i, mem_access_read);
-		if (!str[i])
-			break;
-	}
-	return i;
-}
 
 
 void mem_zero(struct mem_t *mem, uint32_t addr, int size)
 {
 	unsigned char zero = 0;
 	while (size--)
-		mem_access(mem, addr++, 0, &zero, mem_access_write);
+		mem_access(mem, addr++,0, &zero, mem_access_write);
 }
 
 
@@ -754,9 +428,6 @@ void mem_load(struct mem_t *mem, char *filename, uint32_t start)
 ////////////////////////////////////////////////////////////////////// ////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////// ///////////////////////////////////////////////////////////////////////
 
-int swap_mem_safe_mode = 1;
-unsigned long swap_mem_mapped_space = 0;
-unsigned long swap_mem_max_mapped_space = 0;
 FILE* swap_fd; 
 
 FILE* open_swap_disk(){
@@ -771,14 +442,14 @@ void swap_free(fpos_t fpos){
 }
 
 /* Return mem page corresponding to an address. */
-struct swap_mem_page_t *swap_mem_page_get(struct swap_mem_t *swap_mem, uint32_t addr)
+struct mem_page_t *mem_page_get(struct mem_t *mem, uint32_t addr)
 {
 	uint32_t index, tag;
-	struct swap_mem_page_t *prev, *page;
+	struct mem_page_t *prev, *page;
 	
 	tag = addr & ~(MEM_PAGESIZE - 1);
 	index = (addr >> MEM_LOGPAGESIZE) % MEM_PAGE_COUNT;
-	page = swap_mem->pages[index];
+	page = mem->pages[index];
     if(page == NULL){
         printf("SWAP page tag for the null page is %u \n", tag);
     }
@@ -793,8 +464,8 @@ struct swap_mem_page_t *swap_mem_page_get(struct swap_mem_t *swap_mem, uint32_t 
 	/* Place page into list head */
 	if (prev && page) {
 		prev->next = page->next;
-		page->next = swap_mem->pages[index];
-		swap_mem->pages[index] = page;
+		page->next = mem->pages[index];
+		mem->pages[index] = page;
 	}
 	
 	/* Return found page */
@@ -803,17 +474,17 @@ struct swap_mem_page_t *swap_mem_page_get(struct swap_mem_t *swap_mem, uint32_t 
 
 /* Return the memory page following addr in the current memory map. This function
  * is useful to reconstruct consecutive ranges of mapped pages. */
-struct swap_mem_page_t *swap_mem_page_get_next(struct swap_mem_t *swap_mem, uint32_t addr)
+struct mem_page_t *mem_page_get_next(struct mem_t *mem, uint32_t addr)
 {
 	uint32_t tag, index, mintag;
-	struct swap_mem_page_t *prev, *page, *minpage;
+	struct mem_page_t *prev, *page, *minpage;
 
 	/* Get tag of the page just following addr */
 	tag = (addr + MEM_PAGESIZE) & ~(MEM_PAGESIZE - 1);
 	if (!tag)
 		return NULL;
 	index = (tag >> MEM_LOGPAGESIZE) % MEM_PAGE_COUNT;
-	page = swap_mem->pages[index];
+	page = mem->pages[index];
 	prev = NULL;
 
 	/* Look for a page exactly following addr. If it is found, return it. */
@@ -829,7 +500,7 @@ struct swap_mem_page_t *swap_mem_page_get_next(struct swap_mem_t *swap_mem, uint
 	mintag = 0xffffffff;
 	minpage = NULL;
 	for (index = 0; index < MEM_PAGE_COUNT; index++) {
-		for (page = swap_mem->pages[index]; page; page = page->next) {
+		for (page = mem->pages[index]; page; page = page->next) {
 			if (page->tag > tag && page->tag < mintag) {
 				mintag = page->tag;
 				minpage = page;
@@ -843,32 +514,35 @@ struct swap_mem_page_t *swap_mem_page_get_next(struct swap_mem_t *swap_mem, uint
 
 
 /* Create new mem page */
-struct swap_mem_page_t *swap_mem_page_create(struct swap_mem_t *swap_mem, uint32_t addr, int perm)
+struct mem_page_t *mem_page_create(struct mem_t *mem, uint32_t addr, int perm)
 {
 	uint32_t index, tag;
-	struct swap_mem_page_t *page;
+	struct mem_page_t *page;
 
 	tag = addr & ~(MEM_PAGESIZE - 1);
 	index = (addr >> MEM_LOGPAGESIZE) % MEM_PAGE_COUNT;
 	
 	/* Create new page */
-	page = calloc(1, sizeof(struct swap_mem_page_t));
+	page = calloc(1, sizeof(struct mem_page_t));
+    page->fpos = mem->next_free_page_start_address; 
+    mem->next_free_page_start_address.__pos = mem->next_free_page_start_address.__pos + MEM_PAGESIZE; 
+    page->bytes_in_use = MEM_PAGESIZE;
 	page->tag = tag;
 	page->perm = perm;
 	
 	/* Insert in pages hash table */
-	page->next = swap_mem->pages[index];
-	swap_mem->pages[index] = page;
-	swap_mem_mapped_space += MEM_PAGESIZE;
-	swap_mem_max_mapped_space = MAX(swap_mem_max_mapped_space, swap_mem_mapped_space);
+	page->next = mem->pages[index];
+	mem->pages[index] = page;
+	mem_mapped_space += MEM_PAGESIZE;
+	mem_max_mapped_space = MAX(mem_max_mapped_space, mem_mapped_space);
 	return page;
 }
 
 /* Free mem pages */
-void swap_mem_page_free(struct swap_mem_t *swap_mem, uint32_t addr)
+void mem_page_free(struct mem_t *mem, uint32_t addr)
 {
 	uint32_t index, tag;
-	struct swap_mem_page_t *prev, *page;
+	struct mem_page_t *prev, *page;
 	struct mem_host_mapping_t *hm;
 	
 	tag = addr & ~(MEM_PAGESIZE - 1);
@@ -876,7 +550,7 @@ void swap_mem_page_free(struct swap_mem_t *swap_mem, uint32_t addr)
 	prev = NULL;
 
 	/* Find page */
-	page = swap_mem->pages[index];
+	page = mem->pages[index];
 	while (page && page->tag != tag) {
 		prev = page;
 		page = page->next;
@@ -901,9 +575,9 @@ void swap_mem_page_free(struct swap_mem_t *swap_mem, uint32_t addr)
 	if (prev)
 		prev->next = page->next;
 	else
-		swap_mem->pages[index] = page->next;
+		mem->pages[index] = page->next;
 		
-	swap_mem_mapped_space -= MEM_PAGESIZE;
+	mem_mapped_space -= MEM_PAGESIZE;
 	if (page->bytes_in_use==0)
 		swap_free(page->fpos);
 	free(page);
@@ -913,9 +587,9 @@ void swap_mem_page_free(struct swap_mem_t *swap_mem, uint32_t addr)
 /* Return the buffer corresponding to address 'addr' in the simulated
  * mem. The returned buffer is null if addr+size exceeds the page
  * boundaries. */
-void *swap_mem_get_buffer(struct swap_mem_t *swap_mem, uint32_t addr, int size, enum mem_access_enum access)
+void *mem_get_buffer(struct mem_t *mem, uint32_t addr, int size, enum mem_access_enum access)
 {
-	struct swap_mem_page_t *page;
+	struct mem_page_t *page;
 	uint32_t offset;
 
 	/* Get page offset and check page bounds */
@@ -924,7 +598,7 @@ void *swap_mem_get_buffer(struct swap_mem_t *swap_mem, uint32_t addr, int size, 
 		return NULL;
 	
 	/* Look for page */
-	page = swap_mem_page_get(swap_mem, addr);
+	page = mem_page_get(mem, addr);
 	if (!page){
         printf("page in null\n");
 		return NULL;
@@ -932,7 +606,7 @@ void *swap_mem_get_buffer(struct swap_mem_t *swap_mem, uint32_t addr, int size, 
     //printf("page in not  null\n");
 	
 	/* Check page permissions */
-	if ((page->perm & access) != access && swap_mem->safe)
+	if ((page->perm & access) != access && mem->safe)
 		fatal("mem_get_buffer: permission denied at 0x%x", addr);
 	
 	void * buf = calloc(1,size);
@@ -941,16 +615,16 @@ void *swap_mem_get_buffer(struct swap_mem_t *swap_mem, uint32_t addr, int size, 
        // printf("page tag %u has bytes used 0  \n" ,page->tag); 
         //printf("page to be created bytes in use =0\n");
 		swap_fd = open_swap_disk();
-		fpos_t new_page_start_address  = swap_mem->next_free_page_start_address;
+		fpos_t new_page_start_address  = mem->next_free_page_start_address;
 		//!TODO: swap manager se free address lo
 		
 		
-		fseek (swap_fd , new_page_start_address.__pos, SEEK_SET);
+		fseek(swap_fd , new_page_start_address.__pos, SEEK_SET);
 		
 		//!TODO this should be removed and updated to swap manager
 		page->fpos = new_page_start_address;
 		new_page_start_address.__pos = new_page_start_address.__pos + + MEM_PAGESIZE;
-		swap_mem->next_free_page_start_address = new_page_start_address ;
+		mem->next_free_page_start_address = new_page_start_address ;
 		page->bytes_in_use = MEM_PAGESIZE;
         printf("Buffer isn in swap_mem_get_buffer %s\n",buf);
         fclose(swap_fd);
@@ -971,28 +645,32 @@ void *swap_mem_get_buffer(struct swap_mem_t *swap_mem, uint32_t addr, int size, 
 
 
 /* Access memory without exceeding page boundaries. */
-void swap_mem_access_page_boundary(struct swap_mem_t *swap_mem, uint32_t addr,int size, void *buf, enum mem_access_enum access)
+void mem_access_page_boundary(struct mem_t *mem, uint32_t addr,int size, void *buf, enum mem_access_enum access)
 {
     int static first_access =0;
-	struct swap_mem_page_t *page;
+	struct mem_page_t *page;
 	uint32_t offset;
 
 	/* Find memory page and compute offset. */
-	page = swap_mem_page_get(swap_mem, addr);
+	page = mem_page_get(mem, addr);
 	offset = addr & (MEM_PAGESIZE - 1);
 	assert(offset + size <= MEM_PAGESIZE);
 
 	/* On nonexistent page, raise segmentation fault in safe mode,
 	 * or create page with full privileges for writes in unsafe mode. */
 	if (!page) {
-		if (swap_mem->safe)
-			fatal("Swap::illegal access at 0x%x: page not allocated", addr);
+		if (mem->safe){
+		    int * x;
+            *x =2;
+            fatal("Swap::illegal access at 0x%x: page not allocated",addr);
+            
+        }
 		if (access == mem_access_read || access == mem_access_exec) {
 			memset(buf, 0, size);
 			return;
 		}
 		if (access == mem_access_write || access == mem_access_init)
-			page = swap_mem_page_create(swap_mem, addr, mem_access_read |
+			page = mem_page_create(mem, addr, mem_access_read |
 				mem_access_write | mem_access_exec |
 				mem_access_init);
 	}
@@ -1000,12 +678,12 @@ void swap_mem_access_page_boundary(struct swap_mem_t *swap_mem, uint32_t addr,in
 
 	/* If it is a write access, set the 'modified' flag in the page
 	 * attributes (perm). This is not done for 'initialize' access. */
-    printf("Swap mem page access %u \n", page->fpos);
+    //printf("Swap mem page access %u \n", page->fpos);
 	if (access == mem_access_write)
 		page->perm |= mem_access_modif;
 
 	/* Check permissions in safe mode */
-	if (swap_mem->safe && (page->perm & access) != access){
+	if (mem->safe && (page->perm & access) != access){
 		//fatal("mem_access: permission denied at 0x%x", addr);
             raise(SIGSEGV);
         }
@@ -1038,16 +716,14 @@ void swap_mem_access_page_boundary(struct swap_mem_t *swap_mem, uint32_t addr,in
 		if (page->bytes_in_use ==0){
 			
 			//!TODO use free page manager here
-			fpos_t new_page_start_address  = swap_mem->next_free_page_start_address;
+			fpos_t new_page_start_address  = mem->next_free_page_start_address;
 			//fseek (swap_fd , new_page_start_address.__pos, SEEK_SET);           
                // printf("*********************************** I am abouto write to disk \n");
                 //fseek (swap_fd , 0, SEEK_SET);           
                 fseek (swap_fd , new_page_start_address.__pos, SEEK_SET);           
-                char temp_buf[] = "Hi this should be written";
                 printf("page with tag %u, created \n",page->tag); 
-                //fwrite (temp_buf,26,1,swap_fd);
                 fwrite (buf,size,1,swap_fd);
-                swap_mem->next_free_page_start_address.__pos = new_page_start_address.__pos +MEM_PAGESIZE;
+                mem->next_free_page_start_address.__pos = new_page_start_address.__pos +MEM_PAGESIZE;
                 page->bytes_in_use = size;
                 page->fpos = new_page_start_address;
 		}
@@ -1067,18 +743,18 @@ void swap_mem_access_page_boundary(struct swap_mem_t *swap_mem, uint32_t addr,in
 
 /* Access mem at address 'addr'.
  * This access can cross page boundaries. */
-void swap_mem_access(struct swap_mem_t *swap_mem, uint32_t addr, int size, void *buf,
+void mem_access(struct mem_t *mem, uint32_t addr, int size, void *buf,
 	enum mem_access_enum access)
 {
 	uint32_t offset;
 	int chunksize;
     
-	swap_mem->last_address = addr;
+	mem->last_address = addr;
 
 	while (size) {
 		offset = addr & (MEM_PAGESIZE - 1);
 		chunksize = MIN(size, MEM_PAGESIZE - offset);
-		swap_mem_access_page_boundary(swap_mem, addr, chunksize, buf, access);
+		mem_access_page_boundary(mem, addr, chunksize, buf, access);
 
 		size -= chunksize;
 		buf += chunksize;
@@ -1088,33 +764,33 @@ void swap_mem_access(struct swap_mem_t *swap_mem, uint32_t addr, int size, void 
 
 
 /* Creation and destruction of swap space*/
-struct swap_mem_t *swap_mem_create()
+struct mem_t *mem_create()
 {
-	struct swap_mem_t *swap_mem;
-	swap_mem = calloc(1, sizeof(struct swap_mem_t));
-	swap_mem->sharing = 1;
-	swap_mem->safe = swap_mem_safe_mode;
+	struct mem_t *mem;
+	mem = calloc(1, sizeof(struct mem_t));
+	mem->sharing = 1;
+	mem->safe = mem_safe_mode;
     //TODO edit here
-    // swap_mem->next_free_page_start_address =(fpos_t)0;
-	return swap_mem;
+    // mem->next_free_page_start_address =(fpos_t)0;
+	return mem;
 	
 }
 
 
 
-void swap_mem_free(struct swap_mem_t *swap_mem)
+void mem_free(struct mem_t *mem)
 {
 	int i;
 	
 	/* Free pages */
 	for (i = 0; i < MEM_PAGE_COUNT; i++)
-		while (swap_mem->pages[i])
-			swap_mem_page_free(swap_mem, swap_mem->pages[i]->tag);
+		while (mem->pages[i])
+			mem_page_free(mem, mem->pages[i]->tag);
 
 	/* This must have released all host mappings.
 	 * Now, free memory structure. */
-	assert(!swap_mem->host_mapping_list);
-	free(swap_mem);
+	assert(!mem->host_mapping_list);
+	free(mem);
 }
 
 
@@ -1123,7 +799,7 @@ void swap_mem_free(struct swap_mem_t *swap_mem)
  * access 'size' bytes at 'addr'. These two fields do not need to be
  * aligned to page boundaries.
  * If some page already exists, add permissions. */
-void swap_mem_map(struct swap_mem_t *swap_mem, uint32_t addr, int size,
+void mem_map(struct mem_t *mem, uint32_t addr, int size,
 	enum mem_access_enum perm)
 {
 	uint32_t tag1, tag2, tag;
@@ -1136,10 +812,10 @@ void swap_mem_map(struct swap_mem_t *swap_mem, uint32_t addr, int size,
 	/* Allocate pages */
     int numberPages =0;
 	for (tag = tag1; tag <= tag2; tag += MEM_PAGESIZE) {
-		page = swap_mem_page_get(swap_mem, tag);
+		page = mem_page_get(mem, tag);
 		if (!page){
             numberPages++;
-			page = swap_mem_page_create(swap_mem, tag, perm);
+			page = mem_page_create(mem, tag, perm);
             //printf("Creating page for addr %u , on swap space, page number is %u\n " ,tag,numberPages);
         }
 		page->perm |= perm;
@@ -1154,7 +830,7 @@ void swap_mem_map(struct swap_mem_t *swap_mem, uint32_t addr, int size,
  * If some page was not allocated, the corresponding address range is skipped.
  * If a host mapping is caught in the range, it is deallocated with a call
  * to 'mem_unmap_host'. */
-void swap_mem_unmap(struct swap_mem_t *swap_mem, uint32_t addr, int size)
+void mem_unmap(struct mem_t *mem, uint32_t addr, int size)
 {
 	uint32_t tag1, tag2, tag;
 
@@ -1166,24 +842,24 @@ void swap_mem_unmap(struct swap_mem_t *swap_mem, uint32_t addr, int size)
 
 	/* Deallocate pages */
 	for (tag = tag1; tag <= tag2; tag += MEM_PAGESIZE)
-		swap_mem_page_free(swap_mem, tag);
+		mem_page_free(mem, tag);
 }
 
 
-void swap_mem_write_string(struct swap_mem_t *swap_mem, uint32_t addr, char *str)
+void mem_write_string(struct mem_t *mem, uint32_t addr, char *str)
 {
-	swap_mem_access(swap_mem, addr, strlen(str) + 1, str, mem_access_write);
+	mem_access(mem, addr, strlen(str) + 1, str, mem_access_write);
 }
 
 
 /* Read a string from memory and return the length of the read string.
  * If the return length is equal to max_size, it means that the string did not
  * fit in the destination buffer. */
-int swap_mem_read_string(struct swap_mem_t *swap_mem, uint32_t addr, int size, char *str)
+int mem_read_string(struct mem_t *mem, uint32_t addr, int size, char *str)
 {
 	int i;
 	for (i = 0; i < size; i++) {
-		swap_mem_access(swap_mem, addr + i, 1, str + i, mem_access_read);
+		mem_access(mem, addr + i, 1, str + i, mem_access_read);
 		if (!str[i])
 			break;
 	}

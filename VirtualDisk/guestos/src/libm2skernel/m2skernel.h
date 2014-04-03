@@ -73,7 +73,7 @@ enum mem_access_enum {
 
 /* Safe mode */
 extern int mem_safe_mode;
-extern int swap_mem_safe_mode;
+extern int mem_safe_mode;
 
 extern FILE* swap_fd;
 
@@ -88,43 +88,20 @@ struct mem_host_mapping_t {
 };
 
 /* A 4KB page of memory */
+
+
 struct mem_page_t {
 	uint32_t tag;
 	enum mem_access_enum perm;  /* Access permissions; combination of flags */
-	unsigned char *data;
-	struct mem_host_mapping_t *host_mapping;  /* If other than null, page is host mapping */
-
-	/* FOR RAM */
-    int freeFlag;
-
-	/* FOR PAGE TABLES */
-    struct mem_page_t *next;
-	
-    // TODO mem_host_mapping_t not known why it exists
-};
-
-
-struct swap_mem_page_t {
-	uint32_t tag;
-	enum mem_access_enum perm;  /* Access permissions; combination of flags */
-	struct swap_mem_page_t *next; /* Pointer to next page */
+	struct mem_page_t *next; /* Pointer to next page */
 	fpos_t fpos;// replace with current file pointer
-	
+    void * data; 	
 	struct mem_host_mapping_t *host_mapping;  /* If other than null, page is host mapping */
+    int freeFlag; 
     // TODO mem_host_mapping_t not known why it exists
     int bytes_in_use; //0 if page is not used else no of bytes used
 };
 
-
-struct swap_mem_t {
-	struct swap_mem_page_t *pages[MEM_PAGE_COUNT];
-	int sharing;  /* Number of contexts sharing memory map */
-	uint32_t last_address;  /* Address of last access */
-	int safe;  /* Safe mode */
-	struct mem_host_mapping_t *host_mapping_list;  /* List of host mappings */
-    fpos_t offset; //offset of the first page in Sim_disk
-    fpos_t next_free_page_start_address; //next free page address
-};
 
 struct mem_t {
 	struct mem_page_t *pages[MEM_PAGE_COUNT];
@@ -132,6 +109,8 @@ struct mem_t {
 	uint32_t last_address;  /* Address of last access */
 	int safe;  /* Safe mode */
 	struct mem_host_mapping_t *host_mapping_list;  /* List of host mappings */
+    fpos_t offset; //offset of the first page in Sim_disk
+    fpos_t next_free_page_start_address; //next free page address
 };
 
 
@@ -144,9 +123,6 @@ struct ram_mem_t {
 extern unsigned long mem_mapped_space;
 extern unsigned long mem_max_mapped_space;
 
-
-extern unsigned long swap_mem_mapped_space;
-extern unsigned long swap_mem_max_mapped_space;
 
 struct mem_t *mem_create(void);
 void mem_free(struct mem_t *mem);
@@ -187,24 +163,7 @@ void mem_load(struct mem_t *mem, char *filename, uint32_t start);
 
 FILE* open_swap_disk();
 void swap_free(fpos_t fpos);
-struct swap_mem_page_t *swap_mem_page_get(struct swap_mem_t *swap_mem, uint32_t addr);
 
-struct swap_mem_page_t *swap_mem_page_get_next(struct swap_mem_t *swap_mem, uint32_t addr);
-struct swap_mem_page_t *swap_mem_page_create(struct swap_mem_t *swap_mem, uint32_t addr, int perm);
-void swap_mem_page_free(struct swap_mem_t *swap_mem, uint32_t addr);
-void *swap_mem_get_buffer(struct swap_mem_t *swap_mem, uint32_t addr, int size, enum mem_access_enum access);
-void swap_mem_access_page_boundary(struct swap_mem_t *swap_mem, uint32_t addr, int size, void *buf, enum mem_access_enum access);
-#define swap_mem_read(swap_mem, addr, size, buf) swap_mem_access(swap_mem, addr, size, buf, mem_access_read)
-#define swap_mem_write(swap_mem, addr, size, buf) swap_mem_access(swap_mem, addr, size, buf, mem_access_write)
-void swap_mem_access(struct swap_mem_t *swap_mem, uint32_t addr, int size, void *buf,
-	enum mem_access_enum access);
-struct swap_mem_t *swap_mem_create();
-void swap_mem_free(struct swap_mem_t *swap_mem);
-void swap_mem_map(struct swap_mem_t *swap_mem, uint32_t addr, int size,
-	enum mem_access_enum perm);
-void swap_mem_unmap(struct swap_mem_t *swap_mem, uint32_t addr, int size);
-void swap_mem_write_string(struct swap_mem_t *swap_mem, uint32_t addr, char *str);
-int swap_mem_read_string(struct swap_mem_t *swap_mem, uint32_t addr, int size, char *str);
 /* Registers */
 
 struct regs_t {
@@ -597,7 +556,6 @@ struct ctx_t {
 	/* Substructures */
 	struct loader_t *loader;
 	struct mem_t *mem;  /* Virtual memory image */
-	struct  swap_mem_t *swap_mem;  /* Swap space image */
 	struct fdt_t *fdt;  /* File descriptor table */
 	struct regs_t *regs;  /* Logical register file */
 	struct signal_masks_t *signal_masks;

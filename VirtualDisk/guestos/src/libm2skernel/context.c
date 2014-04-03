@@ -85,7 +85,6 @@ struct ctx_t *ctx_create()
 	ctx->mid = ke->current_mid++;
 	
 	ctx->mem = mem_create();
-	ctx->swap_mem = swap_mem_create();
     printf("Swap mem created !! \n");	
 	ctx->signal_handlers = install_signal_handlers();
 	ctx->fdt = fdt_create();
@@ -206,14 +205,12 @@ void ctx_execute_inst(struct ctx_t *ctx)
 
 	/* Read instruction from memory */
 	ctx->mem->safe = mem_safe_mode;
-	ctx->swap_mem->safe = swap_mem_safe_mode;
 	if (ctx_get_status(ctx, ctx_specmode)){
 		ctx->mem->safe = 0;
-		ctx->swap_mem->safe = 0;
     }
     //void* buf1 = mem_get_buffer(ctx->mem, ctx->regs->eip, 20, mem_access_exec);
    // printf("Buff1  is %s \n", buf);
-	buf = swap_mem_get_buffer(ctx->swap_mem, ctx->regs->eip, 20, mem_access_exec);
+	buf = mem_get_buffer(ctx->mem, ctx->regs->eip, 20, mem_access_exec);
  /*   if(!buf2){
         printf("Buf2 is nulllll!! woah!!aaha \n");
     }
@@ -233,19 +230,20 @@ void ctx_execute_inst(struct ctx_t *ctx)
     	//mem_access(ctx->mem, ctx->regs->eip, 20, buf, mem_access_exec);
         printf("buf is null \n");
         printf("Buff1  is %s \n", buf);
-		swap_mem_access(ctx->swap_mem, ctx->regs->eip, 20, buf, mem_access_exec);
+		mem_access(ctx->mem, ctx->regs->eip, 20, buf, mem_access_exec);
         printf("Buff2  is %s \n", buf);
 	}
 	ctx->mem->safe = mem_safe_mode;
-	ctx->swap_mem->safe = swap_mem_safe_mode;
 
 	/* Disassemble */
 	x86_disasm(buf, isa_eip, &isa_inst);
 
 	/* Call the isa module to execute one machine instruction,
 	 * only if we are not in speculative mode. */
-	if (!ctx_get_status(ctx, ctx_specmode))
+	if (!ctx_get_status(ctx, ctx_specmode)){
+     //   printf("BUFFER TO SEE SEG FAULT, %u %s, isa inst count %u\n",ctx->regs->eip,buf,isa_inst_count);
 		isa_execute_inst(buf);
+    }
 }
 
 
