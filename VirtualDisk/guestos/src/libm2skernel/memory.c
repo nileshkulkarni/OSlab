@@ -751,7 +751,7 @@ FILE* swap_fd;
 
 FILE* open_swap_disk(){
 	
-	FILE* fp = fopen("Sim_disk","wr+");
+	FILE* fp = fopen("Sim_disk","rb+");
 	return fp;
 }
 
@@ -938,11 +938,12 @@ void *swap_mem_get_buffer(struct swap_mem_t *swap_mem, uint32_t addr, int size, 
 		memset(buf,0,size);
 	}
 	else{
-		
+        		
 		swap_fd = open_swap_disk();
 		fpos_t page_start_address  = page->fpos;
 		fseek (swap_fd , page_start_address.__pos, SEEK_SET);
 		fread (buf,size,1,swap_fd);
+        fclose(swap_fd);
 		/* Return pointer to page data */
 		return buf;
 	}
@@ -953,6 +954,7 @@ void *swap_mem_get_buffer(struct swap_mem_t *swap_mem, uint32_t addr, int size, 
 void swap_mem_access_page_boundary(struct swap_mem_t *swap_mem, uint32_t addr,
 	int size, void *buf, enum mem_access_enum access)
 {
+    int static first_access =0;
 	struct swap_mem_page_t *page;
 	uint32_t offset;
 
@@ -1017,15 +1019,21 @@ void swap_mem_access_page_boundary(struct swap_mem_t *swap_mem, uint32_t addr,
 			
 			//!TODO use free page manager here
 			fpos_t new_page_start_address  = swap_mem->next_free_page_start_address;
-			fseek (swap_fd , new_page_start_address.__pos, SEEK_SET);
-			fwrite (buf,size,1,swap_fd);
-			swap_mem->next_free_page_start_address.__pos = new_page_start_address.__pos +MEM_PAGESIZE;
-			page->bytes_in_use = size;
-			page->fpos = new_page_start_address;
+			//fseek (swap_fd , new_page_start_address.__pos, SEEK_SET);           
+                printf("*********************************** I am abouto write to disk \n");
+                //fseek (swap_fd , 0, SEEK_SET);           
+                fseek (swap_fd , new_page_start_address.__pos, SEEK_SET);           
+                char temp_buf[] = "Hi this should be written";
+                 
+                //fwrite (temp_buf,26,1,swap_fd);
+                fwrite (buf,size,1,swap_fd);
+                swap_mem->next_free_page_start_address.__pos = new_page_start_address.__pos +MEM_PAGESIZE;
+                page->bytes_in_use = size;
+                page->fpos = new_page_start_address;
 		}
 		else{
 			fpos_t page_start_address;
-			 page_start_address.__pos = page->fpos.__pos + offset;
+			page_start_address.__pos = page->fpos.__pos + offset;
 			fseek (swap_fd , page_start_address.__pos, SEEK_SET);
 			fwrite (buf,size,1,swap_fd);
 		}
