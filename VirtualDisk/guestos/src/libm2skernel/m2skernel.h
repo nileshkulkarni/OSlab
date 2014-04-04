@@ -120,8 +120,10 @@ struct ram_mem_t {
 };
 
 struct swap_mem_t{
-    struct mem_page_t*  free_list;
-    struct mem_page_t*  occupied_list;
+    struct mem_page_t*  free_list_head;
+    struct mem_page_t*  free_list_tail;
+    struct mem_page_t*  occupied_list_head;
+    struct mem_page_t*  occupied_list_tail;
 };
 extern unsigned long mem_mapped_space;
 extern unsigned long mem_max_mapped_space;

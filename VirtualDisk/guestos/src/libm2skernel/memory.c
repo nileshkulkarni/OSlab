@@ -842,16 +842,26 @@ struct mem_t* get_new_swap_page(){
 
 void swap_initialise(){
     swap_mem = malloc(sizeof(struct swap_mem_t));
-    swap_mem->free_list =NULL;
-    swap_mem->occupied_list =NULL;
+    swap_mem->free_list_head=NULL;
+    swap_mem->free_list_tail=NULL;
+    swap_mem->occupied_list_head =NULL;
+    swap_mem->occupied_list_tail =NULL;
     swap_fd = swap_open_disk();   
 	fseek(swap_fd ,0, SEEK_SET);
     int no_of_pages =0;
     while(no_of_pages < MEM_PAGE_COUNT){
-        
-        struct mem_t* free_page = malloc(sizeof(struct mem_t)); 
-        free_list
-
+        if(!(swap_mem->free_list_head) && !(swap_mem->free_list_tail)){ 
+            struct mem_t* free_page = malloc(sizeof(struct mem_t)); 
+            fpos_t fseek_loc = (free_page->offset)
+            swap_mem->free_list_head = free_page;
+            swap_mem->free_list_tail = free_page;
+        }
+        else{
+            struct mem_t* free_page = malloc(sizeof(struct mem_t)); 
+            (swap_mem->free_list_tail)->next= free_page;
+            swap_mem->free_list_tail = free_page; 
+        }
+        no_of_pages++;
     }
 
     
