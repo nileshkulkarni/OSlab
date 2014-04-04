@@ -61,6 +61,7 @@ int instr_slice;
 #define MEM_PAGESIZE       (1<<MEM_LOGPAGESIZE)
 #define MEM_PAGEMASK       (~(MEM_PAGESIZE-1))
 #define MEM_PAGE_COUNT     1024
+#define PAGES_ALLOCATED 10000
 #define RAM_MEM_PAGE_COUNT     20000
 
 enum mem_access_enum {
@@ -75,7 +76,6 @@ enum mem_access_enum {
 extern int mem_safe_mode;
 
 extern FILE* swap_fd;
-
 /* Host mapping: mappings performed with file descriptors other than -1 */
 struct mem_host_mapping_t {
 	void *host_ptr;  /* Pointer to the host memory space */
@@ -131,6 +131,7 @@ struct mem_t {
 	uint32_t last_address;  /* Address of last access */
 	int safe;  /* Safe mode */
 	struct mem_host_mapping_t *host_mapping_list;  /* List of host mappings */
+	struct ctx_t* context;
 };
 
 
@@ -153,6 +154,11 @@ void mem_free(struct mem_t *mem);
 struct mem_page_t *mem_page_get(struct mem_t *mem, uint32_t addr);
 struct mem_page_t *mem_page_get_next(struct mem_t *mem, uint32_t addr);
 struct mem_page_t* get_free_ram_page();
+
+
+struct mem_page_t* page_fault_routine(struct mem_t *mem, uint32_t addr);
+int get_page_to_be_replaced(struct mem_t *mem,  uint32_t addr);
+
 
 
 
@@ -181,28 +187,8 @@ void mem_dump(struct mem_t *mem, char *filename, uint32_t start, uint32_t end);
 void mem_load(struct mem_t *mem, char *filename, uint32_t start);
 
 
-/* Swap */
 
 
-FILE* open_swap_disk();
-void swap_free(fpos_t fpos);
-struct swap_mem_page_t *swap_mem_page_get(struct swap_mem_t *swap_mem, uint32_t addr);
-
-struct swap_mem_page_t *swap_mem_page_get_next(struct swap_mem_t *swap_mem, uint32_t addr);
-struct swap_mem_page_t *swap_mem_page_create(struct swap_mem_t *swap_mem, uint32_t addr, int perm);
-void swap_mem_page_free(struct swap_mem_t *swap_mem, uint32_t addr);
-void *swap_mem_get_buffer(struct swap_mem_t *swap_mem, uint32_t addr, int size, enum mem_access_enum access);
-void swap_mem_access_page_boundary(struct swap_mem_t *swap_mem, uint32_t addr,
-	int size, void *buf, enum mem_access_enum access);
-void swap_mem_access(struct swap_mem_t *swap_mem, uint32_t addr, int size, void *buf,
-	enum mem_access_enum access);
-struct swap_mem_t *swap_mem_create();
-void swap_mem_free(struct swap_mem_t *swap_mem);
-void swap_mem_map(struct swap_mem_t *swap_mem, uint32_t addr, int size,
-	enum mem_access_enum perm);
-void swap_mem_unmap(struct swap_mem_t *swap_mem, uint32_t addr, int size);
-void swap_mem_write_string(struct swap_mem_t *swap_mem, uint32_t addr, char *str);
-int swap_mem_read_string(struct swap_mem_t *swap_mem, uint32_t addr, int size, char *str);
 /* Registers */
 
 struct regs_t {
@@ -603,6 +589,8 @@ struct ctx_t {
 
 	int instr_slice;
 	int uid;
+	int pages_allocated_in_ram;
+	int pages_in_ram;
 };
 
 enum ctx_status_enum {

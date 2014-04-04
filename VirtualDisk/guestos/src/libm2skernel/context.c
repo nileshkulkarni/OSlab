@@ -56,6 +56,8 @@ static struct ctx_t *ctx_do_create()
 
 	ctx->pid = ke->current_pid++;
 	ctx->instr_slice = instr_slice;
+	ctx->pages_allocated_in_ram = PAGES_ALLOCATED;
+	ctx->pages_in_ram = 0;
 
 	/* Update status so that the context is inserted in the
 	 * corresponding lists. The ctx_running parameter has no
@@ -85,8 +87,13 @@ struct ctx_t *ctx_create()
 	ctx->mid = ke->current_mid++;
 	
 	ctx->mem = mem_create();
-	ctx->swap_mem = swap_mem_create();
-    printf("Swap mem created !! \n");	
+	int i;
+	for(i=0;i<MEM_PAGE_COUNT;i++)
+		ctx->mem->pages[i] = NULL;
+
+	ctx->mem->context = ctx;
+	//ctx->swap_mem = swap_mem_create();
+	
 	ctx->signal_handlers = install_signal_handlers();
 	ctx->fdt = fdt_create();
 	
