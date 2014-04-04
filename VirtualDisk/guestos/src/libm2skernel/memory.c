@@ -550,7 +550,7 @@ struct mem_page_t*  ram_get_new_page(struct mem_t * mem){
                 }
                 //!TODO update dirty bit of the new page and write-back the old page if(dirty bit)
                 if(iter->dirty){
-                    swap_write_back_page(iter,((j<<MEM_LOGPAGESIZE)+iter->tag)<<MEM_PAGESIZE); 
+                    swap_write_back_page(mem,iter,((j<<MEM_LOGPAGESIZE)+iter->tag)<<MEM_PAGESIZE); 
                 }
                 iter->free_flag = 1;
                 return iter;
@@ -563,10 +563,14 @@ struct mem_page_t*  ram_get_new_page(struct mem_t * mem){
     fatal("ram_get_new_page :: Should never come here");
 }
 
-void swap_write_back_page(struct mem_page_t * page,uint32_t addr ){
+void swap_write_back_page(struct mem_t *mem,struct mem_page_t* ram_page,uint32_t addr ){
     
-
-
+   struct  mem_page_t * swap_page = swap_mem_page_get(mem,addr) 
+    // Write to swap disk   
+    swap_fd = open_swap_disk();
+    fseek(swap_fd, swap_page->fpos.__pos, SET_CURR);
+    fwrite(ram_page->data,MEM_PAGESIZE,1,swap_fd);
+    printf("page written to swap");
 }
 
 void* read_swap_page(struct mem_page_t * page){
