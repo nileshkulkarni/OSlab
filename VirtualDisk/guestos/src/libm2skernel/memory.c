@@ -52,6 +52,7 @@ struct mem_page_t* get_free_ram_page(){
 		if(ke->ram->pages[i].freeFlag != 0)
 			return &(ke->ram->pages[i]);
 	}
+	return NULL;
 }
 
 

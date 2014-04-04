@@ -121,10 +121,6 @@ struct ram_mem_t{
 };
 
 
-struct mem_page_t * get_page_to_be_replaced(struct mem_t *mem, uint32_t addr);
-struct mem_page_t* page_fault_routine(struct mem_t *mem, uint32_t addr);
-
-
 
 struct swap_mem_t{
     struct mem_page_t*  free_list_head;
@@ -154,10 +150,9 @@ void mem_free(struct mem_t *mem);
 
 
 
-struct mem_page_t *ram_page_get(struct mem_t *mem, uint32_t addr);
 struct mem_page_t* get_free_ram_page();
-struct mem_page_t *ram_page_get_next(struct mem_t *mem, uint32_t addr);
-
+struct mem_page_t * get_page_to_be_replaced(struct mem_t *mem);
+struct mem_page_t* page_fault_routine(struct mem_t *mem, uint32_t addr);
 
 
 
@@ -172,6 +167,8 @@ uint32_t mem_map_space_down(struct mem_t *mem, uint32_t addr, int size);
 
 void mem_map(struct mem_t *mem, uint32_t addr, int size, enum mem_access_enum perm);
 void mem_unmap(struct mem_t *mem, uint32_t addr, int size);
+
+
 
 void mem_map_host(struct mem_t *mem, struct fd_t *fd, uint32_t addr,
 	int size, enum mem_access_enum perm, void *data);
