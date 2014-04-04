@@ -160,7 +160,6 @@ void ld_add_environ(struct ctx_t *ctx, char *env)
 void ld_load_sections(struct ctx_t *ctx, struct elf_file_t *elf)
 {
 	struct mem_t *mem = ctx->mem;
-	struct swap_mem_t *swap_mem = ctx->swap_mem;
 
 	struct loader_t *ld = ctx->loader;
 	int i, count;
@@ -190,15 +189,16 @@ void ld_load_sections(struct ctx_t *ctx, struct elf_file_t *elf)
 
 			/* Load section */
 			mem_map(mem, addr, size, perm);
-			swap_mem_map(swap_mem, addr, size, perm);
 			ld->brk = MAX(ld->brk, addr + size);
 			ld->bottom = MIN(ld->bottom, addr);
 			buf = elf_section_read(elf, i);
 			mem_access(mem, addr, size, buf, mem_access_init);
-			swap_mem_access(swap_mem,addr,size,buf,mem_access_init);
+            printf("going for swap_mem_access: ld_load_section \n");
 			elf_free_buffer(buf);
 		}
 	}
+    printf("Loading Sections Done!! \n");
+    printf("Page used are %d \n", swap_page_count_used);
 }
 
 
@@ -269,7 +269,7 @@ static void ld_load_phdt(struct ctx_t *ctx)
 
 		/* Load phdr */
 		phdr = phdt + i * phdr_size;
-		mem_access(mem, phdt_base + i * phdr_size, phdr_size, phdr, mem_access_init);
+	    mem_access(mem, phdt_base + i * phdr_size, phdr_size, phdr, mem_access_init);
 
 		/* Debug */
 		map_value_string(&phdr_type_map, phdr->p_type, buf, sizeof(buf));
@@ -294,7 +294,7 @@ static void ld_load_phdt(struct ctx_t *ctx)
 
 /* Load auxiliary vector, and return its size in bytes. */
 #define LD_AV_ENTRY(t, v) { uint32_t a_type = t, a_value = v; \
-	mem_write(mem, sp, 4, &a_type); mem_write(mem, sp + 4, 4, &a_value); sp += 8; }
+	mem_write(mem, sp, 4, &a_type); mem_write(mem, sp + 4, 4, &a_value);  sp += 8; }
 static uint32_t ld_load_av(struct ctx_t *ctx, uint32_t where)
 {
 	struct loader_t *ld = ctx->loader;
