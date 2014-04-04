@@ -72,15 +72,9 @@ struct mem_page_t *mem_page_get(struct mem_t *mem, uint32_t addr)
 
 	tag = addr & ~(MEM_PAGESIZE - 1);
 	index = (addr >> MEM_LOGPAGESIZE) % MEM_PAGE_COUNT;
-	page = mem->pages[index];
+	page = mem->ram_pages[index];
 	prev = NULL;
 	
-	
-	if(!page){
-	    //	printf("COULD NOT FIND A FREE PAGE , EXECUTE PAGE FAULT ROUTINE \n");
-		/// !!TODO - PAGE FAULT ROUTINE 
-	}
- 
 	
 	/* Look for page */
 	while (page && page->tag != tag) {
@@ -95,6 +89,13 @@ struct mem_page_t *mem_page_get(struct mem_t *mem, uint32_t addr)
 		mem->pages[index] = page;
 	}
 	
+	
+	if(!page){
+	    //	printf("COULD NOT FIND A PAGE , EXECUTE PAGE FAULT ROUTINE \n");
+		page = page_fault_routine(mem, addr);		
+	}
+ 
+	assert(page);
 	/* Return found page */
 	return page;
 }
@@ -293,8 +294,10 @@ void mem_map_host(struct mem_t *mem, struct fd_t *fd, uint32_t addr, int size,
 			fatal("mem_map_host: cannot overwrite a previous host mapping");
 
 		/* If page is pointing to some data, overwrite it */
-		if (page->data)
+		if (page->data){
 			free(page->data);
+			page->data = NULL;
+		}
 
 		/* Create host mapping */
 		page->host_mapping = hm;
@@ -475,7 +478,7 @@ struct mem_page_t *mem_page_get_next(struct mem_t *mem, uint32_t addr)
 	if (!tag)
 		return NULL;
 	index = (tag >> MEM_LOGPAGESIZE) % MEM_PAGE_COUNT;
-	page = mem->pages[index];
+	page = mem->ram_pages[index];
 	prev = NULL;
 
 	/* Look for a page exactly following addr. If it is found, return it. */
@@ -545,38 +548,49 @@ void mem_page_free(struct mem_t *mem, uint32_t addr)
 	prev = NULL;
 
 	/* Find page */
+	page = mem->ram_pages[index];
+	while (page && page->tag != tag) {
+		prev = page;
+		page = page->next;
+	}
+	
+	if (page){
+	
+		/* If page belongs to a host mapping, release it if
+		 * this is the last page allocated for it. */
+		hm = page->host_mapping;
+		if (hm) {
+			assert(hm->pages > 0);
+			assert(tag >= hm->addr && tag + MEM_PAGESIZE <= hm->addr + hm->size);
+			hm->pages--;
+			page->data = NULL;
+			page->host_mapping = NULL;
+			if (!hm->pages)
+				mem_unmap_host(mem, hm->addr);
+		}
+		/* Free page */
+		if (prev)
+			prev->next = page->next;
+		else
+			mem->ram_pages[index] = page->next;
+			
+		mem_mapped_space -= MEM_PAGESIZE;
+		page->free_flag = 1;
+		
+	}
+	
+	/* Find page in swap_space */
 	page = mem->pages[index];
 	while (page && page->tag != tag) {
 		prev = page;
 		page = page->next;
 	}
-	if (!page)
-		return;
-	
-	/* If page belongs to a host mapping, release it if
-	 * this is the last page allocated for it. */
-	/*hm = page->host_mapping;
-	if (hm) {
-		assert(hm->pages > 0);
-		assert(tag >= hm->addr && tag + MEM_PAGESIZE <= hm->addr + hm->size);
-		hm->pages--;
-		page->data = NULL;
-		page->host_mapping = NULL;
-		if (!hm->pages)
-			mem_unmap_host(mem, hm->addr);
-	}
-	*/
-	/* Free page */
-	if (prev)
-		prev->next = page->next;
-	else
-		mem->pages[index] = page->next;
-		
-	mem_mapped_space -= MEM_PAGESIZE;
 	if (page->bytes_in_use==0)
 		swap_free(page->fpos);
-	free(page);
+	
 }
+
+
 
 
 /* Return the buffer corresponding to address 'addr' in the simulated
@@ -612,10 +626,7 @@ void *mem_get_buffer(struct mem_t *mem, uint32_t addr, int size, enum mem_access
 		swap_fd = open_swap_disk();
 		fpos_t new_page_start_address  = mem->next_free_page_start_address;
 		//!TODO: swap manager se free address lo
-		
-		
 		fseek(swap_fd , new_page_start_address.__pos, SEEK_SET);
-		
 		//!TODO this should be removed and updated to swap manager
 		page->fpos = new_page_start_address;
 		new_page_start_address.__pos = new_page_start_address.__pos + + MEM_PAGESIZE;
@@ -636,6 +647,8 @@ void *mem_get_buffer(struct mem_t *mem, uint32_t addr, int size, enum mem_access
 		return buf;
 	}
 }
+
+
 
 
 /* Access memory without exceeding page boundaries. */
