@@ -51,8 +51,6 @@ struct mem_page_t* get_free_ram_page(){
 		if(ke->ram->pages[i].freeFlag != 0)
 			return &(ke->ram->pages[i]);
 	}
-	
-	assert(0);
 	return NULL;
 }
 
@@ -110,6 +108,191 @@ int get_page_to_be_replaced(struct mem_t *mem, uint32_t addr){
 	return 0;
 }
 
+
+
+/* Return mem page corresponding to an address. */
+struct mem_page_t *swap_mem_page_get(struct mem_t *mem, uint32_t addr)
+{
+	uint32_t index, tag;
+	struct mem_page_t *prev, *page;
+	
+	tag = addr & ~(MEM_PAGESIZE - 1);
+	index = (addr >> MEM_LOGPAGESIZE) % MEM_PAGE_COUNT;
+	page = mem->pages[index];
+    if(page == NULL){
+       //printf("SWAP page tag for the null page is %u \n", tag);
+    }
+	prev = NULL;
+	
+	/* Look for page */
+	while (page && page->tag != tag) {
+		prev = page;
+		page = page->next;
+	}
+	
+	/* Place page into list head */
+	if (prev && page) {
+		prev->next = page->next;
+		page->next = mem->pages[index];
+		mem->pages[index] = page;
+	}
+	
+	/* Return found page */
+	return page;
+}
+
+
+
+struct mem_page_t *mem_page_get(struct mem_t *mem, uint32_t addr){
+	{
+	uint32_t index, tag;
+	struct mem_page_t *prev, *page;
+
+	tag = addr & ~(MEM_PAGESIZE - 1);
+	index = (addr >> MEM_LOGPAGESIZE) % MEM_PAGE_COUNT;
+	page = mem->ram_pages[index];
+	prev = NULL;
+	
+	/* Look for page */
+	while (page && page->tag != tag) {
+		prev = page;
+		page = page->next;
+	}
+	
+	/* Place page into list head */
+	if (prev && page) {
+		prev->next = page->next;
+		page->next = ram_pages->pages[index];
+		ram_pages->pages[index] = page;
+	}
+	
+	if(!page){
+		//DUMBFUCK will get a page fault
+		//ROUTINE
+		int get_page = swap_mem_page_get(mem , addr);
+		
+		
+	}
+	
+	/* Return found page */
+	return page;
+}
+
+
+
+
+
+struct mem_page_t *ram_page_get_next(struct mem_t *mem, uint32_t addr){
+	uint32_t tag, index, mintag;
+	struct mem_page_t *prev, *page, *minpage;
+
+	/* Get tag of the page just following addr */
+	tag = (addr + MEM_PAGESIZE) & ~(MEM_PAGESIZE - 1);
+	if (!tag)
+		return NULL;
+	index = (tag >> MEM_LOGPAGESIZE) % MEM_PAGE_COUNT;
+	page = mem->ram_pages[index];
+	prev = NULL;
+
+	
+	/* Look for a page exactly following addr. If it is found, return it. */
+	while (page && page->tag != tag) {
+		prev = page;
+		page = page->next;
+	}
+	if (page)
+		return page;
+	
+	/* Page following addr is not found, so check all memory pages to find
+	 * the one with the lowest tag following addr. */
+	mintag = 0xffffffff;
+	minpage = NULL;
+	for (index = 0; index < MEM_PAGE_COUNT; index++) {
+		for (page = mem->ram_pages[index]; page; page = page->next) {
+			if (page->tag > tag && page->tag < mintag) {
+				mintag = page->tag;
+				minpage = page;
+			}
+		}
+	}
+	
+	if(!minpage){
+		//DUMBFUCK will get a page fault
+		//ROUTINE
+	}
+
+	/* Return the found page (or NULL) */
+	return minpage;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/** Free ram_page **/
+static void ram_page_free(struct mem_t *mem, uint32_t addr)
+{
+	uint32_t index, tag;
+	struct mem_page_t *prev, *page;
+	struct mem_host_mapping_t *hm;
+	
+	tag = addr & ~(MEM_PAGESIZE - 1);
+	index = (addr >> MEM_LOGPAGESIZE) % MEM_PAGE_COUNT;
+	prev = NULL;
+
+	/* Find page */
+	page = mem->ram_pages[index];
+	while (page && page->tag != tag) {
+		prev = page;
+		page = page->next;
+	}
+	
+	if (!page){
+		//PAGE NOT FOUND
+		return;
+	}
+	
+	/* If page belongs to a host mapping, release it if
+	 * this is the last page allocated for it. */
+	hm = page->host_mapping;
+	if (hm) {
+		assert(hm->pages > 0);
+		assert(tag >= hm->addr && tag + MEM_PAGESIZE <= hm->addr + hm->size);
+		hm->pages--;
+		page->data = NULL;
+		page->host_mapping = NULL;
+		if (!hm->pages)
+			mem_unmap_host(mem, hm->addr);
+	}
+
+	/* Free page */
+	if (prev)
+		prev->next = page->next;
+	else
+		mem->ram_pages[index] = page->next;
+		mem_mapped_space -= MEM_PAGESIZE;
+
+
+	if (page->data){
+		free(page->data);
+		page->data = NULL;
+	}
+		
+	page->next = NULL;
+	page->freeFlag = 1;	
+	mem->context->pages_in_ram--;			
+//	free(page);
+}
 
 
 
