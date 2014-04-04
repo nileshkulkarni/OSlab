@@ -549,6 +549,9 @@ struct mem_page_t*  ram_get_new_page(struct mem_t * mem){
                     ram_pages[j] = iter->next;
                 }
                 //!TODO update dirty bit of the new page and write-back the old page if(dirty bit)
+                if(iter->dirty){
+                    swap_write_back_page(iter,((j<<MEM_LOGPAGESIZE)+iter->tag)<<MEM_PAGESIZE); 
+                }
                 iter->free_flag = 1;
                 return iter;
            }
@@ -560,7 +563,11 @@ struct mem_page_t*  ram_get_new_page(struct mem_t * mem){
     fatal("ram_get_new_page :: Should never come here");
 }
 
+void swap_write_back_page(struct mem_page_t * page,uint32_t addr ){
+    
 
+
+}
 
 void* read_swap_page(struct mem_page_t * page){
     swap_fd = open_swap_disk();
