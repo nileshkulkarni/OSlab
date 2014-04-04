@@ -422,12 +422,14 @@ struct mem_page_t* page_fault_routine(struct mem_t *mem, uint32_t addr){
    // need ctx here to find out which process was faulted; 
     struct mem_page_t* new_page = ram_get_new_page(mem);
         
-    new_page->data = data; 
+    memcpy(new_page->data,data,MEM_PAGESIZE); 
     new_page->tag = page_from_swap_space->tag;
     new_page->perm = page_from_swap_space->perm;
     new_page->free_flag = 1;
     printf("page fault handled successfully at addr %u \n",addr); 
 }
+
+
 
 struct mem_page_t*  ram_get_new_page(struct mem_t * mem){
     
@@ -440,22 +442,40 @@ struct mem_page_t*  ram_get_new_page(struct mem_t * mem){
     int rand_page = rand() % RAM_MEM_PAGE_COUNT;
     int i=0;
     int j=0;
-         
-    for(i=0;i<rand_page;){
-        
-        for(j=0;j<MEM_PAGE_COUNT;j++){
-
-            struct mem_page_t* iter = ram_pages[j];  
-            while(iter){
-
-
-            }
+    struct mem_page_t* new_free_ram_page; 
+    
+    if(mem->free_ram_pages != 0){
+        // return a free ram page    
+        new_free_ram_page  = get_free_ram_page();
+        if(new_free_ram_page){
+            // page is available on ram , so directly use it.
+            mem->free_ram_pages--;
+            return new_free_ram_page;
+        }
+    }
+     
+    for(j=0;j<MEM_PAGE_COUNT;j++){
+        struct mem_page_t* iter = ram_pages[j];  
+        struct mem_page_t* prev =NULL;
+        while(iter){
+           if(i == rand_page){
+                if(prev){
+                    // normal page to be replaced
+                   prev->next = iter->enxt; 
+                }
+                else{
+                    // condition when head of the list is being replaced is to be replaced
+                    ram_pages[j] = iter->next;
+                }
+                iter->free_flag = 0;
+                return iter;
+           }
+           iter= iter->next;
+           prev  = iter;
+           i++; 
         }
    }  
-    
-
-    free(replaced_page->data);
-
+    fatal("ram_get_new_page :: Should never come here");
 }
 void* read_swap_page(struct mem_page_t * page){
     swap_fd = open_swap_disk();
