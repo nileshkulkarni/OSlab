@@ -877,6 +877,7 @@ void swap_initialize(){
         fseek(swap_fd,MEM_PAGESIZE,SEEK_CUR);
         no_of_pages++;
     }
+    printf("Swap pages initialized, pages allocated on swap disk %d\n",no_of_pages);
 }    
 /* Copy memory pages. All parameters must be multiple of the page size.
  * The pages in the source and destination interval must exist. */
