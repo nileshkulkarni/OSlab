@@ -99,9 +99,10 @@ struct mem_page_t {
 	fpos_t fpos;// replace with current file pointer
     unsigned char* data; 	
 	struct mem_host_mapping_t *host_mapping;  /* If other than null, page is host mapping */
-    int freeFlag; //used by ram_mem_t
+    int free_flag; //used for maintaining
     // TODO mem_host_mapping_t not known why it exists
     int bytes_in_use; //0 if page is not used else no of bytes used
+    int dirty;
 };
 
 
@@ -109,13 +110,12 @@ struct mem_t {
 	struct mem_page_t *pages[MEM_PAGE_COUNT];
 	struct mem_page_t *ram_pages[MEM_PAGE_COUNT];
 	int sharing;  /* Number of contexts sharing memory map */
-	uint32_t last_address;  /* Address of last access */
+    uint32_t last_address;  /* Address of last access */
 	int safe;  /* Safe mode */
 	struct mem_host_mapping_t *host_mapping_list;  /* List of host mappings */
     fpos_t offset; //offset of the first page in Sim_disk
-    fpos_t next_free_page_start_address; //next free page address
     struct ctx_t * context;
-    int pages_allocated_in_ram;
+    int max_pages_in_ram;
     int pages_in_ram;
 };
 
