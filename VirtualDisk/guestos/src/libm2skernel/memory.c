@@ -56,6 +56,7 @@ struct mem_page_t* get_free_ram_page(){
 
 
 
+
 /* Return the memory page following addr in the current memory map. This function
  * is useful to reconstruct consecutive ranges of mapped pages. */
 
@@ -396,33 +397,6 @@ void mem_load(struct mem_t *mem, char *filename, uint32_t start)
 	fclose(f);
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /* swap starts here  */
 
 ////////////////////////////////////////////////////////////////////// ////////////////////////////////////////////////////////////////////////
@@ -451,7 +425,7 @@ struct mem_page_t *mem_page_get(struct mem_t *mem, uint32_t addr)
 	index = (addr >> MEM_LOGPAGESIZE) % MEM_PAGE_COUNT;
 	page = mem->pages[index];
     if(page == NULL){
-        printf("SWAP page tag for the null page is %u \n", tag);
+       //printf("SWAP page tag for the null page is %u \n", tag);
     }
 	prev = NULL;
 	
@@ -628,7 +602,6 @@ void *mem_get_buffer(struct mem_t *mem, uint32_t addr, int size, enum mem_access
 		page->bytes_in_use = MEM_PAGESIZE;
         printf("Buffer isn in swap_mem_get_buffer %s\n",buf);
         fclose(swap_fd);
-        exit(1);
         return buf;
 	}
 	else{
@@ -864,4 +837,63 @@ int mem_read_string(struct mem_t *mem, uint32_t addr, int size, char *str)
 			break;
 	}
 	return i;
+}
+
+
+
+/* Swap Space Manager */
+struct mem_t* free_swap_page(struct mem_t * page){
+   struct mem_t* iter;
+   struct mem_t* prev;
+   iter = swap_mem->occupied_list;
+   int flag_found =0;
+   while(iter){
+       if(iter->offset.__pos ==page->offset.__pos){
+           flag_found = 1;     
+           break;
+       }
+       prev = iter;
+       iter = iter->next;
+   }
+   if(flag_found){
+       if(iter){
+            prev->next = iter->next;
+            iter->next = swap_mem->free_list;
+            swap_mem->free_list = iter;
+            return iter;
+       }
+   }
+   else{
+		fatal("[SWAP] :Trying to free a free page\n");
+        return NULL;
+   }
+}
+
+
+struct mem_t* get_new_swap_page(){
+    if(!swap_mem->free_list){
+        printf("No space on swap available\n");
+    }
+    else{
+        /* getting the page from the front of the list */
+        struct mem_t* new_page = swap_mem->free_list ;
+        /* updating free list to next page */
+        swap_mem->free_list = new_page->next;
+        return new_page;
+    }
+}
+
+void swap_initialise(){
+    swap_mem = malloc(sizeof(struct swap_mem_t));
+    swap_mem->free_list =NULL;
+    swap_mem->occupied_list =NULL;
+    swap_fd = swap_open_disk();   
+	fseek(swap_fd ,0, SEEK_SET);
+    int no_of_pages =0;
+    while(no_of_pages < MEM_PAGE_COUNT){
+        
+        struct mem_t* free_page = malloc(sizeof(struct mem_t)); 
+        free_list
+
+    }
 }
