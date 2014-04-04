@@ -60,8 +60,10 @@ int instr_slice;
 #define MEM_PAGESHIFT      MEM_LOGPAGESIZE
 #define MEM_PAGESIZE       (1<<MEM_LOGPAGESIZE)
 #define MEM_PAGEMASK       (~(MEM_PAGESIZE-1))
-#define MEM_PAGE_COUNT     10000
+#define MEM_PAGE_COUNT     1024
+#define PAGES_ALLOCATED_IN_RAM 100
 #define RAM_MEM_PAGE_COUNT     20000
+
 
 enum mem_access_enum {
 	mem_access_read   = 0x01,
@@ -113,6 +115,8 @@ struct mem_t {
     fpos_t offset; //offset of the first page in Sim_disk
     fpos_t next_free_page_start_address; //next free page address
     struct ctx_t * context;
+    int pages_allocated_in_ram;
+    int pages_in_ram;
 };
 
 
@@ -132,6 +136,7 @@ struct swap_mem_t{
 
 extern int swap_page_count_used;
 extern struct swap_mem_t* swap_mem;
+
 void swap_initialize();
 
 
@@ -529,8 +534,6 @@ struct ctx_t {
 	struct ctx_t *parent;
 	int exit_signal;  /* Signal to send parent when finished */
 	int exit_code;  /* For zombie processes */
-	
-	
 	
 	uint32_t backup_eip;  /* Saved eip when in specmode */
 	uint32_t set_child_tid, clear_child_tid;

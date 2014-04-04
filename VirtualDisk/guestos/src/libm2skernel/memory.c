@@ -45,11 +45,13 @@ int mem_safe_mode = 1;
 struct swap_mem_t * swap_mem;
 
 
+
+
 struct mem_page_t* get_free_ram_page(){
 	
 	int i;
 	for(i=0;i<RAM_MEM_PAGE_COUNT;i++){
-		if(ke->ram->pages[i].freeFlag != 0)
+		if(ke->ram->pages[i].free_flag != 0)
 			return &(ke->ram->pages[i]);
 	}
 	return NULL;
@@ -59,13 +61,91 @@ struct mem_page_t* get_free_ram_page(){
 
 
 
-/* Return the memory page following addr in the current memory map. This function
- * is useful to reconstruct consecutive ranges of mapped pages. */
 
 
 
 
-/* Create new mem page */
+struct mem_page_t *mem_page_get(struct mem_t *mem, uint32_t addr)
+{
+	uint32_t index, tag;
+	struct mem_page_t *prev, *page;
+
+	tag = addr & ~(MEM_PAGESIZE - 1);
+	index = (addr >> MEM_LOGPAGESIZE) % MEM_PAGE_COUNT;
+	page = mem->pages[index];
+	prev = NULL;
+	
+	
+	if(!page){
+	    //	printf("COULD NOT FIND A FREE PAGE , EXECUTE PAGE FAULT ROUTINE \n");
+		/// !!TODO - PAGE FAULT ROUTINE 
+	}
+ 
+	
+	/* Look for page */
+	while (page && page->tag != tag) {
+		prev = page;
+		page = page->next;
+	}
+	
+	/* Place page into list head */
+	if (prev && page) {
+		prev->next = page->next;
+		page->next = mem->pages[index];
+		mem->pages[index] = page;
+	}
+	
+	/* Return found page */
+	return page;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Return mem page corresponding to an address. */
+struct mem_page_t *swap_mem_page_get(struct mem_t *mem, uint32_t addr)
+{
+	uint32_t index, tag;
+	struct mem_page_t *prev, *page;
+	
+	tag = addr & ~(MEM_PAGESIZE - 1);
+	index = (addr >> MEM_LOGPAGESIZE) % MEM_PAGE_COUNT;
+	page = mem->pages[index];
+    if(page == NULL){
+       //printf("SWAP page tag for the null page is %u \n", tag);
+    }
+	prev = NULL;
+	
+	/* Look for page */
+	while (page && page->tag != tag) {
+		prev = page;
+		page = page->next;
+	}
+	
+	/* Place page into list head */
+	if (prev && page) {
+		prev->next = page->next;
+		page->next = mem->pages[index];
+		mem->pages[index] = page;
+	}
+	
+	/* Return found page */
+	return page;
+}
+
+
+
+
+
 
 
 /* Free mem pages */
@@ -379,130 +459,9 @@ void swap_free(fpos_t fpos){
 
 
 
-struct mem_page_t* page_fault_routine(struct mem_t *mem, uint32_t addr){
-	
-	
-	
-	printf("INSIDE PAGE FAULT ROUTINE %u \n",addr);
-	uint32_t index, tag;
-	struct mem_page_t *page;
-
-	tag = addr & ~(MEM_PAGESIZE - 1);
-	index = (addr >> MEM_LOGPAGESIZE) % MEM_PAGE_COUNT;	
-	page = mem->ram_pages[index];
-	
-	/* Look for page */
-	while (page && page->tag != tag) {
-		prev = page;
-		page = page->next;
-	}
-
-	
-	assert(!page); //That's why this routine was called
-	
-	//!TODO : replacement policy , get page to be replaced
-     // page_to_be_replaced = get_page_to_be_replaced(mem, addr);
-	
-	struct mem_page_t *replaced_page; //! = mem->pages[page_to_be_replaced];
-	assert(replaced_page);
-	
-	unsigned char *data;
-	/* !TODO FOR SWAP_SPACE JUNTA
-	 * - put replaced_page->data in swap_space in appropriate place
-	 * - get data of page in char *data
-	 * - call swap_out_page(replaced_page);
-	 * - struct swap_mem_page_t* swapin_page = swap_in_page()
-	 * - set all the fields of the field of page @page_to_be_replaced
-	 * - mem->pages[page_to_be_replaced] = swapin_page
-	 * 
-	 */
-	 struct mem_page_t* page_from_swap_space = swap_mem_page_get(mem, addr);
-	 data = (unsigned char*)mem_get_buffer(mem , addr , MEM_PAGESIZE, mem_access_read);
-	  
-	free(replaced_page->data);
-	replaced_page->data = data;
-	replaced_page->
-}
 
 
 
-
-struct mem_page_t *mem_page_get(struct mem_t *mem, uint32_t addr)
-{
-	uint32_t index, tag;
-	struct mem_page_t *prev, *page;
-
-	tag = addr & ~(MEM_PAGESIZE - 1);
-	index = (addr >> MEM_LOGPAGESIZE) % MEM_PAGE_COUNT;
-	page = mem->pages[index];
-	prev = NULL;
-	
-	
-	if(!page){
-	//	printf("COULD NOT FIND A FREE PAGE , EXECUTE PAGE FAULT ROUTINE \n");
-		/// !!TODO - PAGE FAULT ROUTINE 
-	}
- 
-	
-	/* Look for page */
-	while (page && page->tag != tag) {
-		prev = page;
-		page = page->next;
-	}
-	
-	/* Place page into list head */
-	if (prev && page) {
-		prev->next = page->next;
-		page->next = mem->pages[index];
-		mem->pages[index] = page;
-	}
-	
-	/* Return found page */
-	return page;
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-/* Return mem page corresponding to an address. */
-struct mem_page_t *swap_mem_page_get(struct mem_t *mem, uint32_t addr)
-{
-	uint32_t index, tag;
-	struct mem_page_t *prev, *page;
-	
-	tag = addr & ~(MEM_PAGESIZE - 1);
-	index = (addr >> MEM_LOGPAGESIZE) % MEM_PAGE_COUNT;
-	page = mem->pages[index];
-    if(page == NULL){
-       //printf("SWAP page tag for the null page is %u \n", tag);
-    }
-	prev = NULL;
-	
-	/* Look for page */
-	while (page && page->tag != tag) {
-		prev = page;
-		page = page->next;
-	}
-	
-	/* Place page into list head */
-	if (prev && page) {
-		prev->next = page->next;
-		page->next = mem->pages[index];
-		mem->pages[index] = page;
-	}
-	
-	/* Return found page */
-	return page;
-}
 
 /* Return the memory page following addr in the current memory map. This function
  * is useful to reconstruct consecutive ranges of mapped pages. */

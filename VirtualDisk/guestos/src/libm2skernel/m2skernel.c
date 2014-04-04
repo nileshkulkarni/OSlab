@@ -81,7 +81,6 @@ void ke_init(void)
 	}
 	
 	
-	
 	ke->current_pid = 1000;  /* Initial assigned pid */
 	ke->instruction_no = 0;
 	ke->current_track = 0;
