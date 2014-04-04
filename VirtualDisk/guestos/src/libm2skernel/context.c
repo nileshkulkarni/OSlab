@@ -228,10 +228,10 @@ void ctx_execute_inst(struct ctx_t *ctx)
 	if (!buf) {
 		buf = &fixed;
     	//mem_access(ctx->mem, ctx->regs->eip, 20, buf, mem_access_exec);
-        printf("buf is null \n");
-        printf("Buff1  is %s \n", buf);
+        //printf("buf is null \n");
+        //printf("Buff1  is %s \n", buf);
 		mem_access(ctx->mem, ctx->regs->eip, 20, buf, mem_access_exec);
-        printf("Buff2  is %s \n", buf);
+        //printf("Buff2  is %s \n", buf);
 	}
 	ctx->mem->safe = mem_safe_mode;
 

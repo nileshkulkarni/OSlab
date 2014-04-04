@@ -125,6 +125,11 @@ struct swap_mem_t{
     struct mem_page_t*  occupied_list_head;
     struct mem_page_t*  occupied_list_tail;
 };
+extern struct swap_mem_t* swap_mem;
+void swap_initialize();
+struct mem_t* get_new_swap_page();
+struct mem_t* free_a_swap_page(struct mem_page_t * page);
+
 extern unsigned long mem_mapped_space;
 extern unsigned long mem_max_mapped_space;
 

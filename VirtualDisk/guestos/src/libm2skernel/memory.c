@@ -41,7 +41,7 @@ unsigned long mem_max_mapped_space = 0;
 
 /* Safe mode */
 int mem_safe_mode = 1;
-
+struct swap_mem_t * swap_mem;
 
 
 struct mem_page_t* get_free_ram_page(){
@@ -799,13 +799,13 @@ int mem_read_string(struct mem_t *mem, uint32_t addr, int size, char *str)
 
 
 /* Swap Space Manager */
-struct mem_t* free_swap_page(struct mem_t * page){
-   struct mem_t* iter;
-   struct mem_t* prev;
-   iter = swap_mem->occupied_list;
+struct mem_t* free_a_swap_page(struct mem_page_t * page){
+   struct mem_page_t* iter=NULL;
+   struct mem_page_t* prev=NULL;
+   iter = swap_mem->occupied_list_head;
    int flag_found =0;
    while(iter){
-       if(iter->offset.__pos ==page->offset.__pos){
+       if(iter->fpos.__pos ==page->fpos.__pos){
            flag_found = 1;     
            break;
        }
@@ -814,10 +814,17 @@ struct mem_t* free_swap_page(struct mem_t * page){
    }
    if(flag_found){
        if(iter){
+           if(!prev){
+                /* when the head is to be updated */
+               swap_mem->occupied_list_head = iter->next;
+           }
+           else{
             prev->next = iter->next;
-            iter->next = swap_mem->free_list;
-            swap_mem->free_list = iter;
-            return iter;
+            (swap_mem->free_list_tail)->next= iter  ;
+           }
+           swap_mem->free_list_tail = iter;
+           iter->next = NULL;
+           return iter;
        }
    }
    else{
@@ -828,44 +835,49 @@ struct mem_t* free_swap_page(struct mem_t * page){
 
 
 struct mem_t* get_new_swap_page(){
-    if(!swap_mem->free_list){
+    if(!swap_mem->free_list_head){
         printf("No space on swap available\n");
     }
     else{
         /* getting the page from the front of the list */
-        struct mem_t* new_page = swap_mem->free_list ;
+        struct mem_page_t* new_page = swap_mem->free_list_head ;
         /* updating free list to next page */
-        swap_mem->free_list = new_page->next;
+        swap_mem->free_list_head = new_page->next;
+        (swap_mem->occupied_list_tail)->next = new_page;
+        swap_mem->occupied_list_tail = new_page;
+        new_page->next = NULL;
         return new_page;
     }
 }
 
-void swap_initialise(){
+void swap_initialize(){
     swap_mem = malloc(sizeof(struct swap_mem_t));
     swap_mem->free_list_head=NULL;
     swap_mem->free_list_tail=NULL;
     swap_mem->occupied_list_head =NULL;
     swap_mem->occupied_list_tail =NULL;
-    swap_fd = swap_open_disk();   
+    swap_fd = open_swap_disk();   
 	fseek(swap_fd ,0, SEEK_SET);
     int no_of_pages =0;
     while(no_of_pages < MEM_PAGE_COUNT){
         if(!(swap_mem->free_list_head) && !(swap_mem->free_list_tail)){ 
-            struct mem_t* free_page = malloc(sizeof(struct mem_t)); 
-            fpos_t fseek_loc = (free_page->offset)
+            struct mem_page_t* free_page = malloc(sizeof(struct mem_page_t)); 
+            free_page->fpos.__pos = ftell(swap_fd);
             swap_mem->free_list_head = free_page;
             swap_mem->free_list_tail = free_page;
+            free_page->next = NULL;
         }
         else{
-            struct mem_t* free_page = malloc(sizeof(struct mem_t)); 
+            struct mem_page_t* free_page = malloc(sizeof(struct mem_page_t)); 
+            free_page->fpos.__pos = ftell(swap_fd);
             (swap_mem->free_list_tail)->next= free_page;
             swap_mem->free_list_tail = free_page; 
+            free_page->next = NULL;
         }
+        fseek(swap_fd,MEM_PAGESIZE,SEEK_CUR);
         no_of_pages++;
     }
-
-    
-    
+}    
 /* Copy memory pages. All parameters must be multiple of the page size.
  * The pages in the source and destination interval must exist. */
 void mem_copy(struct mem_t *mem, uint32_t dest, uint32_t src, int size)
