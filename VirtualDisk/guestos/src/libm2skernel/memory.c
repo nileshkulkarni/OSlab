@@ -68,46 +68,6 @@ struct mem_page_t* get_free_ram_page(){
 
 /* Free mem pages */
 
-/* Copy memory pages. All parameters must be multiple of the page size.
- * The pages in the source and destination interval must exist. */
-void mem_copy(struct mem_t *mem, uint32_t dest, uint32_t src, int size)
-{
-	struct mem_page_t *page_dest, *page_src;
-
-	/* Restrictions. No overlapping allowed. */
-	assert(!(dest & (MEM_PAGESIZE-1)));
-	assert(!(src & (MEM_PAGESIZE-1)));
-	assert(!(size & (MEM_PAGESIZE-1)));
-	if ((src < dest && src + size > dest) ||
-		(dest < src && dest + size > src))
-		fatal("mem_copy: cannot copy overlapping regions");
-	
-	/* Copy */
-	while (size > 0) {
-		
-		/* Get source and destination pages */
-		page_dest = mem_page_get(mem, dest);
-		page_src = mem_page_get(mem, src);
-		assert(page_src && page_dest);
-		
-		/* Different actions depending on whether source and
-		 * destination page data are allocated. */
-		if (page_src->data) {
-			if (!page_dest->data)
-				page_dest->data = malloc(MEM_PAGESIZE);
-			memcpy(page_dest->data, page_src->data, MEM_PAGESIZE);
-		} else {
-			if (page_dest->data)
-				memset(page_dest->data, 0, MEM_PAGESIZE);
-		}
-
-		/* Advance pointers */
-		src += MEM_PAGESIZE;
-		dest += MEM_PAGESIZE;
-		size -= MEM_PAGESIZE;
-	}
-}
-
 uint32_t mem_map_space(struct mem_t *mem, uint32_t addr, int size)
 {
     uint32_t tag_start, tag_end;
@@ -179,9 +139,6 @@ uint32_t mem_map_space_down(struct mem_t *mem, uint32_t addr, int size)
 
 
 
-/* Return the buffer corresponding to address 'addr' in the simulated
- * mem. The returned buffer is null if addr+size exceeds the page
- * boundaries. */
 
 /* Access memory without exceeding page boundaries. */
 
@@ -896,4 +853,79 @@ void swap_initialise(){
         free_list
 
     }
+
+    
+    
+/* Copy memory pages. All parameters must be multiple of the page size.
+ * The pages in the source and destination interval must exist. */
+void mem_copy(struct mem_t *mem, uint32_t dest, uint32_t src, int size)
+{
+	struct mem_page_t *page_dest, *page_src;
+    void* buf;
+	/* Restrictions. No overlapping allowed. */
+	assert(!(dest & (MEM_PAGESIZE-1)));
+	assert(!(src & (MEM_PAGESIZE-1)));
+	assert(!(size & (MEM_PAGESIZE-1)));
+	if ((src < dest && src + size > dest) ||
+		(dest < src && dest + size > src))
+		fatal("mem_copy: cannot copy overlapping regions");
+	
+	/* Copy */
+	while (size > 0) {
+		
+		/* Get source and destination pages */
+		page_dest = mem_page_get(mem, dest);
+		page_src = mem_page_get(mem, src);
+		assert(page_src && page_dest);
+		
+		/* Different actions depending on whether source and
+		 * destination page data are allocated. */
+		/*
+        if (page_src->data) {
+			if (!page_dest->data)
+				page_dest->data = malloc(MEM_PAGESIZE);
+			memcpy(page_dest->data, page_src->data, MEM_PAGESIZE);
+		} else {
+			if (page_dest->data)
+				memset(page_dest->data, 0, MEM_PAGESIZE);
+		}
+        */
+        /////////////////////////////////////////////////
+        
+        printf("Inside MemCopy! if there are any errors, blame @sushant-hiray");
+        if (page_src->bytes_in_use!=0) {
+            //page src has some data
+            //copy it into dest.
+            if(page_dest->bytes_in_use==0){
+                //read from file 
+                swap_fd = open_swap_disk();
+                fseek (swap_fd , page_src->fpos.__pos, SEEK_SET);
+                fread (buf,MEM_PAGESIZE,1,swap_fd);
+ 
+                //write the read data
+                fseek (swap_fd , page_dest->fpos.__pos, SEEK_SET);
+                fwrite(buf,MEM_PAGESIZE,1,swap_fd);
+                fclose(swap_fd);
+                page_dest->bytes_in_use = MEM_PAGESIZE;                    
+            }
+        
+        }
+        else{
+            //page src has no data
+            //if dest has some data, write it to NULL
+            if(page_dest->bytes_in_use!=0){
+                swap_fd = open_swap_disk();
+                fseek(swap_fd, page_dest->fpos.__pos , SEEK_SET);
+                memset(buf,0,MEM_PAGESIZE);
+                fwrite(buf,MEM_PAGESIZE,1,swap_fd);
+                fclose(swap_fd);
+                page_dest->bytes_in_use = 0;
+            }
+        }
+
+		/* Advance pointers */
+		src += MEM_PAGESIZE;
+		dest += MEM_PAGESIZE;
+		size -= MEM_PAGESIZE;
+	}
 }
