@@ -282,7 +282,7 @@ int main(int argc, char **argv) {
     ///printf("\n the rcvd pa ths is %s \n",user_prog_path);
     /* Load programs from configuration file and command line. */
     ///////	if (*ctxconfig)
-    //swap_initialize();
+    swap_initialize();
     ld_load_prog_from_ctxconfig(ctxconfig);
     ///////////////////if (argc >= 1)
     ///		ld_load_prog_from_cmdline(argc - 1, user_prog_path );
