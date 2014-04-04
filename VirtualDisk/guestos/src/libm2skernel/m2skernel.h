@@ -107,11 +107,11 @@ struct mem_t {
 	struct mem_page_t *pages[MEM_PAGE_COUNT];
 	struct mem_page_t *ram_pages[MEM_PAGE_COUNT];
 	int sharing;  /* Number of contexts sharing memory map */
+    int free_ram_pages;
 	uint32_t last_address;  /* Address of last access */
 	int safe;  /* Safe mode */
 	struct mem_host_mapping_t *host_mapping_list;  /* List of host mappings */
     fpos_t offset; //offset of the first page in Sim_disk
-    fpos_t next_free_page_start_address; //next free page address
     struct ctx_t * context;
 };
 
