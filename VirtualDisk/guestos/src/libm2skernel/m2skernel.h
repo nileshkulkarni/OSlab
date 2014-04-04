@@ -97,7 +97,7 @@ struct mem_page_t {
 	fpos_t fpos;// replace with current file pointer
     unsigned char* data; 	
 	struct mem_host_mapping_t *host_mapping;  /* If other than null, page is host mapping */
-    int freeFlag; 
+    int free_flag; //used for maintaining
     // TODO mem_host_mapping_t not known why it exists
     int bytes_in_use; //0 if page is not used else no of bytes used
 };

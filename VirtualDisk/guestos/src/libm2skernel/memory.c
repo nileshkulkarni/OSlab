@@ -379,9 +379,7 @@ void swap_free(fpos_t fpos){
 
 
 struct mem_page_t* page_fault_routine(struct mem_t *mem, uint32_t addr){
-	
-	
-	
+
 	printf("INSIDE PAGE FAULT ROUTINE %u \n",addr);
 	uint32_t index, tag;
 	struct mem_page_t *page;
@@ -416,15 +414,56 @@ struct mem_page_t* page_fault_routine(struct mem_t *mem, uint32_t addr){
 	 * 
 	 */
 	 struct mem_page_t* page_from_swap_space = swap_mem_page_get(mem, addr);
-	 data = (unsigned char*)mem_get_buffer(mem , addr , MEM_PAGESIZE, mem_access_read);
-	  
-	free(replaced_page->data);
-	replaced_page->data = data;
-	replaced_page->
+     
+	 //data = (unsigned char*)mem_get_buffer(mem , addr , MEM_PAGESIZE, mem_access_read);
+    data = 	read_swap_page(page_from_swap_space); 
+	
+   // need ctx here to find out which process was faulted; 
+    struct mem_page_t* new_page = ram_get_new_page(mem);
+        
+    new_page->data = data; 
+    new_page->tag = page_from_swap_space->tag;
+    new_page->perm = page_from_swap_space->perm;
+    new_page->free_flag = 1;
+    printf("page fault handled successfully at addr %u \n",addr); 
 }
 
+struct mem_page_t*  ram_get_new_page(struct mem_t * mem){
+    
+    //check this here
+    //update page table entries for the process
+    // randomly chosing a page from the allocated page list;
+    struct mem_page_t* ram_pages = mem->ram_pages; 
+    srand ( time(NULL) );
+    /* Generate a random number: */
+    int rand_page = rand() % RAM_MEM_PAGE_COUNT;
+    int i=0;
+    int j=0;
+         
+    for(i=0;i<rand_page;){
+        
+        for(j=0;j<MEM_PAGE_COUNT;j++){
+
+            struct mem_page_t* iter = ram_pages[j];  
+            while(iter){
 
 
+            }
+        }
+   }  
+    
+
+    free(replaced_page->data);
+
+}
+void* read_swap_page(struct mem_page_t * page){
+    swap_fd = open_swap_disk();
+    void * buf = calloc(1,MEM_PAGESIZE);
+    fseek(swap_fd,page->fpos.__pos,SEEK_SET);
+	fread (buf,MEM_PAGESIZE,1,swap_fd);
+    fclose(swap_fd);
+    return buf;
+}
 
 struct mem_page_t *mem_page_get(struct mem_t *mem, uint32_t addr)
 {
