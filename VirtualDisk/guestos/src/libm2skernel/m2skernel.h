@@ -116,6 +116,16 @@ struct mem_t {
 };
 
 
+struct ram_mem_t{
+	struct mem_page_t *pages[RAM_MEM_PAGE_COUNT];
+};
+
+
+struct mem_page_t * get_page_to_be_replaced(struct mem_t *mem, uint32_t addr);
+struct mem_page_t* page_fault_routine(struct mem_t *mem, uint32_t addr);
+
+
+
 struct swap_mem_t{
     struct mem_page_t*  free_list_head;
     struct mem_page_t*  free_list_tail;
@@ -127,6 +137,9 @@ struct swap_mem_t{
 extern int swap_page_count_used;
 extern struct swap_mem_t* swap_mem;
 void swap_initialize();
+
+
+
 struct mem_t* get_new_swap_page();
 struct mem_t* free_a_swap_page(struct mem_page_t * page);
 
