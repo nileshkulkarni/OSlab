@@ -2,9 +2,4 @@
 [ Context 0 ]
 Exe = 1
 
-Uid = 123
-
-[ Context 1 ]
-Exe = 1
-
-Uid = 43
+Uid = 1

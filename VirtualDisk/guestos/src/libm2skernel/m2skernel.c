@@ -68,12 +68,15 @@ void ke_ram_init(void)
 	int i;
 	
 	for(i=0;i<RAM_MEM_PAGE_COUNT;i++){
-		ke->ram->pages[i].freeFlag = 1;
+		//ke->ram->pages[i] = calloc(1, sizeof(struct mem_page_t));
+		ke->ram->pages[i].free_flag = 1;
 		ke->ram->pages[i].next = NULL;
 		ke->ram->pages[i].dirty = 0;
 		ke->ram->pages[i].data = calloc(1, MEM_PAGESIZE);
 	}
 }
+
+
 
 void ke_init(void)
 {

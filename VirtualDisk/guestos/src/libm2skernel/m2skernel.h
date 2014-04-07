@@ -60,9 +60,9 @@ int instr_slice;
 #define MEM_PAGESHIFT      MEM_LOGPAGESIZE
 #define MEM_PAGESIZE       (1<<MEM_LOGPAGESIZE)
 #define MEM_PAGEMASK       (~(MEM_PAGESIZE-1))
-#define MEM_PAGE_COUNT     1024
-#define PAGES_ALLOCATED_IN_RAM 100
-#define RAM_MEM_PAGE_COUNT     20000
+#define MEM_PAGE_COUNT     10000
+#define PAGES_ALLOCATED_IN_RAM 10000
+#define RAM_MEM_PAGE_COUNT     10000
 
 
 enum mem_access_enum {
@@ -90,8 +90,7 @@ struct mem_host_mapping_t {
 };
 
 /* A 4KB page of memory */
-
-
+/// TODO mem_host_mapping_t not known why it exists
 struct mem_page_t {
 	uint32_t tag;
 	enum mem_access_enum perm;  /* Access permissions; combination of flags */
@@ -100,7 +99,6 @@ struct mem_page_t {
     unsigned char* data; 	
 	struct mem_host_mapping_t *host_mapping;  /* If other than null, page is host mapping */
     int free_flag; //used for maintaining
-    // TODO mem_host_mapping_t not known why it exists
     int bytes_in_use; //0 if page is not used else no of bytes used
     int dirty;
 };
@@ -114,6 +112,7 @@ struct mem_t {
 	int safe;  /* Safe mode */
 	struct mem_host_mapping_t *host_mapping_list;  /* List of host mappings */
     fpos_t offset; //offset of the first page in Sim_disk
+    fpos_t next_free_page_start_address;
     struct ctx_t * context;
     int max_pages_in_ram;
     int pages_in_ram;
@@ -121,7 +120,8 @@ struct mem_t {
 
 
 struct ram_mem_t{
-	struct mem_page_t *pages[RAM_MEM_PAGE_COUNT];
+//	struct mem_page_t *pages[RAM_MEM_PAGE_COUNT];
+	struct mem_page_t *pages;
 };
 
 
@@ -141,8 +141,8 @@ void swap_initialize();
 
 
 
-struct mem_t* get_new_swap_page();
-struct mem_t* free_a_swap_page(struct mem_page_t * page);
+struct mem_page_t* get_new_swap_page();
+struct mem_page_t* free_a_swap_page(struct mem_page_t * page);
 
 
 
@@ -158,8 +158,9 @@ void mem_free(struct mem_t *mem);
 struct mem_page_t* get_free_ram_page();
 struct mem_page_t * get_page_to_be_replaced(struct mem_t *mem);
 struct mem_page_t* page_fault_routine(struct mem_t *mem, uint32_t addr);
-
-
+void* read_swap_page(struct mem_page_t * page);
+struct mem_page_t*  ram_get_new_page(struct mem_t * mem);
+void swap_write_back_page(struct mem_t *mem,struct mem_page_t* ram_page,uint32_t addr);
 
 struct mem_page_t *mem_page_get(struct mem_t *mem, uint32_t addr);
 struct mem_page_t *mem_page_get_next(struct mem_t *mem, uint32_t addr);

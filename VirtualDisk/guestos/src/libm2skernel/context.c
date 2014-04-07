@@ -56,8 +56,7 @@ static struct ctx_t *ctx_do_create()
 
 	ctx->pid = ke->current_pid++;
 	ctx->instr_slice = instr_slice;
-	ctx->pages_allocated_in_ram = PAGES_ALLOCATED_IN_RAM;
-	ctx->pages_in_ram = 0;
+	
 
 	/* Update status so that the context is inserted in the
 	 * corresponding lists. The ctx_running parameter has no
@@ -87,6 +86,10 @@ struct ctx_t *ctx_create()
 	ctx->mid = ke->current_mid++;
 	
 	ctx->mem = mem_create();
+	ctx->mem->max_pages_in_ram = PAGES_ALLOCATED_IN_RAM;
+	//printf("comes here \n");
+	ctx->mem->pages_in_ram = 0;
+
 	int i;
 	for(i=0;i<MEM_PAGE_COUNT;i++)
 		ctx->mem->ram_pages[i] = NULL; //NOTHING IS PRESENT IN THE LIST

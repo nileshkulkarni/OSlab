@@ -73,8 +73,15 @@ struct mem_page_t *mem_page_get(struct mem_t *mem, uint32_t addr)
 	tag = addr & ~(MEM_PAGESIZE - 1);
 	index = (addr >> MEM_LOGPAGESIZE) % MEM_PAGE_COUNT;
 	page = mem->ram_pages[index];
+	
 	prev = NULL;
 	
+	
+	uint32_t dummy_addr = tag;
+	uint32_t index1, tag1;
+	tag1 = dummy_addr & ~(MEM_PAGESIZE - 1);
+	index1 = (dummy_addr >> MEM_LOGPAGESIZE) % MEM_PAGE_COUNT;
+	assert((tag1==tag) && (index1 == index));
 	
 	/* Look for page */
 	while (page && page->tag != tag) {
@@ -85,13 +92,13 @@ struct mem_page_t *mem_page_get(struct mem_t *mem, uint32_t addr)
 	/* Place page into list head */
 	if (prev && page) {
 		prev->next = page->next;
-		page->next = mem->pages[index];
-		mem->pages[index] = page;
+		page->next = mem->ram_pages[index];
+		mem->ram_pages[index] = page;
 	}
 	
 	
 	if(!page){
-	    //	printf("COULD NOT FIND A PAGE , EXECUTE PAGE FAULT ROUTINE \n");
+	    printf("COULD NOT FIND A PAGE , EXECUTE PAGE FAULT ROUTINE \n");
 		page = page_fault_routine(mem, addr);		
 	}
  
@@ -121,8 +128,9 @@ struct mem_page_t *swap_mem_page_get(struct mem_t *mem, uint32_t addr)
 	tag = addr & ~(MEM_PAGESIZE - 1);
 	index = (addr >> MEM_LOGPAGESIZE) % MEM_PAGE_COUNT;
 	page = mem->pages[index];
+    
     if(page == NULL){
-       //printf("SWAP page tag for the null page is %u \n", tag);
+       printf("SWAP page tag for the null page is %u \n", tag);
     }
 	prev = NULL;
 	
@@ -465,14 +473,14 @@ void swap_free(fpos_t fpos){
 
 struct mem_page_t* page_fault_routine(struct mem_t *mem, uint32_t addr){
 
-	printf("INSIDE PAGE FAULT ROUTINE %u \n",addr);
+//	printf("INSIDE PAGE FAULT ROUTINE %u \n",addr);
 	uint32_t index, tag;
-	struct mem_page_t *page;
+	struct mem_page_t *page, *prev;
 
 	tag = addr & ~(MEM_PAGESIZE - 1);
 	index = (addr >> MEM_LOGPAGESIZE) % MEM_PAGE_COUNT;	
 	page = mem->ram_pages[index];
-	
+	printf("Page inside pfr is %p \n", page);
 	/* Look for page */
 	while (page && page->tag != tag) {
 		prev = page;
@@ -490,10 +498,10 @@ struct mem_page_t* page_fault_routine(struct mem_t *mem, uint32_t addr){
 	 * - struct swap_mem_page_t* swapin_page = swap_in_page()
 	 * - set all the fields of the field of page @page_to_be_replaced
 	 * - mem->pages[page_to_be_replaced] = swapin_page
-	 * 
 	 */
+	 
 	 struct mem_page_t* page_from_swap_space = swap_mem_page_get(mem, addr);
-     
+	 assert(page_from_swap_space);	
 	 //data = (unsigned char*)mem_get_buffer(mem , addr , MEM_PAGESIZE, mem_access_read);
     data = 	read_swap_page(page_from_swap_space); 
 	
@@ -504,7 +512,12 @@ struct mem_page_t* page_fault_routine(struct mem_t *mem, uint32_t addr){
     new_page->tag = page_from_swap_space->tag;
     new_page->perm = page_from_swap_space->perm;
     new_page->free_flag = 0;
-    printf("page fault handled successfully at addr %u \n",addr); 
+    
+   /* Adding new_page to appropriate list_head */ 
+    new_page->next = mem->ram_pages[index];
+    mem->ram_pages[index] = new_page;
+    
+   // printf("page fault handled successfully at addr %u \n",addr); 
     return new_page;
 }
 
@@ -518,16 +531,18 @@ struct mem_page_t*  ram_get_new_page(struct mem_t * mem){
     struct mem_page_t* ram_pages = mem->ram_pages; 
     srand (time(NULL) );
     /* Generate a random number: */
-    assert(pages_in_ram);
-    int rand_page = rand() % pages_in_ram;
     int i=0;
     int j=0;
 
     struct mem_page_t* new_free_ram_page; 
     
+    
+   // printf("%d :::: %d ::::: %d \n", mem->pages_in_ram, mem->max_pages_in_ram, new_free_ram_page);
+        
     if(mem->pages_in_ram < mem->max_pages_in_ram){
         // return a free ram page    
         new_free_ram_page  = get_free_ram_page();
+        //printf("%d :::: %d ::::: %d \n", mem->pages_in_ram, mem->max_pages_in_ram, new_free_ram_page);
         if(new_free_ram_page){
             // page is available on ram , so directly use it.
             mem->pages_in_ram++;
@@ -535,45 +550,55 @@ struct mem_page_t*  ram_get_new_page(struct mem_t * mem){
         }
     }
      
+    assert(mem->pages_in_ram);
+    int rand_page = rand() % mem->pages_in_ram;
+     
+     
     for(j=0;j<MEM_PAGE_COUNT;j++){
-        struct mem_page_t* iter = ram_pages[j];  
+        struct mem_page_t* iter = mem->ram_pages[j];  
         struct mem_page_t* prev =NULL;
         while(iter){
            if(i == rand_page){
                 if(prev){
                     // normal page to be replaced
-                   prev->next = iter->enxt; 
+                   prev->next = iter->next; 
                 }
                 else{
                     // condition when head of the list is being replaced is to be replaced
-                    ram_pages[j] = iter->next;
+                    mem->ram_pages[j] = iter->next;
                 }
                 //!TODO update dirty bit of the new page and write-back the old page if(dirty bit)
                 if(iter->dirty){
-                    swap_write_back_page(mem,iter,((j<<MEM_LOGPAGESIZE)+iter->tag)<<MEM_PAGESIZE); 
+					//uint32_t write_back_page_addr = ((j<<MEM_LOGPAGESIZE)+iter->tag)<<MEM_PAGESIZE);
+                    uint32_t write_back_page_addr = iter->tag;
+                    swap_write_back_page(mem,iter, write_back_page_addr); 
                 }
                 iter->free_flag = 1;
                 return iter;
            }
-           iter= iter->next;
-           prev  = iter;
+            prev  = iter;
+			iter= iter->next;
+           //printf("Incrementing i\n");
            i++; 
         }
    }  
-    fatal("ram_get_new_page :: Should never come here");
+    fatal("ram_get_new_page :: Should never come here %d %d \n ", mem->pages_in_ram , rand_page);
 }
+
+
 
 void swap_write_back_page(struct mem_t *mem,struct mem_page_t* ram_page,uint32_t addr ){
     
-   struct  mem_page_t * swap_page = swap_mem_page_get(mem,addr) 
+   struct  mem_page_t * swap_page = swap_mem_page_get(mem,addr); 
     // Write to swap disk   
     swap_fd = open_swap_disk();
-    fseek(swap_fd, swap_page->fpos.__pos, SET_CURR);
+    fseek(swap_fd, swap_page->fpos.__pos, SEEK_CUR);
     fwrite(ram_page->data,MEM_PAGESIZE,1,swap_fd);
     printf("page written to swap");
 }
 
 void* read_swap_page(struct mem_page_t * page){
+    assert(page);
     swap_fd = open_swap_disk();
     void * buf = calloc(1,MEM_PAGESIZE);
     fseek(swap_fd,page->fpos.__pos,SEEK_SET);
@@ -623,7 +648,41 @@ struct mem_page_t *mem_page_get_next(struct mem_t *mem, uint32_t addr)
 	}
 
 	/* Return the found page (or NULL) */
-	return minpage;
+	/*MYCHanges*/
+	
+	//return minpage;
+}
+
+
+
+
+/* Create new mem page in swap space*/
+struct mem_page_t *mem_page_create(struct mem_t *mem, uint32_t addr, int perm)
+{
+	uint32_t index, tag;
+	struct mem_page_t *page;
+
+	tag = addr & ~(MEM_PAGESIZE - 1);
+	index = (addr >> MEM_LOGPAGESIZE) % MEM_PAGE_COUNT;
+	
+	/* Create new page */
+	page = calloc(1, sizeof(struct mem_page_t));
+   /* page->fpos = mem->next_free_page_start_address; 
+    mem->next_free_page_start_address.__pos = mem->next_free_page_start_address.__pos + MEM_PAGESIZE; 
+    */
+    struct mem_page_t* new_page = get_new_swap_page();
+    (page->fpos).__pos = (new_page->fpos).__pos;
+
+    page->bytes_in_use = MEM_PAGESIZE;
+	page->tag = tag;
+	page->perm = perm;
+	
+	/* Insert in pages hash table */
+	page->next = mem->pages[index];
+	mem->pages[index] = page;
+	mem_mapped_space += MEM_PAGESIZE;
+	mem_max_mapped_space = MAX(mem_max_mapped_space, mem_mapped_space);
+	return page;
 }
 
 
@@ -736,16 +795,22 @@ void *mem_get_buffer(struct mem_t *mem, uint32_t addr, int size, enum mem_access
         printf("page not found at all \n");
 		return NULL;
     }
+    
+   
     //printf("page in not  null\n");
 	
 	/* Check page permissions */
-	if ((page->perm & access) != access && mem->safe)
+	/** !TODO : TOCHECK **/
+	
+	if ((page->perm & access) != access && mem->safe){
+		assert(0);
 		fatal("mem_get_buffer: permission denied at 0x%x", addr);
+	}
 	
 	/* Allocate and initialize page data if it does not exist yet. */
 	if (page){
 		assert(page->data);
-        printf("page tag %u has bytes used 0 \n" ,page->tag); 
+        printf("page tag %u has bytes used %d \n" ,page->tag, page->bytes_in_use); 
         return (page->data + offset);
 	}
 }
@@ -878,7 +943,7 @@ void mem_access_page_boundary(struct mem_t *mem, uint32_t addr,int size, void *b
 	/* Write/initialize access */
 	if (access == mem_access_write || access == mem_access_init) {
 		if (!page->data){
-			assert(0)
+			assert(0);
 		}
 		else{
 			memcpy(page->data+offset, buf,  size);
@@ -1022,7 +1087,7 @@ int mem_read_string(struct mem_t *mem, uint32_t addr, int size, char *str)
 
 
 /* Swap Space Manager */
-struct mem_t* free_a_swap_page(struct mem_page_t * page){
+struct mem_page_t* free_a_swap_page(struct mem_page_t * page){
    struct mem_page_t* iter=NULL;
    struct mem_page_t* prev=NULL;
    iter = swap_mem->occupied_list_head;
@@ -1057,11 +1122,11 @@ struct mem_t* free_a_swap_page(struct mem_page_t * page){
 }
 
 
-struct mem_t* get_new_swap_page(){
+struct mem_page_t* get_new_swap_page(){
     if(!swap_mem->free_list_head){
         printf("Pages used are %d\n ", swap_page_count_used);
         fatal("No space on swap available\n");
-        exit(1);
+        assert(0);
     }
     else{
         //printf("Allocating page #%d \n", swap_page_count_used);
