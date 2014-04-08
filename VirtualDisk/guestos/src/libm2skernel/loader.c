@@ -167,8 +167,7 @@ void ld_load_sections(struct ctx_t *ctx, struct elf_file_t *elf)
 	enum mem_access_enum perm;
 	char sflags[200], *name;
 	void *buf;
-    printf("Came here in ld_load_sections\n");
-	ld_debug("\nLoading ELF sections\n");
+    ld_debug("\nLoading ELF sections\n");
 	ld->bottom = 0xffffffff;
 	count = elf_section_count(elf);
 	for (i = 0; i < count; i++) {
@@ -177,10 +176,8 @@ void ld_load_sections(struct ctx_t *ctx, struct elf_file_t *elf)
 		map_flags(&sectionflags_map, flags, sflags, 200);
 		ld_debug("  section '%s'; offs=0x%x; size=%u; flags=%s\n",
 			name, addr, size, sflags);
-        printf("Loading section ****** %s\n ", name);
-		/* Process section */
+        /* Process section */
 		if (flags & SHF_ALLOC) {
-
 			/* Permissions */
 			if (flags & SHF_WRITE)
 				perm |= mem_access_write;
@@ -188,17 +185,18 @@ void ld_load_sections(struct ctx_t *ctx, struct elf_file_t *elf)
 				perm |= mem_access_exec;
 
 			/* Load section */
+			printf("Loading section %s with permission %d \n ", name, perm);
 			mem_map(mem, addr, size, perm);
 			ld->brk = MAX(ld->brk, addr + size);
 			ld->bottom = MIN(ld->bottom, addr);
 			buf = elf_section_read(elf, i);
 			mem_access(mem, addr, size, buf, mem_access_init);
-            printf("going for swap_mem_access: ld_load_section \n");
+            //printf("going for swap_mem_access: ld_load_section \n");
 			elf_free_buffer(buf);
 		}
 	}
-    printf("Loading Sections Done!! \n");
-    printf("Page used are %d \n", swap_page_count_used);
+  //  printf("Loading Sections Done!! \n");
+  //  printf("Page used are %d \n", swap_page_count_used);
 }
 
 
@@ -448,21 +446,22 @@ void ld_load_exe(struct ctx_t *ctx, char *exe)
 	ld_load_sections(ctx, ld->elf);
 	ld->prog_entry = elf_get_entry(ld->elf);
 	ld->brk = ROUND_UP(ld->brk, MEM_PAGESIZE);
-
+	
+	
+	
 	/* Load program header table. If we found a PT_INTERP program header,
 	 * we have to load the program interpreter. This means we are dealing with
 	 * a dynamically linked application. */
-	ld_load_phdt(ctx);
+	
 	if (ld->interp)
 		ld_load_interp(ctx);
 
 	/* Stack */
 	ld_load_stack(ctx);
-
 	/* Register initialization */
 	ctx->regs->eip = ld->interp ? ld->interp_prog_entry : ld->prog_entry;
 	ctx->regs->esp = ld->environ_base;
-
+	
 	ld_debug("Program entry is 0x%x\n", ctx->regs->eip);
 	ld_debug("Initial stack pointer is 0x%x\n", ctx->regs->esp);
 	ld_debug("Heap start set to 0x%x\n", ld->brk);
@@ -573,7 +572,7 @@ void ld_load_prog_from_cmdline(int argc, char **argv)
 	ld->stdin_file = strdup("");
 	ld->stdout_file = strdup("");
 
-	printf("\n in loader.c path came as %s \n*** ",argv[0]);
+//	printf("\n in loader.c path came as %s \n*** ",argv[0]);
 
 ////	printf("\n bt loading is me as %s \n*** ",mypath);
 	/* Load executable */

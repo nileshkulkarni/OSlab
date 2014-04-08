@@ -218,31 +218,13 @@ void ctx_execute_inst(struct ctx_t *ctx)
 	if (ctx_get_status(ctx, ctx_specmode)){
 		ctx->mem->safe = 0;
     }
-    //void* buf1 = mem_get_buffer(ctx->mem, ctx->regs->eip, 20, mem_access_exec);
-   // printf("Buff1  is %s \n", buf);
-	buf = mem_get_buffer(ctx->mem, ctx->regs->eip, 20, mem_access_exec);
- /*   if(!buf2){
-        printf("Buf2 is nulllll!! woah!!aaha \n");
-    }
-*/
-    int i=0;
-    /*
-    for(i=0;i<20;i++){
-        if((*((char*)(buf1 + i))) != *((char*)(buf2 +i))){
-            printf("Exiting buffers not equal\n");
-            exit(1);
-        }
-    }
-    */
- //   printf("before iff\n");
+    
+    buf = mem_get_buffer(ctx->mem, ctx->regs->eip, 20, mem_access_exec);
+	
 	if (!buf) {
 		buf = &fixed;
-    	//mem_access(ctx->mem, ctx->regs->eip, 20, buf, mem_access_exec);
-        //printf("buf is null \n");
-        //printf("Buff1  is %s \n", buf);
-		mem_access(ctx->mem, ctx->regs->eip, 20, buf, mem_access_exec);
-        //printf("Buff2  is %s \n", buf);
-	}
+    	mem_access(ctx->mem, ctx->regs->eip, 20, buf, mem_access_exec);
+    }
 	ctx->mem->safe = mem_safe_mode;
 
 	/* Disassemble */

@@ -60,9 +60,9 @@ int instr_slice;
 #define MEM_PAGESHIFT      MEM_LOGPAGESIZE
 #define MEM_PAGESIZE       (1<<MEM_LOGPAGESIZE)
 #define MEM_PAGEMASK       (~(MEM_PAGESIZE-1))
-#define MEM_PAGE_COUNT     10000
-#define PAGES_ALLOCATED_IN_RAM 10000
-#define RAM_MEM_PAGE_COUNT     10000
+#define MEM_PAGE_COUNT    4096
+#define PAGES_ALLOCATED_IN_RAM 2000
+#define RAM_MEM_PAGE_COUNT     20000
 
 
 enum mem_access_enum {
@@ -158,13 +158,15 @@ void mem_free(struct mem_t *mem);
 struct mem_page_t* get_free_ram_page();
 struct mem_page_t * get_page_to_be_replaced(struct mem_t *mem);
 struct mem_page_t* page_fault_routine(struct mem_t *mem, uint32_t addr);
+
 void* read_swap_page(struct mem_page_t * page);
 struct mem_page_t*  ram_get_new_page(struct mem_t * mem);
 void swap_write_back_page(struct mem_t *mem,struct mem_page_t* ram_page,uint32_t addr);
+void add_occupied_page(struct mem_page_t* page);
+
 
 struct mem_page_t *mem_page_get(struct mem_t *mem, uint32_t addr);
 struct mem_page_t *mem_page_get_next(struct mem_t *mem, uint32_t addr);
-
 
 
 uint32_t mem_map_space(struct mem_t *mem, uint32_t addr, int size);
