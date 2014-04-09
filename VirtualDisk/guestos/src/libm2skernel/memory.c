@@ -515,10 +515,12 @@ struct mem_page_t* page_fault_routine(struct mem_t *mem, uint32_t addr){
 	 //data = (unsigned char*)mem_get_buffer(mem , addr , MEM_PAGESIZE, mem_access_read);
      data = read_swap_page(page_from_swap_space); 
 	
+     
    // need ctx here to find out which process was faulted; 
     struct mem_page_t* new_page = ram_get_new_page(mem);
         
     memcpy(new_page->data,data,MEM_PAGESIZE); 
+    free(data);
     new_page->tag = page_from_swap_space->tag;
     new_page->perm = page_from_swap_space->perm;
     new_page->free_flag = 0;
@@ -576,14 +578,12 @@ struct mem_page_t*  ram_get_new_page(struct mem_t * mem){
                     // condition when head of the list is being replaced is to be replaced
                     mem->ram_pages[j] = iter->next;
                 }
-                //!TODO update dirty bit of the new page and write-back the old page if(dirty bit)
-                //!TODO update the list heads.
                 if(iter->dirty){
-					//uint32_t write_back_page_addr = ((j<<MEM_LOGPAGESIZE)+iter->tag)<<MEM_PAGESIZE);
                     uint32_t write_back_page_addr = iter->tag;
                     swap_write_back_page(mem,iter, write_back_page_addr); 
                 }
                 iter->free_flag = 1;
+                iter->dirty = 0;
                 return iter;
            }
             prev  = iter;
@@ -628,7 +628,7 @@ void* read_swap_page(struct mem_page_t * page){
 struct mem_page_t *mem_page_get_next(struct mem_t *mem, uint32_t addr)
 {
 	
-	printf("comes here :::::::::::::::::::::::::::::::::::::::::::::::: \n");
+	printf("comes here::::::::::::::::::::::::::::::::::::::::::::::::\n");
 	uint32_t tag, index, mintag;
 	struct mem_page_t *prev, *page, *minpage;
 
@@ -647,11 +647,40 @@ struct mem_page_t *mem_page_get_next(struct mem_t *mem, uint32_t addr)
 	}
 	if (page)
 		return page;
+    	
+
+
+    /* get the page from the swap space */
+    printf("Handling page fault here");
+	struct mem_page_t* page_from_swap_space = swap_mem_page_get(mem, addr);
+	assert(page_from_swap_space);	
+	 //data = (unsigned char*)mem_get_buffer(mem , addr , MEM_PAGESIZE, mem_access_read);
+    void* data = read_swap_page(page_from_swap_space); 
 	
+   // need ctx here to find out which process was faulted; 
+    struct mem_page_t* new_page = ram_get_new_page(mem);
+        
+    memcpy(new_page->data,data,MEM_PAGESIZE); 
+    free(data);
+    new_page->tag = page_from_swap_space->tag;
+    new_page->perm = page_from_swap_space->perm;
+    new_page->free_flag = 0;
+    
+   /* Adding new_page to appropriate list_head */ 
+    new_page->next = mem->ram_pages[index];
+    mem->ram_pages[index] = new_page;
+   // printf("page fault handled successfully at addr %u \n",addr); 
+    if(new_page)
+        return new_page; 
+
+     
+
 	/* Page following addr is not found, so check all memory pages to find
 	 * the one with the lowest tag following addr. */
+    
 	mintag = 0xffffffff;
 	minpage = NULL;
+    //checking the page that exist on swap space which is very near to the demanded page
 	for (index = 0; index < MEM_PAGE_COUNT; index++) {
 		for (page = mem->pages[index]; page; page = page->next) {
 			if (page->tag > tag && page->tag < mintag) {
@@ -665,10 +694,44 @@ struct mem_page_t *mem_page_get_next(struct mem_t *mem, uint32_t addr)
 	/*!!!!!  */
 	//return minpage;
 	
-	if(minpage)
-		return mem_page_get(mem , minpage->tag);
-	else
-	 return minpage;
+    if(minpage){
+        // now check if the minpage exist on the ram itself
+        index = (tag >> MEM_LOGPAGESIZE) % MEM_PAGE_COUNT;
+        for (page = mem->pages[index]; page; page = page->next) {
+            if (page->tag == minpage->tag) {
+                break;
+            }
+        }
+        if(page){
+            return page;
+        }
+	}
+
+    printf("Page fault: getting a page nearest to the required to page\n");
+
+	struct mem_page_t* page_from_swap_space = swap_mem_page_get(mem, addr);
+	assert(page_from_swap_space);	
+	 //data = (unsigned char*)mem_get_buffer(mem , addr , MEM_PAGESIZE, mem_access_read);
+    data = read_swap_page(page_from_swap_space); 
+	
+   // need ctx here to find out which process was faulted; 
+    new_page = ram_get_new_page(mem);
+        
+    memcpy(new_page->data,data,MEM_PAGESIZE); 
+    free(data);
+    new_page->tag = page_from_swap_space->tag;
+    new_page->perm = page_from_swap_space->perm;
+    new_page->free_flag = 0;
+    
+   /* Adding new_page to appropriate list_head */ 
+    new_page->next = mem->ram_pages[index];
+    mem->ram_pages[index] = new_page;
+    
+    printf("page fault handled successfully at addr %u \n",addr); 
+    if(new_page)
+        return new_page;
+    else
+        return NULL;
 }
 
 
