@@ -60,9 +60,9 @@ int instr_slice;
 #define MEM_PAGESHIFT      MEM_LOGPAGESIZE
 #define MEM_PAGESIZE       (1<<MEM_LOGPAGESIZE)
 #define MEM_PAGEMASK       (~(MEM_PAGESIZE-1))
-#define MEM_PAGE_COUNT    4096
-#define PAGES_ALLOCATED_IN_RAM 2000
-#define RAM_MEM_PAGE_COUNT     20000
+#define MEM_PAGE_COUNT    40096
+#define PAGES_ALLOCATED_IN_RAM 200
+#define RAM_MEM_PAGE_COUNT     50000
 
 
 enum mem_access_enum {
@@ -142,7 +142,7 @@ void swap_initialize();
 
 
 struct mem_page_t* get_new_swap_page();
-struct mem_page_t* free_a_swap_page(struct mem_page_t * page);
+struct mem_page_t* free_a_swap_page(struct mem_page_t * page, struct mem_t * mem);
 
 
 

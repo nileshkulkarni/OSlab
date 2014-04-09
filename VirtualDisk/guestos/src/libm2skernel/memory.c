@@ -80,7 +80,6 @@ struct mem_page_t *mem_page_get(struct mem_t *mem, uint32_t addr)
 	
 	prev = NULL;
 	
-	
 	uint32_t dummy_addr = tag;
 	uint32_t index1, tag1;
 	tag1 = dummy_addr & ~(MEM_PAGESIZE - 1);
@@ -106,7 +105,6 @@ struct mem_page_t *mem_page_get(struct mem_t *mem, uint32_t addr)
 		page = page_fault_routine(mem, addr);		
 	}
  
-	assert(page);
 	/* Return found page */
 	return page;
 }
@@ -162,12 +160,18 @@ struct mem_page_t *swap_mem_page_get(struct mem_t *mem, uint32_t addr)
 
 
 /* Free mem pages */
-
-
 ///TODO rewrite mem_map_space
 uint32_t mem_map_space(struct mem_t *mem, uint32_t addr, int size)
 {
     uint32_t tag_start, tag_end;
+
+	if(((addr >> MEM_LOGPAGESIZE) <= 32840) && (((addr+size)>> MEM_LOGPAGESIZE) >= 32840)){
+		printf("Page 32840 should  be created here %d , %d \n" , 
+			(addr >> MEM_LOGPAGESIZE) ,
+			((addr+size)>> MEM_LOGPAGESIZE));
+	}
+	
+
 
     assert(!(addr & (MEM_PAGESIZE - 1)));
     assert(!(size & (MEM_PAGESIZE - 1)));
@@ -484,7 +488,7 @@ void swap_free(fpos_t fpos){
 
 struct mem_page_t* page_fault_routine(struct mem_t *mem, uint32_t addr){
 
-//	printf("INSIDE PAGE FAULT ROUTINE %u \n",addr);
+	//printf("INSIDE PAGE FAULT ROUTINE %u \n",addr);
 	uint32_t index, tag;
 	struct mem_page_t *page, *prev;
 
@@ -511,7 +515,12 @@ struct mem_page_t* page_fault_routine(struct mem_t *mem, uint32_t addr){
 	 */
 	 
 	 struct mem_page_t* page_from_swap_space = swap_mem_page_get(mem, addr);
-	 assert(page_from_swap_space);	
+	 
+	 //IF page is not found, return NULL
+	 if(!page_from_swap_space)
+		return page_from_swap_space;
+	 
+	 
 	 //data = (unsigned char*)mem_get_buffer(mem , addr , MEM_PAGESIZE, mem_access_read);
      data = read_swap_page(page_from_swap_space); 
 	
@@ -683,12 +692,20 @@ struct mem_page_t *mem_page_create(struct mem_t *mem, uint32_t addr, int perm)
 	tag = addr & ~(MEM_PAGESIZE - 1);
 	index = (addr >> MEM_LOGPAGESIZE) % MEM_PAGE_COUNT;
 	
+	
+	if((tag >> MEM_LOGPAGESIZE) == 32840){
+		printf("Page 32840 is being created here \n");
+	}
+	
 	/* Create new page */
 	page = calloc(1, sizeof(struct mem_page_t));
    /* page->fpos = mem->next_free_page_start_address; 
     mem->next_free_page_start_address.__pos = mem->next_free_page_start_address.__pos + MEM_PAGESIZE; 
     */
     struct mem_page_t* new_page = get_new_swap_page();
+	if(new_page->fpos.__pos == 18223104){
+			printf("*****Page allocated 18223104 this to process %d\n",mem->context->uid);
+	}
     (page->fpos).__pos = (new_page->fpos).__pos;
 
     page->bytes_in_use = MEM_PAGESIZE;
@@ -714,6 +731,11 @@ struct mem_page_t *swap_mem_page_create(struct mem_t *mem, uint32_t addr, int pe
 	tag = addr & ~(MEM_PAGESIZE - 1);
 	index = (addr >> MEM_LOGPAGESIZE) % MEM_PAGE_COUNT;
 	
+	
+	if((addr >> MEM_LOGPAGESIZE) == 32840){
+		printf("Page 32840 is being created here \n");
+	}
+	
 	/* Create new page */
 	page = calloc(1, sizeof(struct mem_page_t));
    /* page->fpos = mem->next_free_page_start_address; 
@@ -721,6 +743,11 @@ struct mem_page_t *swap_mem_page_create(struct mem_t *mem, uint32_t addr, int pe
     */
     struct mem_page_t* new_page = get_new_swap_page();
     (page->fpos).__pos = (new_page->fpos).__pos;
+    
+    if(page->fpos.__pos == 18223104){
+		printf("Swap page Create for page: %d , pid %d fpos %u \n", (page->tag >> MEM_LOGPAGESIZE)%MEM_PAGE_COUNT,
+						mem->context->uid,page->fpos.__pos);
+   }
 
     page->bytes_in_use = MEM_PAGESIZE;
 	page->tag = tag;
@@ -739,6 +766,8 @@ struct mem_page_t *swap_mem_page_create(struct mem_t *mem, uint32_t addr, int pe
 /* Free mem pages */
 void mem_page_free(struct mem_t *mem, uint32_t addr)
 {
+	
+	//printf("Freeing mem_page \n");
 	uint32_t index, tag;
 	struct mem_page_t *prev, *page;
 	struct mem_host_mapping_t *hm;
@@ -786,8 +815,20 @@ void mem_page_free(struct mem_t *mem, uint32_t addr)
 		page = page->next;
 	}
 	
+	if(!page) 
+		return;
+	
+	free_a_swap_page(page, mem);	
+	/* Free page */
+	if (prev)
+		prev->next = page->next;
+	else
+		mem->pages[index] = page->next;
+/*	
 	if (page->bytes_in_use==0)
 		swap_free(page->fpos);
+*/	
+	//printf("Freeing mem_page Done \n");
 	
 }
 
@@ -1013,20 +1054,25 @@ struct mem_t *mem_create()
 }
 
 
-
+//Bug is Here at page 72
 void mem_free(struct mem_t *mem)
 {
 	int i;
-	
+	printf("Freeing Memory  of %d\n", mem->context->uid);
 	/* Free pages */
-	for (i = 0; i < MEM_PAGE_COUNT; i++)
+	for (i = 0; i < MEM_PAGE_COUNT; i++)	{
 		while (mem->pages[i])
 			mem_page_free(mem, mem->pages[i]->tag);
+	}
 
 	/* This must have released all host mappings.
 	 * Now, free memory structure. */
+	
+	printf("Freeing Memory : Done \n");
+	
 	assert(!mem->host_mapping_list);
 	free(mem);
+	
 }
 
 
@@ -1112,13 +1158,18 @@ int mem_read_string(struct mem_t *mem, uint32_t addr, int size, char *str)
 
 
 /* Swap Space Manager */
-struct mem_page_t* free_a_swap_page(struct mem_page_t * page){
+struct mem_page_t* free_a_swap_page(struct mem_page_t * page, struct mem_t* mem){
    struct mem_page_t* iter=NULL;
    struct mem_page_t* prev=NULL;
    iter = swap_mem->occupied_list_head;
    int flag_found =0;
+   if(page->fpos.__pos == 18223104){
+		printf("free page for page: %d , pid %d fpos %u \n", (page->tag >> MEM_LOGPAGESIZE)%MEM_PAGE_COUNT,
+						mem->context->uid,page->fpos.__pos);
+        
+   }
    while(iter){
-       if(iter->fpos.__pos ==page->fpos.__pos){
+       if(iter->fpos.__pos == page->fpos.__pos){
            flag_found = 1;     
            break;
        }
@@ -1142,7 +1193,8 @@ struct mem_page_t* free_a_swap_page(struct mem_page_t * page){
       // }
    }
    else{
-		fatal("[SWAP] :Trying to free a free page\n");
+		fatal("[SWAP] :Trying to free a free page for pid %d fpos %u \n",
+						mem->context->uid,page->fpos.__pos);
         return NULL;
    }
 }
@@ -1165,9 +1217,11 @@ struct mem_page_t* get_new_swap_page(){
         //swap_mem->occupied_list_tail = new_page;
         new_page->next = NULL;
         swap_page_count_used++;
+        if(new_page->fpos.__pos ==18223104){
+			printf("page allocated 18223104 \n");
+		}
         return new_page;
     }
-    
 }
 
 void add_occupied_page(struct mem_page_t* page){

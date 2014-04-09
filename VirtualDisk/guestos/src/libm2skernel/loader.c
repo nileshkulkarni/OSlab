@@ -195,7 +195,7 @@ void ld_load_sections(struct ctx_t *ctx, struct elf_file_t *elf)
 			elf_free_buffer(buf);
 		}
 	}
-  //  printf("Loading Sections Done!! \n");
+    printf("Loading Sections Done!! \n");
   //  printf("Page used are %d \n", swap_page_count_used);
 }
 

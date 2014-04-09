@@ -137,6 +137,8 @@ struct ctx_t *ctx_clone(struct ctx_t *ctx)
 /* Free a context */
 void ctx_free(struct ctx_t *ctx)
 {
+	printf("Finished Process , destroying context \n");
+	
 	/* If context is not finished/zombie, finish it first.
 	 * This removes all references to current freed context. */
 	if (!ctx_get_status(ctx, ctx_finished | ctx_zombie))
@@ -174,6 +176,8 @@ void ctx_free(struct ctx_t *ctx)
 		isa_ctx = NULL;
 	ctx_debug("context %d freed\n", ctx->pid);
 	free(ctx);
+	printf("Destroyed context \n");
+	
 }
 
 
