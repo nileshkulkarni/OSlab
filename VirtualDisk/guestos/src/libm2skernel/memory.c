@@ -1183,24 +1183,29 @@ struct mem_page_t* free_a_swap_page(struct mem_page_t * page, struct mem_t* mem)
            break;
        }
        prev = iter;
-       iter = iter->next;
+       iter = iter->newNext;
    }
    if(flag_found){
     
            if(!prev){
                 /* when the head is to be updated */
-               swap_mem->occupied_list_head = iter->next;
-               if(swap_mem->occupied_list_head==NULL){
-					swap_mem->occupied_list_tail ==NULL;
+               swap_mem->occupied_list_head = iter->newNext;
+               if(swap_mem->occupied_list_head == NULL){
+					swap_mem->occupied_list_tail = NULL;
 				}
-				(swap_mem->free_list_tail)->next= iter ;
+			}
+			
+           else
+           {
+            if(swap_mem->occupied_list_tail == iter){
+				swap_mem->occupied_list_tail = prev;
+			}
+            prev->newNext = iter->newNext;
            }
-           else{
-            prev->next = iter->next;
-            (swap_mem->free_list_tail)->next= iter;
-           }
+           
+           swap_mem->free_list_tail->newNext= iter ;
            swap_mem->free_list_tail = iter;
-           iter->next = NULL;
+           iter->newNext = NULL;
            return iter;
       
    }
@@ -1222,14 +1227,14 @@ struct mem_page_t* get_new_swap_page(){
         /* getting the page from the front of the list */
         struct mem_page_t* new_page = swap_mem->free_list_head ;
         /* updating free list to next page */
-        swap_mem->free_list_head = new_page->next;
+        swap_mem->free_list_head = new_page->newNext;
         if(swap_mem->free_list_head==NULL){
-			swap_mem->free_list_tail ==NULL;
+			swap_mem->free_list_tail = NULL;
 		}
         add_occupied_page(new_page);
         //(swap_mem->occupied_list_tail)->next = new_page;
         //swap_mem->occupied_list_tail = new_page;
-        new_page->next = NULL;
+        new_page->newNext = NULL;
         swap_page_count_used++;
         if(new_page->fpos.__pos ==18223104){
 			printf("page allocated 18223104 \n");
@@ -1244,17 +1249,18 @@ void add_occupied_page(struct mem_page_t* page){
     if(!(swap_mem->occupied_list_head) && !(swap_mem->occupied_list_tail)){
         swap_mem->occupied_list_head = page;
         swap_mem->occupied_list_tail = page;
-        page->next = NULL;
+        page->newNext = NULL;
     }
+    
     else
     {
     		printf("add a occupied page %u \n", page->fpos.__pos);
 			if(page->fpos.__pos ==  18223104){
 				printf("prev page is %d \n",(swap_mem->occupied_list_tail)->fpos.__pos);
 			}
-			(swap_mem->occupied_list_tail)->next = page;
+			(swap_mem->occupied_list_tail)->newNext = page;
             swap_mem->occupied_list_tail =page;
-            page->next = NULL;
+            page->newNext = NULL;
             if(page->fpos.__pos ==  18223104){
 				printf("current head is %d \n",(swap_mem->occupied_list_head)->fpos.__pos);
 			}
@@ -1278,7 +1284,7 @@ void add_occupied_page(struct mem_page_t* page){
 					printf("page found in occupied list 18223104\n");
 					break;
 				}
-			start = start->next;
+			start = start->newNext;
 		}
 	}
 }
@@ -1300,17 +1306,17 @@ void swap_initialize(){
             free_page->fpos.__pos = ftell(swap_fd);
             swap_mem->free_list_head = free_page;
             swap_mem->free_list_tail = free_page;
-            free_page->next = NULL;
+            free_page->newNext = NULL;
         }
         else{
             struct mem_page_t* free_page = malloc(sizeof(struct mem_page_t)); 
             free_page->fpos.__pos = ftell(swap_fd);
-            (swap_mem->free_list_tail)->next= free_page;
+            (swap_mem->free_list_tail)->newNext= free_page;
             if(swap_mem->free_list_tail == swap_mem->free_list_head){
-                (swap_mem->free_list_head)->next = free_page;  
+                (swap_mem->free_list_head)->newNext = free_page;  
             }
             swap_mem->free_list_tail = free_page; 
-            free_page->next = NULL;
+            free_page->newNext = NULL;
         }
         fseek(swap_fd,MEM_PAGESIZE,SEEK_CUR);
         no_of_pages++;
