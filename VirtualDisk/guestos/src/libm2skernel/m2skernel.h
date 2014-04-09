@@ -95,6 +95,7 @@ struct mem_page_t {
 	uint32_t tag;
 	enum mem_access_enum perm;  /* Access permissions; combination of flags */
 	struct mem_page_t *next; /* Pointer to next page */
+	struct mem_page_t *newNext;
 	fpos_t fpos;// replace with current file pointer
     unsigned char* data; 	
 	struct mem_host_mapping_t *host_mapping;  /* If other than null, page is host mapping */

@@ -745,7 +745,7 @@ struct mem_page_t *swap_mem_page_create(struct mem_t *mem, uint32_t addr, int pe
     (page->fpos).__pos = (new_page->fpos).__pos;
     
     if(page->fpos.__pos == 18223104){
-		printf("Swap page Create for page: %d , pid %d fpos %u \n", (page->tag >> MEM_LOGPAGESIZE)%MEM_PAGE_COUNT,
+		printf("Swap page Create for page: %u , pid %d fpos %u \n", addr,
 						mem->context->uid,page->fpos.__pos);
    }
 
@@ -1058,7 +1058,7 @@ struct mem_t *mem_create()
 void mem_free(struct mem_t *mem)
 {
 	int i;
-	printf("Freeing Memory  of %d\n", mem->context->uid);
+	//printf("Freeing Memory  of %d\n", mem->context->uid);
 	/* Free pages */
 	for (i = 0; i < MEM_PAGE_COUNT; i++)	{
 		while (mem->pages[i])
@@ -1159,16 +1159,25 @@ int mem_read_string(struct mem_t *mem, uint32_t addr, int size, char *str)
 
 /* Swap Space Manager */
 struct mem_page_t* free_a_swap_page(struct mem_page_t * page, struct mem_t* mem){
+ 
+   /*	
+   if(mem->context->uid == 1)
+		return;
+  */
    struct mem_page_t* iter=NULL;
    struct mem_page_t* prev=NULL;
    iter = swap_mem->occupied_list_head;
    int flag_found =0;
    if(page->fpos.__pos == 18223104){
-		printf("free page for page: %d , pid %d fpos %u \n", (page->tag >> MEM_LOGPAGESIZE)%MEM_PAGE_COUNT,
+		printf("free page for page: %d , pid %d fpos %d \n", (page->tag >> MEM_LOGPAGESIZE)%MEM_PAGE_COUNT,
 						mem->context->uid,page->fpos.__pos);
+		if(iter)	{
+			printf("Occupied list head is not null, fpos is %d \n", iter->fpos.__pos);
+		}
         
    }
    while(iter){
+	
        if(iter->fpos.__pos == page->fpos.__pos){
            flag_found = 1;     
            break;
@@ -1177,24 +1186,26 @@ struct mem_page_t* free_a_swap_page(struct mem_page_t * page, struct mem_t* mem)
        iter = iter->next;
    }
    if(flag_found){
-     //  assert(iter);
-      // if(iter){
+    
            if(!prev){
                 /* when the head is to be updated */
                swap_mem->occupied_list_head = iter->next;
+               if(swap_mem->occupied_list_head==NULL){
+					swap_mem->occupied_list_tail ==NULL;
+				}
+				(swap_mem->free_list_tail)->next= iter ;
            }
            else{
             prev->next = iter->next;
-            (swap_mem->free_list_tail)->next= iter  ;
+            (swap_mem->free_list_tail)->next= iter;
            }
            swap_mem->free_list_tail = iter;
            iter->next = NULL;
            return iter;
-      // }
+      
    }
    else{
-		fatal("[SWAP] :Trying to free a free page for pid %d fpos %u \n",
-						mem->context->uid,page->fpos.__pos);
+		fatal("[SWAP] :Trying to free a free page for pid %d fpos %u \n",mem->context->uid,page->fpos.__pos);
         return NULL;
    }
 }
@@ -1212,6 +1223,9 @@ struct mem_page_t* get_new_swap_page(){
         struct mem_page_t* new_page = swap_mem->free_list_head ;
         /* updating free list to next page */
         swap_mem->free_list_head = new_page->next;
+        if(swap_mem->free_list_head==NULL){
+			swap_mem->free_list_tail ==NULL;
+		}
         add_occupied_page(new_page);
         //(swap_mem->occupied_list_tail)->next = new_page;
         //swap_mem->occupied_list_tail = new_page;
@@ -1225,27 +1239,52 @@ struct mem_page_t* get_new_swap_page(){
 }
 
 void add_occupied_page(struct mem_page_t* page){
+	
+	//printf("add a occupied page %u \n", page->fpos.__pos);
     if(!(swap_mem->occupied_list_head) && !(swap_mem->occupied_list_tail)){
         swap_mem->occupied_list_head = page;
         swap_mem->occupied_list_tail = page;
         page->next = NULL;
     }
-    else{
-        if(swap_mem->occupied_list_head == swap_mem->occupied_list_tail){
-             
-            (swap_mem->occupied_list_tail)->next = page;
+    else
+    {
+    		printf("add a occupied page %u \n", page->fpos.__pos);
+			if(page->fpos.__pos ==  18223104){
+				printf("prev page is %d \n",(swap_mem->occupied_list_tail)->fpos.__pos);
+			}
+			(swap_mem->occupied_list_tail)->next = page;
             swap_mem->occupied_list_tail =page;
-            swap_mem->occupied_list_head->next = page;
-        }
-        else{
-            (swap_mem->occupied_list_tail)->next = page;
-            swap_mem->occupied_list_tail =page;
-        }
-
+            page->next = NULL;
+            if(page->fpos.__pos ==  18223104){
+				printf("current head is %d \n",(swap_mem->occupied_list_head)->fpos.__pos);
+			}
     }
 
-
+    if(page->fpos.__pos == 18223104){
+		printf("Searching for page 18223104\n");
+		struct mem_page_t* start = swap_mem->occupied_list_head;
+		if(swap_mem->occupied_list_tail->fpos.__pos == page->fpos.__pos){
+			printf("18223104 page is found\n");
+		}
+		else{
+			printf("Haga be \n");
+		}
+		while(start){
+				printf("%d\n",start->fpos.__pos);
+				if(start->fpos.__pos == swap_mem->occupied_list_tail->fpos.__pos){
+					printf("sahi chal raha hain reaches tail\n");
+				}
+				if(start->fpos.__pos == 18223104){
+					printf("page found in occupied list 18223104\n");
+					break;
+				}
+			start = start->next;
+		}
+	}
 }
+
+
+
 void swap_initialize(){
     swap_mem = malloc(sizeof(struct swap_mem_t));
     swap_mem->free_list_head=NULL;
