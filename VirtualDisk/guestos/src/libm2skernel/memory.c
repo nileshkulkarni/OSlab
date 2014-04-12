@@ -475,6 +475,8 @@ FILE* swap_fd;
 FILE* open_swap_disk(){
 	
 	FILE* fp = fopen("Sim_disk","rb+");
+	if(!fp)
+		printf("unable to open file, please check for unclosed version\n");
 	return fp;
 }
 
@@ -528,6 +530,7 @@ struct mem_page_t* page_fault_routine(struct mem_t *mem, uint32_t addr){
     struct mem_page_t* new_page = ram_get_new_page(mem);
         
     memcpy(new_page->data,data,MEM_PAGESIZE); 
+    free(data);
     new_page->tag = page_from_swap_space->tag;
     new_page->perm = page_from_swap_space->perm;
     new_page->free_flag = 0;
@@ -570,7 +573,7 @@ struct mem_page_t*  ram_get_new_page(struct mem_t * mem){
     
     assert(mem->pages_in_ram);
     int rand_page = rand() % mem->pages_in_ram;
-     
+    rand_page = 2; 
     //printf("******************************************Swapping out page \n");
                  
     for(j=0;j<MEM_PAGE_COUNT;j++){
@@ -615,6 +618,7 @@ void swap_write_back_page(struct mem_t *mem,struct mem_page_t* ram_page,uint32_t
     swap_fd = open_swap_disk();
     fseek(swap_fd, swap_page->fpos.__pos, SEEK_CUR);
     fwrite(ram_page->data,MEM_PAGESIZE,1,swap_fd);
+    fclose(swap_fd);
     //printf("page written to swap \n");
 }
 
@@ -623,8 +627,17 @@ void* read_swap_page(struct mem_page_t * page){
     assert(page);
     swap_fd = open_swap_disk();
     void * buf = calloc(1,MEM_PAGESIZE);
+    if(!buf)
+		fatal("failed to allocated memory \n");
+	
+    printf("Page fpos is %u \n", page->fpos.__pos);
+     if(page->fpos.__pos == 	266240){
+		printf("before fseek\n");
+	}
     fseek(swap_fd,page->fpos.__pos,SEEK_SET);
+    printf("after fseek \n");
 	fread (buf,MEM_PAGESIZE,1,swap_fd);
+   
     fclose(swap_fd);
     return buf;
 }
