@@ -475,6 +475,8 @@ FILE* swap_fd;
 FILE* open_swap_disk(){
 	
 	FILE* fp = fopen("Sim_disk","rb+");
+	if(!fp)
+		printf("unable to open file, please check for unclosed version\n");
 	return fp;
 }
 
@@ -572,8 +574,9 @@ struct mem_page_t*  ram_get_new_page(struct mem_t * mem){
     
     assert(mem->pages_in_ram);
     int rand_page = rand() % mem->pages_in_ram;
-     
-     
+    //rand_page = 2; 
+    //printf("******************************************Swapping out page \n");
+                 
     for(j=0;j<MEM_PAGE_COUNT;j++){
         struct mem_page_t* iter = mem->ram_pages[j];  
         struct mem_page_t* prev =NULL;
@@ -587,6 +590,9 @@ struct mem_page_t*  ram_get_new_page(struct mem_t * mem){
                     // condition when head of the list is being replaced is to be replaced
                     mem->ram_pages[j] = iter->next;
                 }
+                //!TODO update dirty bit of the new page and write-back the old page if(dirty bit)
+                //!TODO update the list heads.
+                //printf("******************************************Swapping out page \n");
                 if(iter->dirty){
                     uint32_t write_back_page_addr = iter->tag;
                     swap_write_back_page(mem,iter, write_back_page_addr); 
@@ -614,7 +620,8 @@ void swap_write_back_page(struct mem_t *mem,struct mem_page_t* ram_page,uint32_t
     swap_fd = open_swap_disk();
     fseek(swap_fd, swap_page->fpos.__pos, SEEK_CUR);
     fwrite(ram_page->data,MEM_PAGESIZE,1,swap_fd);
-    printf("page written to swap \n");
+    fclose(swap_fd);
+    //printf("page written to swap \n");
 }
 
 
@@ -622,8 +629,15 @@ void* read_swap_page(struct mem_page_t * page){
     assert(page);
     swap_fd = open_swap_disk();
     void * buf = calloc(1,MEM_PAGESIZE);
+    if(!buf)
+		fatal("failed to allocated memory \n");
+	
+    //printf("Page fpos is %u \n", page->fpos.__pos);
+   
     fseek(swap_fd,page->fpos.__pos,SEEK_SET);
+    //printf("after fseek \n");
 	fread (buf,MEM_PAGESIZE,1,swap_fd);
+   
     fclose(swap_fd);
     return buf;
 }
@@ -1317,10 +1331,12 @@ void add_occupied_page(struct mem_page_t* page){
     
     else
     {
-    		printf("add a occupied page %u \n", page->fpos.__pos);
+    		//printf("add a occupied page %u \n", page->fpos.__pos);
+			/*
 			if(page->fpos.__pos ==  18223104){
 				printf("prev page is %d \n",(swap_mem->occupied_list_tail)->fpos.__pos);
 			}
+			*/ 
 			(swap_mem->occupied_list_tail)->newNext = page;
             swap_mem->occupied_list_tail =page;
             page->newNext = NULL;
@@ -1330,16 +1346,18 @@ void add_occupied_page(struct mem_page_t* page){
     }
 
     if(page->fpos.__pos == 18223104){
-		printf("Searching for page 18223104\n");
+		//printf("Searching for page 18223104\n");
 		struct mem_page_t* start = swap_mem->occupied_list_head;
+		/*
 		if(swap_mem->occupied_list_tail->fpos.__pos == page->fpos.__pos){
 			printf("18223104 page is found\n");
 		}
 		else{
 			printf("Haga be \n");
 		}
+		 
 		while(start){
-				printf("%d\n",start->fpos.__pos);
+				//printf("%d\n",start->fpos.__pos);
 				if(start->fpos.__pos == swap_mem->occupied_list_tail->fpos.__pos){
 					printf("sahi chal raha hain reaches tail\n");
 				}
@@ -1349,6 +1367,7 @@ void add_occupied_page(struct mem_page_t* page){
 				}
 			start = start->newNext;
 		}
+		*/ 
 	}
 }
 
@@ -1360,6 +1379,8 @@ void swap_initialize(){
     swap_mem->free_list_tail=NULL;
     swap_mem->occupied_list_head =NULL;
     swap_mem->occupied_list_tail =NULL;
+    swap_fd = fopen("Sim_disk","w");
+    fclose(swap_fd);
     swap_fd = open_swap_disk();   
 	fseek(swap_fd ,0, SEEK_SET);
     int no_of_pages =0;
@@ -1407,21 +1428,33 @@ void mem_copy(struct mem_t *mem, uint32_t dest, uint32_t src, int size)
 	while (size > 0) {
 		
 		/* Get source and destination pages */
-		page_dest = mem_page_get(mem, dest);
 		page_src = mem_page_get(mem, src); 
-		assert(page_src && page_dest);
+		assert(page_src);
+		assert((page_src->free_flag == 0));
+		void *buf= NULL;
+		if(page_src->data){
+			// copy data to a temporary buffer;
+			buf = malloc(MEM_PAGESIZE);
+		}
+		memcpy(buf, page_src->data, MEM_PAGESIZE);
+		
+		page_dest = mem_page_get(mem, dest);
+		
+		assert(page_dest);
 		///TODO ... Check for a condition here, there's a chance that page_dest gets removed
-		assert((page_src->free_flag == 0) && (page_dest->free_flag == 0)); 
+		assert((page_dest->free_flag == 0)); 
 		/* Different actions depending on whether source and
 		 * destination page data are allocated. */
 		
 		printf("Inside MemCopy! if there are any errors, blame @sanchit-garg");
         
 		
-        if (page_src->data) {
+        if (buf) {
+			
 			if (!page_dest->data)
 				page_dest->data = malloc(MEM_PAGESIZE);
-			memcpy(page_dest->data, page_src->data, MEM_PAGESIZE);
+			memcpy(page_dest->data, buf, MEM_PAGESIZE);
+			free(buf);
 		} 
 		else {
 			if (page_dest->data)
