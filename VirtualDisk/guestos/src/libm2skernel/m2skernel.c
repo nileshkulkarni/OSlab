@@ -252,13 +252,10 @@ RUN :
 	for (ctx = ke->running_list_head; ctx; ctx = ctx->running_next) {
 		int i;
 		//printf ("out - %p\n", ctx);
-
 		for (i = 0 ; i < ctx->instr_slice; ++i) {
-			
 			ke_handle_interrupts();
 	    	if (ctx_get_status(ctx, ctx_finished))
                 break;
-
 			ctx_execute_inst(ctx);
 			ke->instruction_no++;
 			if(ctx!=ke->running_list_head)

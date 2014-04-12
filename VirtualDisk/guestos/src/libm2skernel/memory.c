@@ -571,7 +571,8 @@ struct mem_page_t*  ram_get_new_page(struct mem_t * mem){
     assert(mem->pages_in_ram);
     int rand_page = rand() % mem->pages_in_ram;
      
-     
+    //printf("******************************************Swapping out page \n");
+                 
     for(j=0;j<MEM_PAGE_COUNT;j++){
         struct mem_page_t* iter = mem->ram_pages[j];  
         struct mem_page_t* prev =NULL;
@@ -614,7 +615,7 @@ void swap_write_back_page(struct mem_t *mem,struct mem_page_t* ram_page,uint32_t
     swap_fd = open_swap_disk();
     fseek(swap_fd, swap_page->fpos.__pos, SEEK_CUR);
     fwrite(ram_page->data,MEM_PAGESIZE,1,swap_fd);
-    printf("page written to swap \n");
+    //printf("page written to swap \n");
 }
 
 
@@ -1254,10 +1255,12 @@ void add_occupied_page(struct mem_page_t* page){
     
     else
     {
-    		printf("add a occupied page %u \n", page->fpos.__pos);
+    		//printf("add a occupied page %u \n", page->fpos.__pos);
+			/*
 			if(page->fpos.__pos ==  18223104){
 				printf("prev page is %d \n",(swap_mem->occupied_list_tail)->fpos.__pos);
 			}
+			*/ 
 			(swap_mem->occupied_list_tail)->newNext = page;
             swap_mem->occupied_list_tail =page;
             page->newNext = NULL;
@@ -1267,16 +1270,18 @@ void add_occupied_page(struct mem_page_t* page){
     }
 
     if(page->fpos.__pos == 18223104){
-		printf("Searching for page 18223104\n");
+		//printf("Searching for page 18223104\n");
 		struct mem_page_t* start = swap_mem->occupied_list_head;
+		/*
 		if(swap_mem->occupied_list_tail->fpos.__pos == page->fpos.__pos){
 			printf("18223104 page is found\n");
 		}
 		else{
 			printf("Haga be \n");
 		}
+		 
 		while(start){
-				printf("%d\n",start->fpos.__pos);
+				//printf("%d\n",start->fpos.__pos);
 				if(start->fpos.__pos == swap_mem->occupied_list_tail->fpos.__pos){
 					printf("sahi chal raha hain reaches tail\n");
 				}
@@ -1286,6 +1291,7 @@ void add_occupied_page(struct mem_page_t* page){
 				}
 			start = start->newNext;
 		}
+		*/ 
 	}
 }
 
@@ -1297,6 +1303,8 @@ void swap_initialize(){
     swap_mem->free_list_tail=NULL;
     swap_mem->occupied_list_head =NULL;
     swap_mem->occupied_list_tail =NULL;
+    swap_fd = fopen("Sim_disk","w");
+    fclose(swap_fd);
     swap_fd = open_swap_disk();   
 	fseek(swap_fd ,0, SEEK_SET);
     int no_of_pages =0;
