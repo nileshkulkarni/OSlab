@@ -718,7 +718,7 @@ struct mem_page_t *mem_page_get_next(struct mem_t *mem, uint32_t addr)
 
     printf("Page fault: getting a page nearest to the required to page\n");
 
-	struct mem_page_t* page_from_swap_space = swap_mem_page_get(mem, addr);
+    page_from_swap_space = swap_mem_page_get(mem, addr);
 	assert(page_from_swap_space);	
 	 //data = (unsigned char*)mem_get_buffer(mem , addr , MEM_PAGESIZE, mem_access_read);
     data = read_swap_page(page_from_swap_space); 
