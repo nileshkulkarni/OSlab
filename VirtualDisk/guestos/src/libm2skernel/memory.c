@@ -573,7 +573,7 @@ struct mem_page_t*  ram_get_new_page(struct mem_t * mem){
     
     assert(mem->pages_in_ram);
     int rand_page = rand() % mem->pages_in_ram;
-    rand_page = 2; 
+    //rand_page = 2; 
     //printf("******************************************Swapping out page \n");
                  
     for(j=0;j<MEM_PAGE_COUNT;j++){
@@ -591,6 +591,7 @@ struct mem_page_t*  ram_get_new_page(struct mem_t * mem){
                 }
                 //!TODO update dirty bit of the new page and write-back the old page if(dirty bit)
                 //!TODO update the list heads.
+                //printf("******************************************Swapping out page \n");
                 if(iter->dirty){
 					//uint32_t write_back_page_addr = ((j<<MEM_LOGPAGESIZE)+iter->tag)<<MEM_PAGESIZE);
                     uint32_t write_back_page_addr = iter->tag;
@@ -630,12 +631,10 @@ void* read_swap_page(struct mem_page_t * page){
     if(!buf)
 		fatal("failed to allocated memory \n");
 	
-    printf("Page fpos is %u \n", page->fpos.__pos);
-     if(page->fpos.__pos == 	266240){
-		printf("before fseek\n");
-	}
+    //printf("Page fpos is %u \n", page->fpos.__pos);
+   
     fseek(swap_fd,page->fpos.__pos,SEEK_SET);
-    printf("after fseek \n");
+    //printf("after fseek \n");
 	fread (buf,MEM_PAGESIZE,1,swap_fd);
    
     fclose(swap_fd);
@@ -1365,21 +1364,33 @@ void mem_copy(struct mem_t *mem, uint32_t dest, uint32_t src, int size)
 	while (size > 0) {
 		
 		/* Get source and destination pages */
-		page_dest = mem_page_get(mem, dest);
 		page_src = mem_page_get(mem, src); 
-		assert(page_src && page_dest);
+		assert(page_src);
+		assert((page_src->free_flag == 0));
+		void *buf= NULL;
+		if(page_src->data){
+			// copy data to a temporary buffer;
+			buf = malloc(MEM_PAGESIZE);
+		}
+		memcpy(buf, page_src->data, MEM_PAGESIZE);
+		
+		page_dest = mem_page_get(mem, dest);
+		
+		assert(page_dest);
 		///TODO ... Check for a condition here, there's a chance that page_dest gets removed
-		assert((page_src->free_flag == 0) && (page_dest->free_flag == 0)); 
+		assert((page_dest->free_flag == 0)); 
 		/* Different actions depending on whether source and
 		 * destination page data are allocated. */
 		
 		printf("Inside MemCopy! if there are any errors, blame @sanchit-garg");
         
 		
-        if (page_src->data) {
+        if (buf) {
+			
 			if (!page_dest->data)
 				page_dest->data = malloc(MEM_PAGESIZE);
-			memcpy(page_dest->data, page_src->data, MEM_PAGESIZE);
+			memcpy(page_dest->data, buf, MEM_PAGESIZE);
+			free(buf);
 		} 
 		else {
 			if (page_dest->data)
