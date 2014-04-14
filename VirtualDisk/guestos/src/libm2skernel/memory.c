@@ -580,7 +580,7 @@ struct mem_page_t*  ram_get_new_page(struct mem_t * mem){
     
     assert(mem->pages_in_ram);
     int rand_page = rand() % mem->pages_in_ram;
-    rand_page = 7; 
+   // rand_page = 7; 
     //printf("******************************************Swapping out page \n");
                  
     for(j=0;j<MEM_PAGE_COUNT;j++){
@@ -1201,7 +1201,7 @@ void swap_mem_access(struct mem_t *mem, uint32_t addr, int size, void *buf,
 }
 
 
-void addInterruptForProcess(struct mem_t* mem){
+void addInterruptForProcess(struct mem_t* mem,int faults){
 	if(mem->current_inst_faults){
 		struct interrupt_t *newInterrupt = malloc(sizeof(struct interrupt_t));
 		// replace with appropriate function for the proiorty queue 
@@ -1215,11 +1215,11 @@ void addInterruptForProcess(struct mem_t* mem){
 		// insterting an interrupt for the process to recover
 		insertInterrupt(newInterrupt);
 	}
+	return;
 }
 /* Access mem at address 'addr'.
  * This access can cross page boundaries. */
-void mem_access(struct mem_t *mem, uint32_t addr, int size, void *buf,
-	enum mem_access_enum access)
+void mem_access(struct mem_t *mem, uint32_t addr, int size, void *buf,enum mem_access_enum access)
 {
 	uint32_t offset;
 	int chunksize;
@@ -1234,10 +1234,13 @@ void mem_access(struct mem_t *mem, uint32_t addr, int size, void *buf,
 		buf += chunksize;
 		addr += chunksize;
 	}
-	
-	addInterruptForProcess(mem);
-	mem->current_inst_faults=0;
+	if(!size){
+		printf("mem current inst faults %d", mem->current_inst_faults);
+	}
 	//do page fault handling here
+	addInterruptForProcess(mem,mem->current_inst_faults);
+	mem->current_inst_faults=0;
+	
 }
 
 
