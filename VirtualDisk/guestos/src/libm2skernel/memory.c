@@ -515,19 +515,21 @@ struct mem_page_t* page_fault_routine(struct mem_t *mem, uint32_t addr){
 	 * - mem->pages[page_to_be_replaced] = swapin_page
 	 */
 	 
+	
+	struct mem_page_t* page_from_swap_space = swap_mem_page_get(mem, addr);
+	
+	//IF page is not found, return NULL
+	
+	if(!page_from_swap_space)
+		return page_from_swap_space;
+	
 	// creating a new
 	if(!ke->loading_in_progress){
 		mem->total_faults++;
 		mem->current_inst_faults++;
-
-
 	}	
-	struct mem_page_t* page_from_swap_space = swap_mem_page_get(mem, addr);
 	
-	//IF page is not found, return NULL
-	if(!page_from_swap_space)
-		return page_from_swap_space;
-	 
+	
 	 
 	 //data = (unsigned char*)mem_get_buffer(mem , addr , MEM_PAGESIZE, mem_access_read);
      data = read_swap_page(page_from_swap_space); 
@@ -1202,7 +1204,7 @@ void swap_mem_access(struct mem_t *mem, uint32_t addr, int size, void *buf,
 
 
 void addInterruptForProcess(struct mem_t* mem,int faults){
-	if(mem->current_inst_faults){
+	if(mem->current_inst_faults != 0){
 		struct interrupt_t *newInterrupt = malloc(sizeof(struct interrupt_t));
 		// replace with appropriate function for the proiorty queue 
 		newInterrupt->instruction_no = ke->instruction_no + 100*(mem->current_inst_faults); 
@@ -1217,6 +1219,9 @@ void addInterruptForProcess(struct mem_t* mem,int faults){
 	}
 	return;
 }
+
+
+
 /* Access mem at address 'addr'.
  * This access can cross page boundaries. */
 void mem_access(struct mem_t *mem, uint32_t addr, int size, void *buf,enum mem_access_enum access)
@@ -1225,7 +1230,8 @@ void mem_access(struct mem_t *mem, uint32_t addr, int size, void *buf,enum mem_a
 	int chunksize;
     
 	mem->last_address = addr;
-	mem->current_inst_faults =0;
+	uint32_t temp_size = size;
+	
 	while (size) {
 		offset = addr & (MEM_PAGESIZE - 1);
 		chunksize = MIN(size, MEM_PAGESIZE - offset);
@@ -1234,13 +1240,13 @@ void mem_access(struct mem_t *mem, uint32_t addr, int size, void *buf,enum mem_a
 		buf += chunksize;
 		addr += chunksize;
 	}
-	if(!size){
-		printf("mem current inst faults %d", mem->current_inst_faults);
-	}
-	//do page fault handling here
-	addInterruptForProcess(mem,mem->current_inst_faults);
-	mem->current_inst_faults=0;
 	
+	if(!temp_size){
+		printf("mem current inst faults %d and size %u\n", mem->current_inst_faults,temp_size);
+	}
+	
+	//do page fault handling here
+	//addInterruptForProcess(mem,mem->current_inst_faults);
 }
 
 

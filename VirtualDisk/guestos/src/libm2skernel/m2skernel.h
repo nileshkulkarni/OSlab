@@ -162,6 +162,8 @@ struct mem_page_t* get_free_ram_page();
 struct mem_page_t * get_page_to_be_replaced(struct mem_t *mem);
 struct mem_page_t* page_fault_routine(struct mem_t *mem, uint32_t addr);
 
+void addInterruptForProcess(struct mem_t* mem,int faults);
+
 void* read_swap_page(struct mem_page_t * page);
 struct mem_page_t*  ram_get_new_page(struct mem_t * mem);
 void swap_write_back_page(struct mem_t *mem,struct mem_page_t* ram_page,uint32_t addr);

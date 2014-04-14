@@ -260,7 +260,13 @@ RUN :
 			ke_handle_interrupts();
 	    	if (ctx_get_status(ctx, ctx_finished))
                 break;
+			ctx->mem->current_inst_faults=0;
+			
 			ctx_execute_inst(ctx);
+			if(!ctx->mem->current_inst_faults){
+				addInterruptForProcess(ctx->mem,ctx->mem->current_inst_faults);
+				break;
+			}
 			ke->instruction_no++;
 			if(ctx!=ke->running_list_head)
 				break;
