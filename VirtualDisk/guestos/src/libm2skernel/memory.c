@@ -1090,13 +1090,12 @@ void swap_mem_access_page_boundary(struct mem_t *mem, uint32_t addr,int size, vo
 	/* Write/initialize access */
 	if (access == mem_access_write || access == mem_access_init) {
 		
-		
 		struct mem_page_t* page_ram = mem_page_get(mem,addr);
 		memcpy(page_ram->data+offset, buf, size);
 		page_ram->dirty =1;
 		swap_write_back_page(mem,page_ram, addr);
 		page_ram->dirty = 0;
-		
+	
 		/*
 		 * //comparing the contents of temp_buf && data)
 		int i =0;
@@ -1106,12 +1105,16 @@ void swap_mem_access_page_boundary(struct mem_t *mem, uint32_t addr,int size, vo
 			
  		}
  		 */
-		*/
+		
 		/*
 		memcpy(temp_buf+offset, buf,size);
 		*/
-		void * temp_buf = read_swap_page(page) ;
+		struct *temp_page = swap_mem_page_get(mem, addr);
+		
+		void * temp_buf = read_swap_page(temp_page);
+		
 		memcpy(temp_buf+offset, buf,size);
+		
 		struct mem_page_t *temp_ram_page = malloc(sizeof(struct mem_page_t));
 		temp_ram_page->data = temp_buf;
 		swap_write_back_page(mem,temp_ram_page,addr);
