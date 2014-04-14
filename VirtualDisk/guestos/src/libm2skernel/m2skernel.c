@@ -153,12 +153,14 @@ void deleteInterrupt(interrupt_t* del_ptr){
         printf("No interrupt present\n");
         return;
     }
+    int flag =0;
     interrupt_t* temp = ke->interrupt_list_head;
     //printf("there%d\n", temp->interrupt_next->instruction_no);
     if(temp == del_ptr){
         ke->interrupt_list_head = temp->interrupt_next;
         return;
     }
+    
     while(temp->interrupt_next){
        // printf("loop%d\n",temp->instruction_no );
         if(temp->interrupt_next == del_ptr){
@@ -166,17 +168,18 @@ void deleteInterrupt(interrupt_t* del_ptr){
             if(del_ptr == ke->interrupt_list_tail){
                 ke->interrupt_list_tail = temp;
                 printf("here%d\n", ke->interrupt_list_head->instruction_no);
-                break;
             }
-            
+            free(del_ptr);
+			break;
         }
         temp = temp->interrupt_next;
     }
+   
     return;
 
 }
 
-
+// returns the next lowest interrupt in the list
 interrupt_t* getNextInterrupt(){
     
     interrupt_t* start = ke->interrupt_list_head;
@@ -218,7 +221,8 @@ int ke_handle_interrupts(void){
 		//***************DEBUG IF YOU CAN************************
 		printf("Handling interrupt. Instruction_no: %d, " , ke->instruction_no);
 		printf("Process_Id : %d, Interrupt_type: ",(next_interrupt->context)->pid);
-		printf(next_interrupt->type==INPUT?"INPUT \n":"OUTPUT \n");
+	//	printf(next_interrupt->type==INPUT?"INPUT \n":"OUTPUT \n");
+		printf("%d \n",next_interrupt->type);
 		ke_list_insert_tail(ke_list_running , next_interrupt->context);
 		ke_list_remove(ke_list_suspended , next_interrupt->context);
 		deleteInterrupt(next_interrupt);

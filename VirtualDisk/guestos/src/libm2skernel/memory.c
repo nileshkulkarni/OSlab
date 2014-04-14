@@ -244,8 +244,6 @@ uint32_t mem_map_space_down(struct mem_t *mem, uint32_t addr, int size)
 
 
 
-/* Access memory without exceeding page boundaries. */
-
 /* Access mem at address 'addr'.
  * This access can cross page boundaries. */
 
@@ -490,7 +488,7 @@ void swap_free(fpos_t fpos){
 
 struct mem_page_t* page_fault_routine(struct mem_t *mem, uint32_t addr){
 
-	//printf("INSIDE PAGE FAULT ROUTINE %u \n",addr);
+	printf("INSIDE PAGE FAULT ROUTINE %u \n",addr);
 	uint32_t index, tag;
 	struct mem_page_t *page, *prev;
 
@@ -516,10 +514,27 @@ struct mem_page_t* page_fault_routine(struct mem_t *mem, uint32_t addr){
 	 * - mem->pages[page_to_be_replaced] = swapin_page
 	 */
 	 
-	 struct mem_page_t* page_from_swap_space = swap_mem_page_get(mem, addr);
-	 
-	 //IF page is not found, return NULL
-	 if(!page_from_swap_space)
+	// creating a new
+/*
+	struct interrupt_t *newInterrupt = malloc(sizeof(struct interrupt_t));
+
+	
+	// replace with appropriate function for the proiorty queue 
+	
+	newInterrupt->instruction_no = ke->instruction_no + 100; 
+	newInterrupt->context = mem->context;
+	printf("PID is %d , adding a interrupt for pagefault routine\n" , mem->context->pid);
+	newInterrupt->type = PAGE_FAULT;
+	// removing process from the running list and putting it to suspended list
+	ke_list_remove(ke_list_running,mem->context);
+	ke_list_insert_tail(ke_list_suspended,mem->context);
+	// insterting an interrupt for the process to recover
+	insertInterrupt(newInterrupt);
+*/
+	struct mem_page_t* page_from_swap_space = swap_mem_page_get(mem, addr);
+	
+	//IF page is not found, return NULL
+	if(!page_from_swap_space)
 		return page_from_swap_space;
 	 
 	 
@@ -613,7 +628,7 @@ struct mem_page_t*  ram_get_new_page(struct mem_t * mem){
 
 
 
-void swap_write_back_page(struct mem_t *mem,struct mem_page_t* ram_page,uint32_t addr ){
+void swap_write_back_page(struct mem_t *mem, struct mem_page_t* ram_page,uint32_t addr ){
     
    struct  mem_page_t * swap_page = swap_mem_page_get(mem,addr); 
     // Write to swap disk   
@@ -624,6 +639,18 @@ void swap_write_back_page(struct mem_t *mem,struct mem_page_t* ram_page,uint32_t
     //printf("page written to swap \n");
 }
 
+
+void swap_write_bytes(struct mem_t *mem, uint32_t addr,uint32_t size,void *buf ){
+    
+   struct  mem_page_t * swap_page = swap_mem_page_get(mem,addr); 
+    // Write to swap disk   
+    int offset =  addr & (MEM_PAGESIZE - 1); 
+    swap_fd = open_swap_disk();
+    fseek(swap_fd, swap_page->fpos.__pos + offset, SEEK_CUR);
+    fwrite(buf,size,1,swap_fd);
+    fclose(swap_fd);
+    //printf("page written to swap \n");
+}
 
 void* read_swap_page(struct mem_page_t * page){
     assert(page);
@@ -1020,6 +1047,82 @@ void *swap_mem_get_buffer(struct mem_t *mem, uint32_t addr, int size, enum mem_a
 
 
 
+/* Initial Access to swap memory without exceeding page boundaries. This doesnt go through ram 
+ * Yet to be completed TODO
+ * */
+void swap_mem_access_page_boundary(struct mem_t *mem, uint32_t addr,int size, void *buf, enum mem_access_enum access)
+{	
+    int static first_access =0;
+	struct mem_page_t *page;
+	uint32_t offset;
+
+	/* Find memory page and compute offset. */
+	page = swap_mem_page_get(mem, addr);
+	offset = addr & (MEM_PAGESIZE - 1);
+	assert(offset + size <= MEM_PAGESIZE);
+
+	/* On nonexistent page, raise segmentation fault in safe mode,
+	 * or create page with full privileges for writes in unsafe mode. */
+	if (!page) {
+		fatal("Page not found on swap space, something wrong with mem_map\n");
+	}
+	assert(page);
+
+	/* If it is a write access, set the 'modified' flag in the page
+	 * attributes (perm). This is not done for 'initialize' access. */
+    //printf("Swap mem page access %u \n", page->fpos);
+	if (access == mem_access_write)
+		page->perm |= mem_access_modif;
+
+	/* Check permissions in safe mode */
+	if (mem->safe && (page->perm & access) != access){
+		//fatal("mem_access: permission denied at 0x%x", addr);
+            raise(SIGSEGV);
+        }
+
+	/* Read/execute access */
+	if (access == mem_access_read || access == mem_access_exec) {
+		void * temp_buf;
+		temp_buf = read_swap_page(page);
+		memcpy(buf,temp_buf+offset,size);
+		free(temp_buf);
+	}
+	/* Write/initialize access */
+	if (access == mem_access_write || access == mem_access_init) {
+		void * temp_buf = read_swap_page(page) ;
+		memcpy(temp_buf+offset, buf,size);
+		/*
+		struct mem_page_t* page_ram = mem_page_get(mem,addr);
+		memcpy(page_ram->data+offset, buf, size);
+		page_ram->dirty =1;
+		//comparing the contents of temp_buf && data)
+		int i =0;
+		for(;i<MEM_PAGESIZE;i++){
+			if(*((char *)temp_buf + i) != *((char*)page_ram->data + i))
+				fatal("Contents should match, \n");
+			
+ 		}
+ 		 
+		//swap_write_back_page(mem,page_ram, addr);
+		page_ram->dirty = 0;
+		*/
+		/*
+		memcpy(temp_buf+offset, buf,size);
+		*/
+		struct mem_page_t *temp_ram_page = malloc(sizeof(struct mem_page_t));
+		temp_ram_page->data = temp_buf;
+		swap_write_back_page(mem,temp_ram_page,addr);
+		free(temp_buf);
+		free(temp_ram_page);
+		
+		return;
+		
+	}
+
+	/* Shouldn't get here. */
+	abort();
+}
+
 
 /* Access memory without exceeding page boundaries. */
 void mem_access_page_boundary(struct mem_t *mem, uint32_t addr,int size, void *buf, enum mem_access_enum access)
@@ -1038,9 +1141,8 @@ void mem_access_page_boundary(struct mem_t *mem, uint32_t addr,int size, void *b
 	if (!page) {
 		if (mem->safe){
 		    int * x;
-            *x =2;
             fatal("Swap::illegal access at 0x%x: page not allocated",addr);
-            
+				
         }
 		if (access == mem_access_read || access == mem_access_exec) {
 			memset(buf, 0, size);
@@ -1093,6 +1195,25 @@ void mem_access_page_boundary(struct mem_t *mem, uint32_t addr,int size, void *b
 	abort();
 }
 
+/* Access mem at address 'addr', this directly accesses pages on the swap space to load the program into
+so that it doesnot result in any page fault's */
+void swap_mem_access(struct mem_t *mem, uint32_t addr, int size, void *buf,
+	enum mem_access_enum access)
+{
+	uint32_t offset;
+	int chunksize;
+    
+	mem->last_address = addr;
+
+	while (size) {
+		offset = addr & (MEM_PAGESIZE - 1);
+		chunksize = MIN(size, MEM_PAGESIZE - offset);
+		swap_mem_access_page_boundary(mem, addr, chunksize, buf, access);
+		size -= chunksize;
+		buf += chunksize;
+		addr += chunksize;
+	}
+}
 
 
 
@@ -1187,10 +1308,6 @@ void mem_map(struct mem_t *mem, uint32_t addr, int size,
     }
 }
 
-
-
-
-
 /* Deallocate memory pages. The addr and size parameters must be both
  * multiple of the page size.
  * If some page was not allocated, the corresponding address range is skipped.
@@ -1210,7 +1327,6 @@ void mem_unmap(struct mem_t *mem, uint32_t addr, int size)
 	for (tag = tag1; tag <= tag2; tag += MEM_PAGESIZE)
 		mem_page_free(mem, tag);
 }
-
 
 void mem_write_string(struct mem_t *mem, uint32_t addr, char *str)
 {

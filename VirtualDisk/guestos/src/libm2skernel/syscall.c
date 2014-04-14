@@ -890,19 +890,6 @@ int handle_guest_syscalls() {
 		
 		printf("Instruction no %d , type \n",ke->instruction_no,newInterrupt->type);
 		
-/*		
-		if(ke->interrupt_list_head!=NULL){	
-			tempTail = ke->interrupt_list_tail;
-			ke->interrupt_list_tail = newInterrupt;
-			tempTail->interrupt_next = newInterrupt;
-		}
-		else{
-			ke->interrupt_list_head = newInterrupt;
-			ke->interrupt_list_tail = newInterrupt;
-			newInterrupt->interrupt_next =NULL;
-			
-		}
-*/ 
 		
 		int blockSize = 512;
 		
@@ -948,21 +935,12 @@ int handle_guest_syscalls() {
 			mem_read(isa_mem,(void*)address,bytes,buf);
 			//printf("Read number from address %d ",*((int*)buf));		
 			
-			FILE *fp = fopen("Sim_disk","w+"); 
+			FILE *fp = fopen("Sim_disk","rb+"); 
 			fseek(fp,(BBn*blockSize + offset), SEEK_SET);
 			fwrite((void*)buf,bytes,1,fp); 
 			
 			fclose(fp); 
-		/*	
-			void* buf1 = malloc(bytes); 
-			FILE *fp1 = fopen("Sim_disk","r"); 
-			fseek(fp1,(BBn*blockSize + offset), SEEK_SET);
-			fread(buf1,bytes,1,fp1); 
-			printf("read %d  \n",*((int*)buf1));
-			fclose(fp1); 
 		
-			printf("Finished read\n");
-		*/	
 		}
 		else{
 			
@@ -980,15 +958,6 @@ int handle_guest_syscalls() {
 			
 			mem_write(isa_mem,(void*)address,bytes,buf);
 			fclose(fp); 
-		/*	
-			void* buf1 = malloc(bytes); 
-			FILE *fp1 = fopen("Sim_disk","r"); 
-			fseek(fp1,(BBn*blockSize + offset), SEEK_SET);
-			fread(buf1,bytes,1,fp1); 
-			printf("read %d  \n",*((int*)buf1));
-			fclose(fp1); 
-			printf("Finished read\n");
-		*/	
 		}	 	 
 		
 		break;	

@@ -163,7 +163,10 @@ struct mem_page_t* page_fault_routine(struct mem_t *mem, uint32_t addr);
 void* read_swap_page(struct mem_page_t * page);
 struct mem_page_t*  ram_get_new_page(struct mem_t * mem);
 void swap_write_back_page(struct mem_t *mem,struct mem_page_t* ram_page,uint32_t addr);
-void add_occupied_page(struct mem_page_t* page);
+void swap_write_bytes(struct mem_t *mem,uint32_t addr,uint32_t size,void *buf );
+void swap_mem_access_page_boundary(struct mem_t *mem, uint32_t addr,int size, void *buf, enum mem_access_enum access);
+void swap_mem_access(struct mem_t *mem, uint32_t addr, int size, void *buf,enum mem_access_enum access);
+	void add_occupied_page(struct mem_page_t* page);
 
 
 struct mem_page_t *mem_page_get(struct mem_t *mem, uint32_t addr);
@@ -676,7 +679,7 @@ extern int NUM_TRACKS;
 
 /* Interrrupt */
 
-typedef enum {INPUT , OUTPUT} interrupt_type;
+typedef enum {INPUT , OUTPUT, PAGE_FAULT} interrupt_type;
 
 
 typedef struct interrupt_t {
