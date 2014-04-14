@@ -263,8 +263,10 @@ RUN :
 			ctx->mem->current_inst_faults=0;
 			
 			ctx_execute_inst(ctx);
-			if(!ctx->mem->current_inst_faults){
+			if(ctx->mem->current_inst_faults){
+				//printf("Here in adding interrupts\n");
 				addInterruptForProcess(ctx->mem,ctx->mem->current_inst_faults);
+				ctx->mem->current_inst_faults=0;
 				break;
 			}
 			ke->instruction_no++;

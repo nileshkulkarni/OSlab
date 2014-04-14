@@ -1204,7 +1204,9 @@ void swap_mem_access(struct mem_t *mem, uint32_t addr, int size, void *buf,
 
 
 void addInterruptForProcess(struct mem_t* mem,int faults){
-	if(mem->current_inst_faults != 0){
+	printf("Faults is %d\n", faults);
+	if(mem->current_inst_faults){
+		printf("Page fault interrupt inserted\n");
 		struct interrupt_t *newInterrupt = malloc(sizeof(struct interrupt_t));
 		// replace with appropriate function for the proiorty queue 
 		newInterrupt->instruction_no = ke->instruction_no + 100*(mem->current_inst_faults); 
