@@ -580,7 +580,7 @@ struct mem_page_t*  ram_get_new_page(struct mem_t * mem){
     
     assert(mem->pages_in_ram);
     int rand_page = rand() % mem->pages_in_ram;
-    //rand_page = 2; 
+    rand_page = 7; 
     //printf("******************************************Swapping out page \n");
                  
     for(j=0;j<MEM_PAGE_COUNT;j++){
@@ -1205,7 +1205,7 @@ void addInterruptForProcess(struct mem_t* mem){
 	if(mem->current_inst_faults){
 		struct interrupt_t *newInterrupt = malloc(sizeof(struct interrupt_t));
 		// replace with appropriate function for the proiorty queue 
-		newInterrupt->instruction_no = ke->instruction_no + 100; 
+		newInterrupt->instruction_no = ke->instruction_no + 100*(mem->current_inst_faults); 
 		newInterrupt->context = mem->context;
 		printf("PID is %d , adding a interrupt for pagefault routine\n" , mem->context->pid);
 		newInterrupt->type = PAGE_FAULT;
@@ -1234,7 +1234,9 @@ void mem_access(struct mem_t *mem, uint32_t addr, int size, void *buf,
 		buf += chunksize;
 		addr += chunksize;
 	}
+	
 	addInterruptForProcess(mem);
+	mem->current_inst_faults=0;
 	//do page fault handling here
 }
 
