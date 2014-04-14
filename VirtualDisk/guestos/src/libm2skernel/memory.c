@@ -487,11 +487,12 @@ void swap_free(fpos_t fpos){
 
 
 struct mem_page_t* page_fault_routine(struct mem_t *mem, uint32_t addr){
-
-	printf("INSIDE PAGE FAULT ROUTINE %u \n",addr);
+	if(!ke->loading_in_progress){
+		//printf("INSIDE PAGE FAULT ROUTINE %u \n",addr);
+	}
 	uint32_t index, tag;
 	struct mem_page_t *page, *prev;
-
+	
 	tag = addr & ~(MEM_PAGESIZE - 1);
 	index = (addr >> MEM_LOGPAGESIZE) % MEM_PAGE_COUNT;	
 	page = mem->ram_pages[index];
@@ -515,22 +516,12 @@ struct mem_page_t* page_fault_routine(struct mem_t *mem, uint32_t addr){
 	 */
 	 
 	// creating a new
-/*
-	struct interrupt_t *newInterrupt = malloc(sizeof(struct interrupt_t));
+	if(!ke->loading_in_progress){
+		mem->total_faults++;
+		mem->current_inst_faults++;
 
-	
-	// replace with appropriate function for the proiorty queue 
-	
-	newInterrupt->instruction_no = ke->instruction_no + 100; 
-	newInterrupt->context = mem->context;
-	printf("PID is %d , adding a interrupt for pagefault routine\n" , mem->context->pid);
-	newInterrupt->type = PAGE_FAULT;
-	// removing process from the running list and putting it to suspended list
-	ke_list_remove(ke_list_running,mem->context);
-	ke_list_insert_tail(ke_list_suspended,mem->context);
-	// insterting an interrupt for the process to recover
-	insertInterrupt(newInterrupt);
-*/
+
+	}	
 	struct mem_page_t* page_from_swap_space = swap_mem_page_get(mem, addr);
 	
 	//IF page is not found, return NULL
@@ -1089,27 +1080,15 @@ void swap_mem_access_page_boundary(struct mem_t *mem, uint32_t addr,int size, vo
 	}
 	/* Write/initialize access */
 	if (access == mem_access_write || access == mem_access_init) {
-		
+		/*
 		struct mem_page_t* page_ram = mem_page_get(mem,addr);
 		memcpy(page_ram->data+offset, buf, size);
 		page_ram->dirty =1;
 		swap_write_back_page(mem,page_ram, addr);
 		page_ram->dirty = 0;
-	
-		/*
-		 * //comparing the contents of temp_buf && data)
-		int i =0;
-		for(;i<MEM_PAGESIZE;i++){
-			if(*((char *)temp_buf + i) != *((char*)page_ram->data + i))
-				fatal("Contents should match, \n");
-			
- 		}
- 		 */
 		
-		/*
-		memcpy(temp_buf+offset, buf,size);
-		*/
-		struct *temp_page = swap_mem_page_get(mem, addr);
+		
+		struct mem_page_t *temp_page = swap_mem_page_get(mem, addr);
 		
 		void * temp_buf = read_swap_page(temp_page);
 		
@@ -1120,7 +1099,7 @@ void swap_mem_access_page_boundary(struct mem_t *mem, uint32_t addr,int size, vo
 		swap_write_back_page(mem,temp_ram_page,addr);
 		free(temp_buf);
 		free(temp_ram_page);
-		
+		*/
 		return;
 		
 	}
@@ -1222,7 +1201,21 @@ void swap_mem_access(struct mem_t *mem, uint32_t addr, int size, void *buf,
 }
 
 
-
+void addInterruptForProcess(struct mem_t* mem){
+	if(mem->current_inst_faults){
+		struct interrupt_t *newInterrupt = malloc(sizeof(struct interrupt_t));
+		// replace with appropriate function for the proiorty queue 
+		newInterrupt->instruction_no = ke->instruction_no + 100; 
+		newInterrupt->context = mem->context;
+		printf("PID is %d , adding a interrupt for pagefault routine\n" , mem->context->pid);
+		newInterrupt->type = PAGE_FAULT;
+		// removing process from the running list and putting it to suspended list
+		ke_list_remove(ke_list_running,mem->context);
+		ke_list_insert_tail(ke_list_suspended,mem->context);
+		// insterting an interrupt for the process to recover
+		insertInterrupt(newInterrupt);
+	}
+}
 /* Access mem at address 'addr'.
  * This access can cross page boundaries. */
 void mem_access(struct mem_t *mem, uint32_t addr, int size, void *buf,
@@ -1232,7 +1225,7 @@ void mem_access(struct mem_t *mem, uint32_t addr, int size, void *buf,
 	int chunksize;
     
 	mem->last_address = addr;
-
+	mem->current_inst_faults =0;
 	while (size) {
 		offset = addr & (MEM_PAGESIZE - 1);
 		chunksize = MIN(size, MEM_PAGESIZE - offset);
@@ -1241,6 +1234,8 @@ void mem_access(struct mem_t *mem, uint32_t addr, int size, void *buf,
 		buf += chunksize;
 		addr += chunksize;
 	}
+	addInterruptForProcess(mem);
+	//do page fault handling here
 }
 
 

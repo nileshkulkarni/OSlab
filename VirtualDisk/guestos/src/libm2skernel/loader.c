@@ -190,7 +190,7 @@ void ld_load_sections(struct ctx_t *ctx, struct elf_file_t *elf)
 			ld->brk = MAX(ld->brk, addr + size);
 			ld->bottom = MIN(ld->bottom, addr);
 			buf = elf_section_read(elf, i);
-			swap_mem_access(mem, addr, size, buf, mem_access_init);
+			mem_access(mem, addr, size, buf, mem_access_init);
             //printf("going for swap_mem_access: ld_load_section \n");
 			elf_free_buffer(buf);
 		}
@@ -470,6 +470,7 @@ void ld_load_exe(struct ctx_t *ctx, char *exe)
 
 void ld_load_prog_from_ctxconfig(char *ctxconfig)
 {
+	ke->loading_in_progress = 1;
 	struct config_t *config;
 	struct ctx_t *ctx;
 	struct loader_t *ld;
@@ -529,7 +530,10 @@ void ld_load_prog_from_ctxconfig(char *ctxconfig)
 		ld->stdout_file = strdup(out);
 
 		/* Load executable */
+		ke->loading_in_progress = 1;
 		ld_load_exe(ctx, exe);
+		ke->loading_in_progress =0;
+		
 	}
 	config_free(config);
 ///	printf("\n exitng from ld_load _prog\n");

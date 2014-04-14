@@ -117,6 +117,8 @@ struct mem_t {
     struct ctx_t * context;
     int max_pages_in_ram;
     int pages_in_ram;
+    int total_faults;
+    int current_inst_faults;
 };
 
 
@@ -715,7 +717,7 @@ struct kernel_t {
 	
 	/* Flag set when any context changes any status other than 'specmode' */
 	int context_reschedule;
-
+	int loading_in_progress;
 	long long instruction_no;
 	int current_track;
 
