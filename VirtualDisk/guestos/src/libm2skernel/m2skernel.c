@@ -139,9 +139,9 @@ void ke_done(void)
 }
 
 void insertInterrupt(interrupt_t* intpt){
-	printf("Interrupt inserted, process no longer in ctx_running\n");
+	//printf("Interrupt inserted, process no longer in ctx_running\n");
     if(ke->interrupt_list_head == NULL){
-        printf("Adding interrupt, listr head null\n");
+        //printf("Adding interrupt, listr head null\n");
         ke->interrupt_list_head = intpt;
         ke->interrupt_list_tail = intpt;
     }
@@ -152,7 +152,7 @@ void insertInterrupt(interrupt_t* intpt){
 
 void deleteInterrupt(interrupt_t* del_ptr){
     if(!ke->interrupt_list_head){
-        printf("No interrupt present\n");
+        //printf("No interrupt present\n");
         return;
     }
     int flag =0;
@@ -172,7 +172,7 @@ void deleteInterrupt(interrupt_t* del_ptr){
             temp->interrupt_next = del_ptr->interrupt_next;
             if(del_ptr == ke->interrupt_list_tail){
                 ke->interrupt_list_tail = temp;
-                printf("here%d\n", ke->interrupt_list_head->instruction_no);
+                //printf("here%d\n", ke->interrupt_list_head->instruction_no);
             }
             free(del_ptr);
 			break;
@@ -224,18 +224,15 @@ int ke_handle_interrupts(void){
 		
 		//printf("Handling interrupt. Instruction_no: %d, Process_id: %d \n" , ke->instruction_no , (next_interrupt->context)->pid);
 		//***************DEBUG IF YOU CAN************************
-		printf("Handling interrupt. Instruction_no: %d, " , ke->instruction_no);
+	//	printf("Handling interrupt. Instruction_no: %d, " , ke->instruction_no);
 		
 	//	printf(next_interrupt->type==INPUT?"INPUT \n":"OUTPUT \n");
-		printf("%d \n",next_interrupt->type);
+		//printf("%d \n",next_interrupt->type);
 		ke_list_insert_tail(ke_list_running , next_interrupt->context);
-		printf("Process_Id : %d, back to running\n",(next_interrupt->context)->pid);
+		//printf("Process_Id : %d, back to running\n",(next_interrupt->context)->pid);
 		ke_list_remove(ke_list_suspended , next_interrupt->context);
-		printf("Process Id: %d Removed from suspended\n",(next_interrupt->context)->pid);
+		//printf("Process Id: %d Removed from suspended\n",(next_interrupt->context)->pid);
 		deleteInterrupt(next_interrupt);
-		if(ke->instruction_no == 62941){
-			printf("for the break point\n");
-		}
 		next_interrupt = getNextInterrupt();
 		assert(next_interrupt == NULL || next_interrupt->instruction_no >= ke->instruction_no);
 	}	
@@ -276,7 +273,7 @@ RUN :
 			ctx_execute_inst(ctx);
 			ke->instruction_no++;
 			if(ctx->mem->current_inst_faults){
-				printf("Here in adding interrupts\n");
+				//printf("Here in adding interrupts\n");
 				addInterruptForProcess(ctx->mem,ctx->mem->current_inst_faults);
 				ctx->mem->current_inst_faults=0;
 				return;
@@ -350,7 +347,7 @@ void ke_list_remove(enum ke_list_enum list, struct ctx_t *ctx)
 	assert(ke_list_member(list, ctx));
 	switch (list) {
 	case ke_list_context: LIST_REMOVE(context, ctx); break;
-	case ke_list_running: printf("Removing process from running\n");LIST_REMOVE(running, ctx); break;
+	case ke_list_running: LIST_REMOVE(running, ctx); break;
 	case ke_list_finished: LIST_REMOVE(finished, ctx); break;
 	case ke_list_zombie: LIST_REMOVE(zombie, ctx); break;
 	case ke_list_suspended: LIST_REMOVE(suspended, ctx); break;

@@ -1210,12 +1210,12 @@ void addInterruptForProcess(struct mem_t* mem,int faults){
 		return;
 	}
 	if(mem->current_inst_faults){
-		printf("Page fault interrupt inserted\n");
+		//printf("Page fault interrupt inserted\n");
 		struct interrupt_t *newInterrupt = malloc(sizeof(struct interrupt_t));
 		// replace with appropriate function for the proiorty queue 
 		newInterrupt->instruction_no = ke->instruction_no + 100*(mem->current_inst_faults); 
 		newInterrupt->context = mem->context;
-		printf("PID is %d , adding a interrupt for pagefault routine\n" , mem->context->pid);
+		//printf("PID is %d , adding a interrupt for pagefault routine\n" , mem->context->pid);
 		newInterrupt->type = PAGE_FAULT;
 		// removing process from the running list and putting it to suspended list
 		ke_list_remove(ke_list_running,mem->context);
