@@ -82,9 +82,9 @@ void swap_out_process(struct mem_t *mem){
        }
        assert(mem->ram_pages[j] == NULL);
     }
-    assert(pages_swapped_out);
+    assert(mem->pages_swapped_out);
     assert(mem->pages_in_ram == 0);    
-    mem->page_get(mem, mem->swapped_pages_addresses[mem->pages_swapped_out]); //Jugaad
+    mem_page_get(mem, mem->swapped_pages_addresses[mem->pages_swapped_out]); //Jugaad
     assert(mem->pages_in_ram == 1);    
 }  
 
