@@ -1204,7 +1204,11 @@ void swap_mem_access(struct mem_t *mem, uint32_t addr, int size, void *buf,
 
 
 void addInterruptForProcess(struct mem_t* mem,int faults){
-	printf("Faults is %d\n", faults);
+	//printf("Faults is %d\n", faults);
+	if(!ke_list_member(ke_list_running,mem->context)){
+		//assert(0);
+		return;
+	}
 	if(mem->current_inst_faults){
 		printf("Page fault interrupt inserted\n");
 		struct interrupt_t *newInterrupt = malloc(sizeof(struct interrupt_t));

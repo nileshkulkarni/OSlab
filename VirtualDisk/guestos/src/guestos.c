@@ -308,8 +308,11 @@ int main(int argc, char **argv) {
         /* Run an instruction from each running context */
         ke_run();
         sim_inst += ke->running_count;
-        if (!ke->context_list_head)
-            break;
+        if (!ke->context_list_head){
+			printf("Moving out of while loop ke_run\n");
+			break;
+		}
+            
 
         /* Stop conditions */
         sim_cycle++;

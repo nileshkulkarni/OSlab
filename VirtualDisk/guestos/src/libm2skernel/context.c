@@ -273,7 +273,9 @@ int ctx_get_status(struct ctx_t *ctx, enum ctx_status_enum status)
 static void ctx_update_status(struct ctx_t *ctx, enum ctx_status_enum status)
 {
 	enum ctx_status_enum status_diff;
-
+	
+	
+	printf("In ctx update status with ctx %d\n",ctx->pid);
 	/* Remove contexts from the following lists:
 	 *   running, suspended, zombie */
 	if (ke_list_member(ke_list_running, ctx))
@@ -331,12 +333,14 @@ static void ctx_update_status(struct ctx_t *ctx, enum ctx_status_enum status)
 
 void ctx_set_status(struct ctx_t *ctx, enum ctx_status_enum status)
 {
+	printf("Pain max here ctx_set_status \n");
 	ctx_update_status(ctx, ctx->status | status);
 }
 
 
 void ctx_clear_status(struct ctx_t *ctx, enum ctx_status_enum status)
 {
+	
 	ctx_update_status(ctx, ctx->status & ~status);
 }
 
