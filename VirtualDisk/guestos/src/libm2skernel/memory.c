@@ -58,33 +58,39 @@ void swap_out_process(struct mem_t *mem){
 	mem->pages_swapped_out = 0;
 	struct mem_page_t* iter;
 	struct mem_page_t* prev;
+	
 	for(j=0;j<MEM_PAGE_COUNT;j++){
-        iter = mem->ram_pages[j];  
         prev =NULL;
-        while(iter){
-                mem->ram_pages[j] = iter->next;
+        while(mem->ram_pages[j]){
+				iter = mem->ram_pages[j];
+                mem->ram_pages[j] = mem->ram_pages[j]->next;
                 //!TODO update dirty bit of the new page and write-back the old page if(dirty bit)
                 //!TODO update the list heads.
                 //printf("******************************************Swapping out page \n");
                 if(iter->dirty){
                     uint32_t write_back_page_addr = iter->tag;
                     swap_write_back_page(mem,iter, write_back_page_addr); 
-                }
+                    }
+                
+                
+                prev = swap_mem_page_get(mem, iter->tag);
+                assert(prev!=NULL);
                 
                 mem->swapped_pages_addresses[mem->pages_swapped_out] = iter->tag;
                 mem->pages_swapped_out++;
                 mem->pages_in_ram--;
                 iter->free_flag = 1;
                 iter->dirty = 0;
-                prev  = iter;
+                //prev  = iter;
 				iter= iter->next;
-				prev->next = NULL; //remove if doesn't work
+				//prev->next = NULL; //remove if doesn't work
        }
        assert(mem->ram_pages[j] == NULL);
     }
     assert(mem->pages_swapped_out);
-    assert(mem->pages_in_ram == 0);    
-    mem_page_get(mem, mem->swapped_pages_addresses[mem->pages_swapped_out]); //Jugaad
+    assert(mem->pages_in_ram == 0);
+    prev = mem_page_get(mem, mem->swapped_pages_addresses[0]); //Jugaad
+    assert(prev);
     assert(mem->pages_in_ram == 1);    
 }  
 
@@ -93,7 +99,6 @@ void swap_in_process(struct mem_t *mem){
 	
 	int j;
 	for(j=0;j<mem->pages_swapped_out;j++){
-		
 		mem_page_get(mem, mem->swapped_pages_addresses[j]);
 	}
 }	
@@ -572,8 +577,9 @@ struct mem_page_t* page_fault_routine(struct mem_t *mem, uint32_t addr){
 	
 	//IF page is not found, return NULL
 	
-	if(!page_from_swap_space)
+	if(!page_from_swap_space){
 		return page_from_swap_space;
+	}
 	
 	// creating a new
 	if(!ke->loading_in_progress){
@@ -586,7 +592,6 @@ struct mem_page_t* page_fault_routine(struct mem_t *mem, uint32_t addr){
 	 //data = (unsigned char*)mem_get_buffer(mem , addr , MEM_PAGESIZE, mem_access_read);
      data = read_swap_page(page_from_swap_space); 
 	
-     
    // need ctx here to find out which process was faulted; 
     struct mem_page_t* new_page = ram_get_new_page(mem);
         
@@ -608,6 +613,8 @@ struct mem_page_t* page_fault_routine(struct mem_t *mem, uint32_t addr){
 
 struct mem_page_t*  ram_get_new_page(struct mem_t * mem){
     
+    
+    
     //check this here
     //update page table entries for the process
     // randomly chosing a page from the allocated page list;
@@ -619,7 +626,7 @@ struct mem_page_t*  ram_get_new_page(struct mem_t * mem){
     struct mem_page_t* new_free_ram_page; 
     
     
-   // printf("%d :::: %d ::::: %d \n", mem->pages_in_ram, mem->max_pages_in_ram, new_free_ram_page);
+    //printf("%d :::: %d ::::: %d \n", mem->pages_in_ram, mem->max_pages_in_ram, new_free_ram_page);
         
     if(mem->pages_in_ram < mem->max_pages_in_ram){
         // return a free ram page    
@@ -744,31 +751,31 @@ struct mem_page_t *mem_page_get_next(struct mem_t *mem, uint32_t addr)
 		return page;
     	
 
-
+	///TODO : CHANGE !!!
     /* get the page from the swap space */
-    printf("Handling page fault here");
-	struct mem_page_t* page_from_swap_space = swap_mem_page_get(mem, addr);
+    struct mem_page_t* page_from_swap_space = swap_mem_page_get(mem, addr);
 	assert(page_from_swap_space);	
 	 //data = (unsigned char*)mem_get_buffer(mem , addr , MEM_PAGESIZE, mem_access_read);
-    void* data = read_swap_page(page_from_swap_space); 
+
+	void* data = read_swap_page(page_from_swap_space); 
 	
    // need ctx here to find out which process was faulted; 
-    struct mem_page_t* new_page = ram_get_new_page(mem);
-        
-    memcpy(new_page->data,data,MEM_PAGESIZE); 
-    free(data);
-    new_page->tag = page_from_swap_space->tag;
-    new_page->perm = page_from_swap_space->perm;
-    new_page->free_flag = 0;
-    
+	struct mem_page_t* new_page = ram_get_new_page(mem);
+		
+	memcpy(new_page->data,data,MEM_PAGESIZE); 
+	free(data);
+	new_page->tag = page_from_swap_space->tag;
+	new_page->perm = page_from_swap_space->perm;
+	new_page->free_flag = 0;
+	
    /* Adding new_page to appropriate list_head */ 
-    new_page->next = mem->ram_pages[index];
-    mem->ram_pages[index] = new_page;
+	new_page->next = mem->ram_pages[index];
+	mem->ram_pages[index] = new_page;
    // printf("page fault handled successfully at addr %u \n",addr); 
-    if(new_page)
-        return new_page; 
+	if(new_page)
+		return new_page; 
 
-     
+		 
 
 	/* Page following addr is not found, so check all memory pages to find
 	 * the one with the lowest tag following addr. */
@@ -805,7 +812,7 @@ struct mem_page_t *mem_page_get_next(struct mem_t *mem, uint32_t addr)
     printf("Page fault: getting a page nearest to the required to page\n");
 
     page_from_swap_space = swap_mem_page_get(mem, addr);
-	assert(page_from_swap_space);	
+	assert(page_from_swap_space);
 	 //data = (unsigned char*)mem_get_buffer(mem , addr , MEM_PAGESIZE, mem_access_read);
     data = read_swap_page(page_from_swap_space); 
 	
@@ -842,19 +849,12 @@ struct mem_page_t *mem_page_create(struct mem_t *mem, uint32_t addr, int perm)
 	index = (addr >> MEM_LOGPAGESIZE) % MEM_PAGE_COUNT;
 	
 	
-	if((tag >> MEM_LOGPAGESIZE) == 32840){
-		printf("Page 32840 is being created here \n");
-	}
-	
 	/* Create new page */
 	page = calloc(1, sizeof(struct mem_page_t));
    /* page->fpos = mem->next_free_page_start_address; 
     mem->next_free_page_start_address.__pos = mem->next_free_page_start_address.__pos + MEM_PAGESIZE; 
     */
     struct mem_page_t* new_page = get_new_swap_page();
-	if(new_page->fpos.__pos == 18223104){
-			printf("*****Page allocated 18223104 this to process %d\n",mem->context->uid);
-	}
     (page->fpos).__pos = (new_page->fpos).__pos;
 
     page->bytes_in_use = MEM_PAGESIZE;

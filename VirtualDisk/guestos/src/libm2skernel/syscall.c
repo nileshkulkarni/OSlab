@@ -875,7 +875,7 @@ int handle_guest_syscalls() {
 		
 		/* replace with appropriate function for the proiorty queue */
 		
-		int instructionPenalty = 10 + abs(trackNo - ke->current_track)  + sectorNo;
+		int instructionPenalty = 10 + abs(trackNo - ke->current_track)  + sectorNo +1000;
 		newInterrupt->instruction_no = ke->instruction_no + instructionPenalty; 
 		ke->current_track = trackNo;	
 		ke->current_io_time= ke->current_io_time+instructionPenalty;
@@ -928,9 +928,17 @@ int handle_guest_syscalls() {
 			return 0;
 		}
 		
+		
+		assert(isa_ctx->toBeSwappedOut);
+		if((newInterrupt->type == INPUT_SWAP_IN) || (newInterrupt->type == OUTPUT_SWAP_IN)){
+			assert(isa_ctx->toBeSwappedOut);
+		}
+		
+		
 		ke_list_remove(ke_list_running,isa_ctx);
 		ke_list_insert_tail(ke_list_suspended,isa_ctx);
 		insertInterrupt(newInterrupt);
+		printf("Interrupt inserted for I/O\n");
 		
 		block = BBn;
 		os = offset;

@@ -228,15 +228,15 @@ int ke_handle_interrupts(void){
 		
 	//	printf(next_interrupt->type==INPUT?"INPUT \n":"OUTPUT \n");
 		//printf("%d \n",next_interrupt->type);
-		if((next_interrupt->type == INPUT_SWAP_IN) && (next_interrupt->type== OUTPUT_SWAP_IN)){
-			
-			// swap in the process here 
-			
-		}
 		ke_list_insert_tail(ke_list_running , next_interrupt->context);
 		//printf("Process_Id : %d, back to running\n",(next_interrupt->context)->pid);
 		ke_list_remove(ke_list_suspended , next_interrupt->context);
 		//printf("Process Id: %d Removed from suspended\n",(next_interrupt->context)->pid);
+		if((next_interrupt->type == INPUT_SWAP_IN) || (next_interrupt->type== OUTPUT_SWAP_IN)){
+			// swap in the process here 
+			swap_in_process(next_interrupt->context->mem);
+			printf("Swapping In the process completely\n"); 
+		}
 		deleteInterrupt(next_interrupt);
 		next_interrupt = getNextInterrupt();
 		assert(next_interrupt == NULL || next_interrupt->instruction_no >= ke->instruction_no);
@@ -256,6 +256,7 @@ void ke_run(void)
    if(ke->running_list_head == NULL){
 	interrupt_t *next_interrupt = getNextInterrupt();
 	if(next_interrupt != NULL){
+		//printf("Interrupt found, Type : %d \n", next_interrupt->type);
 		ke->instruction_no = next_interrupt->instruction_no;
 		ke_handle_interrupts();
 		goto RUN;
@@ -270,6 +271,7 @@ RUN :
 		int i;
 		//printf ("out - %p\n", ctx);
 		for (i = 0 ; i < ctx->instr_slice; ++i) {
+			//printf("Current Process is %d\n",ctx->uid);
 			ke_handle_interrupts();
 	    	if (ctx_get_status(ctx, ctx_finished))
                 break;
@@ -278,7 +280,9 @@ RUN :
 			ctx_execute_inst(ctx);
 			ke->instruction_no++;
 			if(ctx->toBeSwappedOut){
-				// swap out the process
+				printf("Swapping out Process \n");
+				swap_out_process(ctx->mem);
+				return;
 			}
 			if(ctx->mem->current_inst_faults){
 				//printf("Here in adding interrupts\n");
