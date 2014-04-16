@@ -851,9 +851,6 @@ int handle_guest_syscalls() {
 		// block the current process which made the syscall.
 		// ctx  changes
 		
-		
-		
-		
 		printf("Syscalled \n");
 		int op = isa_regs->ebx;
 		int bytes = isa_regs->ecx;
@@ -861,8 +858,6 @@ int handle_guest_syscalls() {
 		int	BBn		= isa_regs->esi;
 		int offset	= isa_regs->edi;
 		int pid=get_pid();
-		
-		
 		
 		//printf("Parameters are : %d %d %d %d %d \n", op , bytes , address , BBn , offset);
 		
@@ -881,15 +876,26 @@ int handle_guest_syscalls() {
 		
 		/* replace with appropriate function for the proiorty queue */
 		
-		newInterrupt->instruction_no = ke->instruction_no + 10 + abs(trackNo - ke->current_track)  + sectorNo; 
+		int instructionPenalty = 10 + abs(trackNo - ke->current_track)  + sectorNo;
+		newInterrupt->instruction_no = ke->instruction_no + instructionPenalty; 
 		ke->current_track = trackNo;	
-		//newInterrupt->instruction_no = ke->instruction_no + 2; 
+		ke->current_io_time= ke->current_io_time+instructionPenalty;
 		newInterrupt->context = isa_ctx;
+		newInterrupt->io_time = instructionPenalty;
+		
 		printf("PID is %d \n" , isa_ctx->pid);
-		newInterrupt->type = op>0?OUTPUT:INPUT;
+		
+		if(op==1){
+			newInterrupt->type = OUTPUT;
+		}
+		else if(op==0){
+			newInterrupt->type = INPUT;
+		}
+		else{
+			fatal("Invalid operation in read write \n");
+		}
 		
 		printf("Instruction no %d , type \n",ke->instruction_no,newInterrupt->type);
-		
 		
 		int blockSize = 512;
 		
@@ -913,7 +919,6 @@ int handle_guest_syscalls() {
 		
 		ke_list_remove(ke_list_running,isa_ctx);
 		ke_list_insert_tail(ke_list_suspended,isa_ctx);
-	    //ke_list_insert_tail(ke_list_interrupt,isa_ctx);
 		insertInterrupt(newInterrupt);
 		
 		block = BBn;
@@ -935,10 +940,9 @@ int handle_guest_syscalls() {
 			mem_read(isa_mem,(void*)address,bytes,buf);
 			//printf("Read number from address %d ",*((int*)buf));		
 			
-			FILE *fp = fopen("Sim_disk","rb+"); 
-			fseek(fp,(BBn*blockSize + offset), SEEK_SET);
+			FILE *fp = open_swap_disk(); 
+			fseek(fp,ke->fileArea.__pos + (BBn*blockSize + offset), SEEK_SET);
 			fwrite((void*)buf,bytes,1,fp); 
-			
 			fclose(fp); 
 		
 		}
@@ -952,12 +956,12 @@ int handle_guest_syscalls() {
 			
 			//printf("Read number from address %d ",*((int*)buf));		
 			
-			FILE *fp = fopen("Sim_disk","r"); 
-			fseek(fp,(BBn*blockSize + offset), SEEK_SET);
+			FILE *fp = open_swap_disk(); 
+			fseek(fp,ke->fileArea.__pos +(BBn*blockSize + offset), SEEK_SET);
 			fread((void*)buf,bytes,1,fp); 
-			
-			mem_write(isa_mem,(void*)address,bytes,buf);
 			fclose(fp); 
+			mem_write(isa_mem,(void*)address,bytes,buf);
+			
 		}	 	 
 		
 		break;	

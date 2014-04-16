@@ -1518,7 +1518,7 @@ void swap_initialize(){
     swap_fd = open_swap_disk();   
 	fseek(swap_fd ,0, SEEK_SET);
     int no_of_pages =0;
-    while(no_of_pages < MEM_PAGE_COUNT){
+    while(no_of_pages < MAX_SWAP_PAGES){
         if(!(swap_mem->free_list_head) && !(swap_mem->free_list_tail)){ 
             struct mem_page_t* free_page = malloc(sizeof(struct mem_page_t)); 
             free_page->fpos.__pos = ftell(swap_fd);
@@ -1539,7 +1539,9 @@ void swap_initialize(){
         fseek(swap_fd,MEM_PAGESIZE,SEEK_CUR);
         no_of_pages++;
     }
+    ke->fileArea.__pos=ftell(swap_fd);
     printf("Swap pages initialized, pages allocated on swap disk %d\n",no_of_pages);
+	fclose(swap_fd);
 }    
 
 
