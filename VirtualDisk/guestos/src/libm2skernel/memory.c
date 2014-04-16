@@ -216,10 +216,14 @@ struct mem_page_t *swap_mem_page_get(struct mem_t *mem, uint32_t addr)
 
 
 
-/* Free mem pages */
+/* This function finds a free memory region to allocate 'size' bytes
+ * starting at address 'addr'. */
 ///TODO rewrite mem_map_space
 uint32_t mem_map_space(struct mem_t *mem, uint32_t addr, int size)
 {
+    
+    printf("calls mem_map_space..................................\n");
+    
     uint32_t tag_start, tag_end;
 
 	if(((addr >> MEM_LOGPAGESIZE) <= 32840) && (((addr+size)>> MEM_LOGPAGESIZE) >= 32840)){
@@ -301,30 +305,7 @@ uint32_t mem_map_space_down(struct mem_t *mem, uint32_t addr, int size)
 
 
 
-/* Access mem at address 'addr'.
- * This access can cross page boundaries. */
 
-
-/* Creation and destruction */
-
-
-
-
-/* This function finds a free memory region to allocate 'size' bytes
- * starting at address 'addr'. */
-
-
-/* Allocate (if not already allocated) all necessary memory pages to
- * access 'size' bytes at 'addr'. These two fields do not need to be
- * aligned to page boundaries.
- * If some page already exists, add permissions. */
-
-
-/* Deallocate memory pages. The addr and size parameters must be both
- * multiple of the page size.
- * If some page was not allocated, the corresponding address range is skipped.
- * If a host mapping is caught in the range, it is deallocated with a call
- * to 'mem_unmap_host'. */
 
 
 /* Map guest pages with the data allocated by a host 'mmap' call.
@@ -336,6 +317,7 @@ uint32_t mem_map_space_down(struct mem_t *mem, uint32_t addr, int size)
 void mem_map_host(struct mem_t *mem, struct fd_t *fd, uint32_t addr, int size,
 	enum mem_access_enum perm, void *host_ptr)
 {
+	
 	uint32_t ptr;
 	struct mem_page_t *page;
 	struct mem_host_mapping_t *hm;

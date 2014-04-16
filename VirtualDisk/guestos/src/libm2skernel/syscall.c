@@ -1079,12 +1079,16 @@ void syscall_do() {
                 /* 3 */
             case syscall_code_read:
             {
+                
+                
+                printf("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n");
                 uint32_t pbuf, count;
                 int guest_fd, host_fd, err;
                 void *buf;
                 struct fd_t *fd;
                 struct pollfd fds;
-
+                
+                
                 /* Get parameters */
                 guest_fd = isa_regs->ebx;
                 pbuf = isa_regs->ecx;
@@ -1092,6 +1096,9 @@ void syscall_do() {
                 syscall_debug("  guest_fd=%d, pbuf=0x%x, count=0x%x\n",
                         guest_fd, pbuf, count);
 
+                
+                
+                
                 /* Get file descriptor */
                 fd = fdt_entry_get(isa_ctx->fdt, guest_fd);
                 if (!fd) {
@@ -1112,17 +1119,21 @@ void syscall_do() {
                 err = poll(&fds, 1, 0);
                 if (err < 0)
                     fatal("syscall 'read': error in 'poll'");
+                    
+                
 
                 /* Non-blocking read */
                 if (fds.revents || (fd->flags & O_NONBLOCK)) {
                     RETVAL(read(host_fd, buf, count));
                     if (retval > 0) {
-                        mem_write(isa_mem, pbuf, retval, buf);
+						mem_write(isa_mem, pbuf, retval, buf);
                         syscall_debug_string("  buf", buf, count, 1);
                     }
                     free(buf);
                     break;
                 }
+                
+                
 
                 /* Blocking read - suspend thread */
                 syscall_debug("  blocking read - process suspended\n");
@@ -1132,6 +1143,7 @@ void syscall_do() {
                 ke_process_events_schedule();
 
                 free(buf);
+                
                 break;
             }
 
@@ -1139,6 +1151,7 @@ void syscall_do() {
                 /* 4 */
             case syscall_code_write:
             {
+                
                 uint32_t pbuf, count;
                 int guest_fd, host_fd;
                 struct fd_t *fd;
@@ -1191,6 +1204,7 @@ void syscall_do() {
                 /* 5 */
             case syscall_code_open:
             {
+                
                 char filename[MAX_PATH_SIZE], fullpath[MAX_PATH_SIZE], temppath[MAX_PATH_SIZE];
                 uint32_t pfilename;
                 int flags, mode;
