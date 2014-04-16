@@ -51,6 +51,58 @@ struct swap_mem_t * swap_mem;
 
 
 
+
+void swap_out_process(struct mem_t *mem){
+	
+	int j;
+	mem->pages_swapped_out = 0;
+	struct mem_page_t* iter;
+	struct mem_page_t* prev;
+	for(j=0;j<MEM_PAGE_COUNT;j++){
+        iter = mem->ram_pages[j];  
+        prev =NULL;
+        while(iter){
+                mem->ram_pages[j] = iter->next;
+                //!TODO update dirty bit of the new page and write-back the old page if(dirty bit)
+                //!TODO update the list heads.
+                //printf("******************************************Swapping out page \n");
+                if(iter->dirty){
+                    uint32_t write_back_page_addr = iter->tag;
+                    swap_write_back_page(mem,iter, write_back_page_addr); 
+                }
+                
+                mem->swapped_pages_addresses[mem->pages_swapped_out] = iter->tag;
+                mem->pages_swapped_out++;
+                mem->pages_in_ram--;
+                iter->free_flag = 1;
+                iter->dirty = 0;
+                prev  = iter;
+				iter= iter->next;
+				prev->next = NULL; //remove if doesn't work
+       }
+       assert(mem->ram_pages[j] == NULL);
+    }
+    assert(mem->pages_swapped_out);
+    assert(mem->pages_in_ram == 0);    
+    mem_page_get(mem, mem->swapped_pages_addresses[mem->pages_swapped_out]); //Jugaad
+    assert(mem->pages_in_ram == 1);    
+}  
+
+
+void swap_in_process(struct mem_t *mem){
+	
+	int j;
+	for(j=0;j<mem->pages_swapped_out;j++){
+		
+		mem_page_get(mem, mem->swapped_pages_addresses[j]);
+	}
+}	
+
+
+
+
+
+
 struct mem_page_t* get_free_ram_page(){
 	
 	int i;
