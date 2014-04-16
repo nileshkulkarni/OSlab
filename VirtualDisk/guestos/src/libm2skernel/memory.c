@@ -59,6 +59,20 @@ void swap_out_process(struct mem_t *mem){
 	struct mem_page_t* iter;
 	struct mem_page_t* prev;
 	
+	printf("Pages in Ram is %d\n",mem->pages_in_ram);
+	int totalPages = 0;
+	for(j=0;j<MEM_PAGE_COUNT;j++){
+        iter =mem->ram_pages[j];
+        while(iter){
+			totalPages++;
+			iter = iter->next; 
+		}
+	}
+	
+	printf("actual pages in ram %d \n", totalPages);	
+	
+	
+	totalPages = 0;
 	for(j=0;j<MEM_PAGE_COUNT;j++){
         prev =NULL;
         while(mem->ram_pages[j]){
@@ -81,13 +95,18 @@ void swap_out_process(struct mem_t *mem){
                 mem->pages_in_ram--;
                 iter->free_flag = 1;
                 iter->dirty = 0;
+                totalPages++;
                 //prev  = iter;
 				iter= iter->next;
 				//prev->next = NULL; //remove if doesn't work
        }
        assert(mem->ram_pages[j] == NULL);
     }
+    
+    printf("actual pages in ram %d \n", mem->pages_in_ram);	
+	
     assert(mem->pages_swapped_out);
+    printf("mem->pages_in_ram: %d \n", mem->pages_in_ram);
     assert(mem->pages_in_ram == 0);
     prev = mem_page_get(mem, mem->swapped_pages_addresses[0]); //Jugaad
     assert(prev);
@@ -216,17 +235,14 @@ struct mem_page_t *swap_mem_page_get(struct mem_t *mem, uint32_t addr)
 
 
 
-/* Free mem pages */
+/* This function finds a free memory region to allocate 'size' bytes
+ * starting at address 'addr'. */
 ///TODO rewrite mem_map_space
 uint32_t mem_map_space(struct mem_t *mem, uint32_t addr, int size)
 {
+    
+    
     uint32_t tag_start, tag_end;
-
-	if(((addr >> MEM_LOGPAGESIZE) <= 32840) && (((addr+size)>> MEM_LOGPAGESIZE) >= 32840)){
-		printf("Page 32840 should  be created here %d , %d \n" , 
-			(addr >> MEM_LOGPAGESIZE) ,
-			((addr+size)>> MEM_LOGPAGESIZE));
-	}
 	
 
 
@@ -262,7 +278,7 @@ uint32_t mem_map_space(struct mem_t *mem, uint32_t addr, int size)
 }
 
 
-///TODO Rewrite mem_map_space_down
+///TODO:-Done Rewrite mem_map_space_down
 uint32_t mem_map_space_down(struct mem_t *mem, uint32_t addr, int size)
 {
     uint32_t tag_start, tag_end;
@@ -301,30 +317,7 @@ uint32_t mem_map_space_down(struct mem_t *mem, uint32_t addr, int size)
 
 
 
-/* Access mem at address 'addr'.
- * This access can cross page boundaries. */
 
-
-/* Creation and destruction */
-
-
-
-
-/* This function finds a free memory region to allocate 'size' bytes
- * starting at address 'addr'. */
-
-
-/* Allocate (if not already allocated) all necessary memory pages to
- * access 'size' bytes at 'addr'. These two fields do not need to be
- * aligned to page boundaries.
- * If some page already exists, add permissions. */
-
-
-/* Deallocate memory pages. The addr and size parameters must be both
- * multiple of the page size.
- * If some page was not allocated, the corresponding address range is skipped.
- * If a host mapping is caught in the range, it is deallocated with a call
- * to 'mem_unmap_host'. */
 
 
 /* Map guest pages with the data allocated by a host 'mmap' call.
@@ -336,6 +329,7 @@ uint32_t mem_map_space_down(struct mem_t *mem, uint32_t addr, int size)
 void mem_map_host(struct mem_t *mem, struct fd_t *fd, uint32_t addr, int size,
 	enum mem_access_enum perm, void *host_ptr)
 {
+	
 	uint32_t ptr;
 	struct mem_page_t *page;
 	struct mem_host_mapping_t *hm;
@@ -906,7 +900,6 @@ struct mem_page_t *swap_mem_page_create(struct mem_t *mem, uint32_t addr, int pe
 void mem_page_free(struct mem_t *mem, uint32_t addr)
 {
 	
-	//printf("Freeing mem_page \n");
 	uint32_t index, tag;
 	struct mem_page_t *prev, *page;
 	struct mem_host_mapping_t *hm;
@@ -939,8 +932,10 @@ void mem_page_free(struct mem_t *mem, uint32_t addr)
 		/* Free page */
 		if (prev)
 			prev->next = page->next;
-		else
+		else{
 			mem->ram_pages[index] = page->next;
+			mem->pages_in_ram--;
+		}
 			
 		mem_mapped_space -= MEM_PAGESIZE;
 		page->free_flag = 1;

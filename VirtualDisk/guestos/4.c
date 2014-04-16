@@ -1,7 +1,18 @@
-#include<stdio.h>
+#include <stdio.h>
 
 int main(){
     
+    
+    
+    FILE *fp = fopen("1.c","r");
+    char *buf = malloc(10);
+    
+    fread(buf, 1, 9, fp);
+
+    buf[9] = '\0';
+    printf("Buf is %s \n", buf);
+    fclose(fp);
+
     int *a = malloc(sizeof(int)*100);
     *a = 10;
     int *b = malloc(sizeof(int)*100); 
