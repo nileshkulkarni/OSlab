@@ -177,6 +177,7 @@ void swap_mem_access_page_boundary(struct mem_t *mem, uint32_t addr,int size, vo
 void swap_mem_access(struct mem_t *mem, uint32_t addr, int size, void *buf,enum mem_access_enum access);
 struct mem_page_t *swap_mem_page_get(struct mem_t *mem, uint32_t addr);
 void add_occupied_page(struct mem_page_t* page);
+struct mem_page_t* replace_page(struct ctx_t* context);
 
 
 struct mem_page_t *mem_page_get(struct mem_t *mem, uint32_t addr);
@@ -781,8 +782,6 @@ void ke_dump(FILE *f);
 uint64_t ke_timer(void);
 void ke_process_events(void);
 void ke_process_events_schedule(void);
-
-
 
 #endif
 

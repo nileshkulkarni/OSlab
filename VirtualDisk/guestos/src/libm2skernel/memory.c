@@ -59,8 +59,9 @@ void swap_out_process(struct mem_t *mem){
 	struct mem_page_t* iter;
 	struct mem_page_t* prev;
 	
-	//printf("Pages in Ram is %d\n",mem->pages_in_ram);
-	
+
+	printf("Pages in Ram is %d\n",mem->pages_in_ram);
+
 	
 	for(j=0;j<MEM_PAGE_COUNT;j++){
         prev =NULL;
@@ -95,9 +96,11 @@ void swap_out_process(struct mem_t *mem){
     assert(mem->pages_swapped_out);
     //printf("mem->pages_in_ram: %d \n", mem->pages_in_ram);
     assert(mem->pages_in_ram == 0);
+/*    
     prev = mem_page_get(mem, mem->swapped_pages_addresses[0]); //Jugaad
     assert(prev);
     assert(mem->pages_in_ram == 1);    
+*/ 
 }  
 
 
@@ -596,7 +599,6 @@ struct mem_page_t* page_fault_routine(struct mem_t *mem, uint32_t addr){
 struct mem_page_t*  ram_get_new_page(struct mem_t * mem){
     
     
-    
     //check this here
     //update page table entries for the process
     // randomly chosing a page from the allocated page list;
@@ -621,7 +623,28 @@ struct mem_page_t*  ram_get_new_page(struct mem_t * mem){
     }
     
     
-    assert(mem->pages_in_ram);
+    if(mem->pages_in_ram==0){
+		// hunt for a page to be replaced globally
+		struct ctx_t* iter = ke->context_list_head;
+		struct ctx_t* ctx_with_max_pages = iter;
+		int ctx_pages =iter->mem->pages_in_ram;
+		while(iter){
+			//printf("iter->ram_pages %d \n", iter->mem->pages_in_ram); 
+			if(ctx_pages < iter->mem->pages_in_ram){
+				ctx_with_max_pages = iter;
+				ctx_pages = iter->mem->pages_in_ram;
+			}
+			iter = iter->context_next;
+		}
+		//printf("Asking for a free page from a process %d, the process has % d pages\n",ctx_with_max_pages->uid,ctx_with_max_pages->mem->pages_in_ram);
+		struct mem_page_t *free_ram_page  = replace_page(ctx_with_max_pages);		
+		assert(free_ram_page);
+		free_ram_page->free_flag = 1;
+        free_ram_page->dirty = 0;
+        mem->pages_in_ram++;
+		return free_ram_page;
+	}
+    
     int rand_page = rand() % mem->pages_in_ram;
    // rand_page = 7; 
     //printf("******************************************Swapping out page \n");
@@ -660,7 +683,43 @@ struct mem_page_t*  ram_get_new_page(struct mem_t * mem){
 }
 
 
-
+struct mem_page_t* replace_page(struct ctx_t* context){
+	struct mem_t* mem = context->mem;
+	int rand_page = rand() % (mem->pages_in_ram);
+	
+	int j=0;
+	int i=0;
+	for(j=0;j<MEM_PAGE_COUNT;j++){
+        struct mem_page_t* iter = mem->ram_pages[j];  
+        struct mem_page_t* prev =NULL;
+        while(iter){
+           if(i == rand_page){
+                if(prev){
+                    // normal page to be replaced
+                   prev->next = iter->next; 
+                }
+                else{
+                    // condition when head of the list is being replaced is to be replaced
+                    mem->ram_pages[j] = iter->next;
+                }
+                if(iter->dirty){
+                    uint32_t write_back_page_addr = iter->tag;
+                    swap_write_back_page(mem,iter, write_back_page_addr); 
+                }
+                mem->pages_in_ram--;
+                iter->free_flag = 1;
+                iter->dirty = 0;
+                return iter;
+           }
+            prev  = iter;
+			iter= iter->next;
+			i++; 
+        }
+   }
+	
+	
+	
+}
 
 void swap_write_back_page(struct mem_t *mem, struct mem_page_t* ram_page,uint32_t addr ){
     
@@ -1471,19 +1530,17 @@ struct mem_page_t* get_new_swap_page(){
 
 void add_occupied_page(struct mem_page_t* page){
 	
-	//printf("add a occupied page %u \n", page->fpos.__pos);
-    if(!(swap_mem->occupied_list_head) && !(swap_mem->occupied_list_tail)){
+	if(!(swap_mem->occupied_list_head) && !(swap_mem->occupied_list_tail)){
         swap_mem->occupied_list_head = page;
         swap_mem->occupied_list_tail = page;
         page->newNext = NULL;
     }
-    
     else
     {
-			(swap_mem->occupied_list_tail)->newNext = page;
-            swap_mem->occupied_list_tail =page;
-            page->newNext = NULL;
-    }
+		(swap_mem->occupied_list_tail)->newNext = page;
+		swap_mem->occupied_list_tail =page;
+		page->newNext = NULL;
+	}
 
 }
 

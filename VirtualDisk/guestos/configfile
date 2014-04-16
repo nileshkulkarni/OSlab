@@ -3,3 +3,11 @@
 Exe = 5
 
 Uid = 1
+<<<<<<< HEAD
+=======
+
+[ Context 1 ]
+Exe = 4
+
+Uid = 2
+>>>>>>> origin/master
