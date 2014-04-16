@@ -235,6 +235,7 @@ int ke_handle_interrupts(void){
 		if((next_interrupt->type == INPUT_SWAP_IN) || (next_interrupt->type== OUTPUT_SWAP_IN)){
 			// swap in the process here 
 			swap_in_process(next_interrupt->context->mem);
+			ke->current_io_time = ke->current_io_time - next_interrupt->io_time;
 			printf("Swapping In the process completely\n"); 
 		}
 		deleteInterrupt(next_interrupt);

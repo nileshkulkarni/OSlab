@@ -8,10 +8,9 @@ int main(){
     char *buf = malloc(10);
     
     fread(buf, 1, 9, fp);
-/*
+
     buf[9] = '\0';
     printf("Buf is %s \n", buf);
-*/
     fclose(fp);
 
     int *a = malloc(sizeof(int)*100);

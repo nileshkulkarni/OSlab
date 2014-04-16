@@ -1081,7 +1081,6 @@ void syscall_do() {
             {
                 
                 
-                printf("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n");
                 uint32_t pbuf, count;
                 int guest_fd, host_fd, err;
                 void *buf;
