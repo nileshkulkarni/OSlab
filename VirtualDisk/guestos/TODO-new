@@ -1,0 +1,5 @@
+*	Shift the srand from ram_get_new_page(struct mem_t * mem) into guestos.c (main)
+*	page-fault-routine - redundant code in top
+*	free_a_swap_page: if(page->fpos.__pos == 18223104) hata do be
+*	add_occupied_page if(page->fpos.__pos ==  18223104){ hata do be
+*	swap_mem_page_create: redundant calloc hua he
