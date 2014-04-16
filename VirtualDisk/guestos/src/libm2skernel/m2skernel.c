@@ -228,6 +228,11 @@ int ke_handle_interrupts(void){
 		
 	//	printf(next_interrupt->type==INPUT?"INPUT \n":"OUTPUT \n");
 		//printf("%d \n",next_interrupt->type);
+		if((next_interrupt->type == INPUT_SWAP_IN) && (next_interrupt->type== OUTPUT_SWAP_IN)){
+			
+			// swap in the process here 
+			
+		}
 		ke_list_insert_tail(ke_list_running , next_interrupt->context);
 		//printf("Process_Id : %d, back to running\n",(next_interrupt->context)->pid);
 		ke_list_remove(ke_list_suspended , next_interrupt->context);
@@ -269,9 +274,12 @@ RUN :
 	    	if (ctx_get_status(ctx, ctx_finished))
                 break;
 			ctx->mem->current_inst_faults=0;
-			
+			ctx->toBeSwappedOut = 0;
 			ctx_execute_inst(ctx);
 			ke->instruction_no++;
+			if(ctx->toBeSwappedOut){
+				// swap out the process
+			}
 			if(ctx->mem->current_inst_faults){
 				//printf("Here in adding interrupts\n");
 				addInterruptForProcess(ctx->mem,ctx->mem->current_inst_faults);

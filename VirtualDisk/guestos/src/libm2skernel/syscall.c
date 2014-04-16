@@ -872,7 +872,6 @@ int handle_guest_syscalls() {
 		
 		
 		struct interrupt_t *newInterrupt = malloc(sizeof(struct interrupt_t));
-		struct interrupt_t *tempTail;
 		
 		/* replace with appropriate function for the proiorty queue */
 		
@@ -886,10 +885,22 @@ int handle_guest_syscalls() {
 		printf("PID is %d \n" , isa_ctx->pid);
 		
 		if(op==1){
-			newInterrupt->type = OUTPUT;
+			if( instructionPenalty>SWAP_OUT_THRESHOLD ){
+				newInterrupt->type = OUTPUT_SWAP_IN;
+				isa_ctx->toBeSwappedOut= 1;
+			}
+			else{
+				newInterrupt->type = OUTPUT;
+			}
 		}
 		else if(op==0){
-			newInterrupt->type = INPUT;
+			if(instructionPenalty > SWAP_OUT_THRESHOLD){
+				newInterrupt->type = INPUT_SWAP_IN;
+				isa_ctx->toBeSwappedOut= 1;
+			}
+			else{
+				newInterrupt->type = INPUT;
+			}
 		}
 		else{
 			fatal("Invalid operation in read write \n");

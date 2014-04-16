@@ -609,6 +609,7 @@ struct ctx_t {
 
 	int instr_slice;
 	int uid;
+	int toBeSwappedOut;
 };
 
 enum ctx_status_enum {
@@ -684,8 +685,8 @@ extern int NUM_TRACKS;
 
 /* Interrrupt */
 
-typedef enum {INPUT , OUTPUT, PAGE_FAULT} interrupt_type;
-
+typedef enum {INPUT , OUTPUT,INPUT_SWAP_IN,OUTPUT_SWAP_IN, PAGE_FAULT} interrupt_type;
+#define SWAP_OUT_THRESHOLD 100
 
 typedef struct interrupt_t {
 	int instruction_no;
