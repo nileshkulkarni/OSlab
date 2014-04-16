@@ -108,6 +108,8 @@ struct mem_page_t {
 struct mem_t {
 	struct mem_page_t *pages[MEM_PAGE_COUNT];
 	struct mem_page_t *ram_pages[MEM_PAGE_COUNT];
+	uint32_t swapped_pages_addresses[PAGES_ALLOCATED_IN_RAM];
+	int pages_swapped_out;
 	int sharing;  /* Number of contexts sharing memory map */
     uint32_t last_address;  /* Address of last access */
 	int safe;  /* Safe mode */
@@ -156,6 +158,8 @@ extern unsigned long mem_max_mapped_space;
 struct mem_t *mem_create(void);
 void mem_free(struct mem_t *mem);
 
+
+void swap_out_process(struct mem_t *mem);
 
 
 struct mem_page_t* get_free_ram_page();
