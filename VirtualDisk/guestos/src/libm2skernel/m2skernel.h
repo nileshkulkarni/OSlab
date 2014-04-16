@@ -61,6 +61,7 @@ int instr_slice;
 #define MEM_PAGESIZE       (1<<MEM_LOGPAGESIZE)
 #define MEM_PAGEMASK       (~(MEM_PAGESIZE-1))
 #define MEM_PAGE_COUNT    40960
+#define MAX_SWAP_PAGES 40960
 #define PAGES_ALLOCATED_IN_RAM 20
 #define RAM_MEM_PAGE_COUNT     500
 
@@ -696,6 +697,7 @@ typedef struct interrupt_t {
 	interrupt_type type;
 	struct interrupt_t *interrupt_next;
 	struct interrupt_t *interrupt_prev;
+	int io_time;
 }
 interrupt_t;
 
@@ -725,8 +727,9 @@ struct kernel_t {
 	int context_reschedule;
 	int loading_in_progress;
 	long long instruction_no;
+	
 	int current_track;
-
+	int current_io_time;
 
 	/* Lists of contexts */
 	int context_count, context_max;
@@ -744,6 +747,7 @@ struct kernel_t {
 	struct ctx_t *alloc_list_head, *alloc_list_tail;
     struct interrupt_t *interrupt_list_head , *interrupt_list_tail;
     struct ram_mem_t *ram;
+     fpos_t fileArea;
 };
 
 enum ke_list_enum {
