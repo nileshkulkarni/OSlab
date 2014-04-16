@@ -60,7 +60,7 @@ int instr_slice;
 #define MEM_PAGESHIFT      MEM_LOGPAGESIZE
 #define MEM_PAGESIZE       (1<<MEM_LOGPAGESIZE)
 #define MEM_PAGEMASK       (~(MEM_PAGESIZE-1))
-#define MEM_PAGE_COUNT    40960
+#define MEM_PAGE_COUNT    4096
 #define MAX_SWAP_PAGES 40960
 #define PAGES_ALLOCATED_IN_RAM 20
 #define RAM_MEM_PAGE_COUNT     500
@@ -175,7 +175,8 @@ void swap_write_back_page(struct mem_t *mem,struct mem_page_t* ram_page,uint32_t
 void swap_write_bytes(struct mem_t *mem,uint32_t addr,uint32_t size,void *buf );
 void swap_mem_access_page_boundary(struct mem_t *mem, uint32_t addr,int size, void *buf, enum mem_access_enum access);
 void swap_mem_access(struct mem_t *mem, uint32_t addr, int size, void *buf,enum mem_access_enum access);
-	void add_occupied_page(struct mem_page_t* page);
+struct mem_page_t *swap_mem_page_get(struct mem_t *mem, uint32_t addr);
+void add_occupied_page(struct mem_page_t* page);
 
 
 struct mem_page_t *mem_page_get(struct mem_t *mem, uint32_t addr);
@@ -690,7 +691,7 @@ extern int NUM_TRACKS;
 /* Interrrupt */
 
 typedef enum {INPUT , OUTPUT,INPUT_SWAP_IN,OUTPUT_SWAP_IN, PAGE_FAULT} interrupt_type;
-#define SWAP_OUT_THRESHOLD 100
+#define SWAP_OUT_THRESHOLD -1
 
 typedef struct interrupt_t {
 	int instruction_no;
