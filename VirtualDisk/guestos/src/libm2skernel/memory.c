@@ -59,20 +59,10 @@ void swap_out_process(struct mem_t *mem){
 	struct mem_page_t* iter;
 	struct mem_page_t* prev;
 	
+
 	printf("Pages in Ram is %d\n",mem->pages_in_ram);
-	int totalPages = 0;
-	for(j=0;j<MEM_PAGE_COUNT;j++){
-        iter =mem->ram_pages[j];
-        while(iter){
-			totalPages++;
-			iter = iter->next; 
-		}
-	}
+
 	
-	printf("actual pages in ram %d \n", totalPages);	
-	
-	
-	totalPages = 0;
 	for(j=0;j<MEM_PAGE_COUNT;j++){
         prev =NULL;
         while(mem->ram_pages[j]){
@@ -95,7 +85,6 @@ void swap_out_process(struct mem_t *mem){
                 mem->pages_in_ram--;
                 iter->free_flag = 1;
                 iter->dirty = 0;
-                totalPages++;
                 //prev  = iter;
 				iter= iter->next;
 				//prev->next = NULL; //remove if doesn't work
@@ -104,13 +93,14 @@ void swap_out_process(struct mem_t *mem){
     }
     
     printf("actual pages in ram %d \n", mem->pages_in_ram);	
-	
-    assert(mem->pages_swapped_out);
+	assert(mem->pages_swapped_out);
     printf("mem->pages_in_ram: %d \n", mem->pages_in_ram);
     assert(mem->pages_in_ram == 0);
+/*    
     prev = mem_page_get(mem, mem->swapped_pages_addresses[0]); //Jugaad
     assert(prev);
     assert(mem->pages_in_ram == 1);    
+*/ 
 }  
 
 
@@ -608,7 +598,6 @@ struct mem_page_t* page_fault_routine(struct mem_t *mem, uint32_t addr){
 struct mem_page_t*  ram_get_new_page(struct mem_t * mem){
     
     
-    
     //check this here
     //update page table entries for the process
     // randomly chosing a page from the allocated page list;
@@ -633,24 +622,26 @@ struct mem_page_t*  ram_get_new_page(struct mem_t * mem){
     }
     
     
-    if(!mem->pages_in_ram){
-		// hunt for a page to be replaced globaly
+    if(mem->pages_in_ram==0){
+		// hunt for a page to be replaced globally
 		struct ctx_t* iter = ke->context_list_head;
 		struct ctx_t* ctx_with_max_pages = iter;
 		int ctx_pages =iter->mem->pages_in_ram;
 		while(iter){
+			//printf("iter->ram_pages %d \n", iter->mem->pages_in_ram); 
 			if(ctx_pages < iter->mem->pages_in_ram){
 				ctx_with_max_pages = iter;
 				ctx_pages = iter->mem->pages_in_ram;
 			}
+			iter = iter->context_next;
 		}
-		
+		//printf("Asking for a free page from a process %d, the process has % d pages\n",ctx_with_max_pages->uid,ctx_with_max_pages->mem->pages_in_ram);
 		struct mem_page_t *free_ram_page  = replace_page(ctx_with_max_pages);		
 		assert(free_ram_page);
 		free_ram_page->free_flag = 1;
         free_ram_page->dirty = 0;
-        return free_ram_page;
-		
+        mem->pages_in_ram++;
+		return free_ram_page;
 	}
     
     int rand_page = rand() % mem->pages_in_ram;
@@ -692,9 +683,9 @@ struct mem_page_t*  ram_get_new_page(struct mem_t * mem){
 
 
 struct mem_page_t* replace_page(struct ctx_t* context){
-	int rand_page = rand() % context->mem->pages_in_ram;
-	
 	struct mem_t* mem = context->mem;
+	int rand_page = rand() % (mem->pages_in_ram);
+	
 	int j=0;
 	int i=0;
 	for(j=0;j<MEM_PAGE_COUNT;j++){
@@ -714,6 +705,7 @@ struct mem_page_t* replace_page(struct ctx_t* context){
                     uint32_t write_back_page_addr = iter->tag;
                     swap_write_back_page(mem,iter, write_back_page_addr); 
                 }
+                mem->pages_in_ram--;
                 iter->free_flag = 1;
                 iter->dirty = 0;
                 return iter;
