@@ -59,10 +59,7 @@ void swap_out_process(struct mem_t *mem){
 	struct mem_page_t* iter;
 	struct mem_page_t* prev;
 	
-
-	printf("Pages in Ram is %d\n",mem->pages_in_ram);
-
-	
+//	printf("Pages in Ram is %d\n",mem->pages_in_ram);
 	for(j=0;j<MEM_PAGE_COUNT;j++){
         prev =NULL;
         while(mem->ram_pages[j]){
@@ -715,10 +712,10 @@ struct mem_page_t* replace_page(struct ctx_t* context){
 			i++; 
         }
    }
-	
-	
-	
 }
+
+
+
 
 void swap_write_back_page(struct mem_t *mem, struct mem_page_t* ram_page,uint32_t addr ){
     
