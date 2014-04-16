@@ -59,20 +59,9 @@ void swap_out_process(struct mem_t *mem){
 	struct mem_page_t* iter;
 	struct mem_page_t* prev;
 	
-	printf("Pages in Ram is %d\n",mem->pages_in_ram);
-	int totalPages = 0;
-	for(j=0;j<MEM_PAGE_COUNT;j++){
-        iter =mem->ram_pages[j];
-        while(iter){
-			totalPages++;
-			iter = iter->next; 
-		}
-	}
-	
-	printf("actual pages in ram %d \n", totalPages);	
+	//printf("Pages in Ram is %d\n",mem->pages_in_ram);
 	
 	
-	totalPages = 0;
 	for(j=0;j<MEM_PAGE_COUNT;j++){
         prev =NULL;
         while(mem->ram_pages[j]){
@@ -95,7 +84,6 @@ void swap_out_process(struct mem_t *mem){
                 mem->pages_in_ram--;
                 iter->free_flag = 1;
                 iter->dirty = 0;
-                totalPages++;
                 //prev  = iter;
 				iter= iter->next;
 				//prev->next = NULL; //remove if doesn't work
@@ -103,10 +91,9 @@ void swap_out_process(struct mem_t *mem){
        assert(mem->ram_pages[j] == NULL);
     }
     
-    printf("actual pages in ram %d \n", mem->pages_in_ram);	
-	
+    
     assert(mem->pages_swapped_out);
-    printf("mem->pages_in_ram: %d \n", mem->pages_in_ram);
+    //printf("mem->pages_in_ram: %d \n", mem->pages_in_ram);
     assert(mem->pages_in_ram == 0);
     prev = mem_page_get(mem, mem->swapped_pages_addresses[0]); //Jugaad
     assert(prev);
@@ -546,15 +533,16 @@ struct mem_page_t* page_fault_routine(struct mem_t *mem, uint32_t addr){
 	
 	tag = addr & ~(MEM_PAGESIZE - 1);
 	index = (addr >> MEM_LOGPAGESIZE) % MEM_PAGE_COUNT;	
+
+/*
 	page = mem->ram_pages[index];
-	/* Look for page */
+	// Look for page
 	while (page && page->tag != tag) {
 		prev = page;
 		page = page->next;
 	}
-
-	
 	assert(!page); //That's why this routine was called
+*/
 	
 	unsigned char *data;
 	/* !TODO FOR SWAP_SPACE JUNTA

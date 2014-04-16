@@ -12,6 +12,14 @@ int main(){
     buf[9] = '\0';
     printf("Buf is %s \n", buf);
     fclose(fp);
+    
+    
+    fp = fopen("dummywrite","w");
+    fwrite(buf, 1, 9, fp);
+    fclose(fp);
+
+
+
 
     int *a = malloc(sizeof(int)*100);
     *a = 10;

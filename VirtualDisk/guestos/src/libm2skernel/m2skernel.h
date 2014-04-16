@@ -62,8 +62,8 @@ int instr_slice;
 #define MEM_PAGEMASK       (~(MEM_PAGESIZE-1))
 #define MEM_PAGE_COUNT    4096
 #define MAX_SWAP_PAGES 40960
-#define PAGES_ALLOCATED_IN_RAM 20
-#define RAM_MEM_PAGE_COUNT     500
+#define PAGES_ALLOCATED_IN_RAM 10
+#define RAM_MEM_PAGE_COUNT     1000
 
 
 enum mem_access_enum {
