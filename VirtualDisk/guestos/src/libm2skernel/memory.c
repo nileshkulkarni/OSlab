@@ -96,11 +96,7 @@ void swap_in_process(struct mem_t *mem){
 		
 		mem_page_get(mem, mem->swapped_pages_addresses[j]);
 	}
-	
 }	
-	
-	
-}
 
 
 
