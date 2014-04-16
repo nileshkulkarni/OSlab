@@ -618,7 +618,7 @@ struct mem_page_t*  ram_get_new_page(struct mem_t * mem){
     //check this here
     //update page table entries for the process
     // randomly chosing a page from the allocated page list;
-    srand (time(NULL) );
+    //srand (time(NULL) );
     /* Generate a random number: */
     int i=0;
     int j=0;
@@ -881,22 +881,12 @@ struct mem_page_t *swap_mem_page_create(struct mem_t *mem, uint32_t addr, int pe
 	index = (addr >> MEM_LOGPAGESIZE) % MEM_PAGE_COUNT;
 	
 	
-	if((addr >> MEM_LOGPAGESIZE) == 32840){
-		printf("Page 32840 is being created here \n");
-	}
 	
 	/* Create new page */
 	page = calloc(1, sizeof(struct mem_page_t));
-   /* page->fpos = mem->next_free_page_start_address; 
-    mem->next_free_page_start_address.__pos = mem->next_free_page_start_address.__pos + MEM_PAGESIZE; 
-    */
+
     struct mem_page_t* new_page = get_new_swap_page();
     (page->fpos).__pos = (new_page->fpos).__pos;
-    
-    if(page->fpos.__pos == 18223104){
-		printf("Swap page Create for page: %u , pid %d fpos %u \n", addr,
-						mem->context->uid,page->fpos.__pos);
-   }
 
     page->bytes_in_use = MEM_PAGESIZE;
 	page->tag = tag;
@@ -1431,14 +1421,7 @@ struct mem_page_t* free_a_swap_page(struct mem_page_t * page, struct mem_t* mem)
    struct mem_page_t* prev=NULL;
    iter = swap_mem->occupied_list_head;
    int flag_found =0;
-   if(page->fpos.__pos == 18223104){
-		printf("free page for page: %d , pid %d fpos %d \n", (page->tag >> MEM_LOGPAGESIZE)%MEM_PAGE_COUNT,
-						mem->context->uid,page->fpos.__pos);
-		if(iter)	{
-			printf("Occupied list head is not null, fpos is %d \n", iter->fpos.__pos);
-		}
-        
-   }
+   
    while(iter){
 	
        if(iter->fpos.__pos == page->fpos.__pos){
@@ -1499,9 +1482,6 @@ struct mem_page_t* get_new_swap_page(){
         //swap_mem->occupied_list_tail = new_page;
         new_page->newNext = NULL;
         swap_page_count_used++;
-        if(new_page->fpos.__pos ==18223104){
-			printf("page allocated 18223104 \n");
-		}
         return new_page;
     }
 }
@@ -1517,44 +1497,11 @@ void add_occupied_page(struct mem_page_t* page){
     
     else
     {
-    		//printf("add a occupied page %u \n", page->fpos.__pos);
-			/*
-			if(page->fpos.__pos ==  18223104){
-				printf("prev page is %d \n",(swap_mem->occupied_list_tail)->fpos.__pos);
-			}
-			*/ 
 			(swap_mem->occupied_list_tail)->newNext = page;
             swap_mem->occupied_list_tail =page;
             page->newNext = NULL;
-            if(page->fpos.__pos ==  18223104){
-				printf("current head is %d \n",(swap_mem->occupied_list_head)->fpos.__pos);
-			}
     }
 
-    if(page->fpos.__pos == 18223104){
-		//printf("Searching for page 18223104\n");
-		struct mem_page_t* start = swap_mem->occupied_list_head;
-		/*
-		if(swap_mem->occupied_list_tail->fpos.__pos == page->fpos.__pos){
-			printf("18223104 page is found\n");
-		}
-		else{
-			printf("Haga be \n");
-		}
-		 
-		while(start){
-				//printf("%d\n",start->fpos.__pos);
-				if(start->fpos.__pos == swap_mem->occupied_list_tail->fpos.__pos){
-					printf("sahi chal raha hain reaches tail\n");
-				}
-				if(start->fpos.__pos == 18223104){
-					printf("page found in occupied list 18223104\n");
-					break;
-				}
-			start = start->newNext;
-		}
-		*/ 
-	}
 }
 
 
