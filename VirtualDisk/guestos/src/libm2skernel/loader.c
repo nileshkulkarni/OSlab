@@ -185,7 +185,7 @@ void ld_load_sections(struct ctx_t *ctx, struct elf_file_t *elf)
 				perm |= mem_access_exec;
 
 			/* Load section */
-			printf("Loading section %s with permission %d \n ", name, perm);
+			//printf("Loading section %s with permission %d \n ", name, perm);
 			mem_map(mem, addr, size, perm);
 			ld->brk = MAX(ld->brk, addr + size);
 			ld->bottom = MIN(ld->bottom, addr);
@@ -195,7 +195,7 @@ void ld_load_sections(struct ctx_t *ctx, struct elf_file_t *elf)
 			elf_free_buffer(buf);
 		}
 	}
-    printf("Loading Sections Done!! \n");
+    printf("Completed Loading Sections \n");
   //  printf("Page used are %d \n", swap_page_count_used);
 }
 

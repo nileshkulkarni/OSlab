@@ -313,7 +313,7 @@ int main(int argc, char **argv) {
         ke_run();
         sim_inst += ke->running_count;
         if (!ke->context_list_head){
-			printf("Moving out of while loop ke_run\n");
+		//	printf("Moving out of while loop ke_run\n");
 			break;
 		}
             

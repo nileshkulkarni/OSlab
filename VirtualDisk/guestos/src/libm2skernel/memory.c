@@ -58,9 +58,6 @@ void swap_out_process(struct mem_t *mem){
 	mem->pages_swapped_out = 0;
 	struct mem_page_t* iter;
 	struct mem_page_t* prev;
-	
-
-	printf("Pages in Ram is %d\n",mem->pages_in_ram);
 
 	
 	for(j=0;j<MEM_PAGE_COUNT;j++){
@@ -1370,7 +1367,7 @@ void mem_free(struct mem_t *mem)
 	/* This must have released all host mappings.
 	 * Now, free memory structure. */
 	
-	printf("Freeing Memory : Done \n");
+	//printf("Freed Memory for process %d\n", mem->context->pid);
 	
 	assert(!mem->host_mapping_list);
 	free(mem);

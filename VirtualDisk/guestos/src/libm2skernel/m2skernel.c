@@ -236,7 +236,10 @@ int ke_handle_interrupts(void){
 			// swap in the process here 
 			swap_in_process(next_interrupt->context->mem);
 			ke->current_io_time = ke->current_io_time - next_interrupt->io_time;
-			printf("Swapping In the process completely\n"); 
+			printf("Swapping in Process %d at time %d\n", next_interrupt->context->uid, ke->instruction_no); 
+		}
+		else{
+			//printf("Process %d is ready at time %d\n", next_interrupt->context->uid, ke->instruction_no); 
 		}
 		deleteInterrupt(next_interrupt);
 		next_interrupt = getNextInterrupt();
@@ -281,12 +284,18 @@ RUN :
 			ctx_execute_inst(ctx);
 			ke->instruction_no++;
 			if(ctx->toBeSwappedOut){
-				printf("Swapping out Process \n");
+				printf("Swapping out Process %d at time %d \n", ctx->uid, ke->instruction_no);
+			/*	
+				struct interrupt_t *newInterrupt = malloc(sizeof(struct interrupt_t));
+				newInterrupt->context = ctx;
+				newInterrupt->io_time = ctx->total_io_penalty;
+				newInterrupt->instruction_no = ke->instruction_no +  ctx->total_io_penalty;
+			*/	
 				swap_out_process(ctx->mem);
 				return;
 			}
 			if(ctx->mem->current_inst_faults){
-				//printf("Here in adding interrupts\n");
+				//printf("Suspending Process %d at time %d \n", ctx->uid, ke->instruction_no);
 				addInterruptForProcess(ctx->mem,ctx->mem->current_inst_faults);
 				ctx->mem->current_inst_faults=0;
 				return;

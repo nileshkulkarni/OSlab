@@ -62,8 +62,8 @@ int instr_slice;
 #define MEM_PAGEMASK       (~(MEM_PAGESIZE-1))
 #define MEM_PAGE_COUNT    128
 #define MAX_SWAP_PAGES 60000
-#define PAGES_ALLOCATED_IN_RAM 1
-#define RAM_MEM_PAGE_COUNT     1
+#define PAGES_ALLOCATED_IN_RAM 10
+#define RAM_MEM_PAGE_COUNT     100
 
 enum mem_access_enum {
 	mem_access_read   = 0x01,
@@ -120,6 +120,8 @@ struct mem_t {
     int max_pages_in_ram;
     int pages_in_ram;
     int total_faults;
+    int total_io_penalty;
+    int final_instruction_no;
     int current_inst_faults;
 };
 

@@ -851,7 +851,6 @@ int handle_guest_syscalls() {
 		// block the current process which made the syscall.
 		// ctx  changes
 		
-		printf("Syscalled \n");
 		int op = isa_regs->ebx;
 		int bytes = isa_regs->ecx;
 		int address = isa_regs->edx;
@@ -859,7 +858,13 @@ int handle_guest_syscalls() {
 		int offset	= isa_regs->edi;
 		int pid=get_pid();
 		
+		
+		
+	
+		
+		
 		//printf("Parameters are : %d %d %d %d %d \n", op , bytes , address , BBn , offset);
+		
 		
 		if(op!=1 && op!=0){
 				printf("Invalid operation to read/write , exiting Pranali \n");
@@ -876,13 +881,20 @@ int handle_guest_syscalls() {
 		/* replace with appropriate function for the proiorty queue */
 		
 		int instructionPenalty = 10 + abs(trackNo - ke->current_track)  + sectorNo +1000;
-		newInterrupt->instruction_no = ke->instruction_no + instructionPenalty; 
+		isa_ctx->mem->total_io_penalty += instructionPenalty;
+		newInterrupt->instruction_no = ke->instruction_no + ke->current_io_time + instructionPenalty; 
 		ke->current_track = trackNo;	
 		ke->current_io_time= ke->current_io_time+instructionPenalty;
 		newInterrupt->context = isa_ctx;
 		newInterrupt->io_time = instructionPenalty;
 		
-		printf("PID is %d \n" , isa_ctx->pid);
+		
+		printf("I/O Syscall by Process %d, estimated Time for I/O %d , current time: %d\n", 
+		isa_ctx->uid,
+		instructionPenalty,
+		ke->instruction_no);
+	
+//		printf("PID is %d \n" , isa_ctx->pid);
 		
 		if(op==1){
 			if( instructionPenalty>SWAP_OUT_THRESHOLD ){
@@ -906,7 +918,7 @@ int handle_guest_syscalls() {
 			fatal("Invalid operation in read write \n");
 		}
 		
-		printf("Instruction no %d , type \n",ke->instruction_no,newInterrupt->type);
+	//	printf("Instruction no %d , type \n",ke->instruction_no,newInterrupt->type);
 		
 		int blockSize = 512;
 		
@@ -924,7 +936,7 @@ int handle_guest_syscalls() {
 		} 
 		
 		if(!check){
-			printf("Block %d is currently used by some other process. Mission Pranali Aborted \n", BBn); 
+			printf("Block %d is currently used by some other process. \n", BBn); 
 			return 0;
 		}
 		
@@ -938,7 +950,7 @@ int handle_guest_syscalls() {
 		ke_list_remove(ke_list_running,isa_ctx);
 		ke_list_insert_tail(ke_list_suspended,isa_ctx);
 		insertInterrupt(newInterrupt);
-		printf("Interrupt inserted for I/O\n");
+		//printf("Interrupt inserted for I/O\n");
 		
 		block = BBn;
 		os = offset;
@@ -988,7 +1000,7 @@ int handle_guest_syscalls() {
 	
 	
 	default:
-		printf("here with syscall %d \n",syscode);
+		//printf("here with syscall %d \n",syscode);
 		if (syscode >= syscall_code_count) {
 			retval = -38;
 		} else {
