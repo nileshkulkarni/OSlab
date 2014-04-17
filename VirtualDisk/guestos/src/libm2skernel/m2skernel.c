@@ -259,7 +259,10 @@ int ke_handle_interrupts(void){
 }
 
 
+int max(int x,int y){
 
+    return (x>y)?x:y;
+}
 
 
 /* Execute one instruction from each running context. */
@@ -272,6 +275,9 @@ void ke_run(void)
 	interrupt_t *next_interrupt = getNextInterrupt();
 	if(next_interrupt != NULL){
 		//printf("Interrupt found, Type : %d \n", next_interrupt->type);
+        if(ke->current_io_time){
+            ke->current_io_time= max(0,ke->current_io_time -( next_interrupt->instruction_no - ke->instruction_no));
+        }
 		ke->instruction_no = next_interrupt->instruction_no;
 		ke_handle_interrupts();
 		goto RUN;
@@ -295,7 +301,10 @@ RUN :
 			ctx->toBeSwappedOut = 0;
 			ctx_execute_inst(ctx);
 			ke->instruction_no++;
-			if(ctx->toBeSwappedOut){
+            if(ke->current_io_time){
+			    ke->current_io_time--;
+            }
+            if(ctx->toBeSwappedOut){
 				struct interrupt_t *newInterrupt = malloc(sizeof(struct interrupt_t));
 				newInterrupt->context = ctx;
 				newInterrupt->io_time = ctx->mem->total_io_penalty;
