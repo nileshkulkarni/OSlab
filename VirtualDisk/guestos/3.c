@@ -11,6 +11,7 @@ int main(){
     printf("About to make syscall's  %d\n", (int) a);
       
     syscall(351,0,sizeof(int),(int)a,5,1);
+    syscall(350,20);
     printf("Done with syscall 1\n");
 	syscall(351,1,sizeof(int),(int)b,5,1);
      printf("Done with syscall  write2\n");

@@ -9,6 +9,7 @@ int main(){
     
     fseek(fp, 100, SEEK_SET);
     fread(buf, 1, 9, fp);
+
     buf[9] = '\0';
     printf("Buf is %s \n", buf);
     fclose(fp);
@@ -28,8 +29,9 @@ int main(){
     
     printf("About to make syscall's  %d\n", (int) a);
       
+    syscall(351,0,sizeof(int)*100,(int)a,25,1);
     printf("Done with syscall 1\n");
-	syscall(351,1,sizeof(int)*100,(int)b,15,1);
+	syscall(351,1,sizeof(int)*100,(int)b,25,1);
     if(*b==10){
         printf("Done with syscall  success!\n");
     }

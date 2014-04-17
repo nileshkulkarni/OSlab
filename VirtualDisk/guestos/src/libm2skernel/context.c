@@ -96,7 +96,7 @@ struct ctx_t *ctx_create()
 
 	ctx->mem->context = ctx;
 	
-    printf("Swap mem created !! \n");	
+    //printf("Swap mem created !! \n");	
 	ctx->signal_handlers = install_signal_handlers();
 	ctx->fdt = fdt_create();
 	return ctx;
@@ -137,7 +137,7 @@ struct ctx_t *ctx_clone(struct ctx_t *ctx)
 /* Free a context */
 void ctx_free(struct ctx_t *ctx)
 {
-	printf("Finished Process , destroying context \n");
+	printf("Finished Process , destroying context of process %d \n", ctx->uid);
 	
 	/* If context is not finished/zombie, finish it first.
 	 * This removes all references to current freed context. */
@@ -161,6 +161,7 @@ void ctx_free(struct ctx_t *ctx)
 	ctx->mem->sharing--;
 	if (!ctx->mem->sharing) {
 		ld_done(ctx);
+		printf("Freeing Memory for process %d\n", ctx->uid);
 		mem_free(ctx->mem);
 		fdt_free(ctx->fdt);
 		signal_handlers_free(ctx->signal_handlers);
@@ -176,7 +177,7 @@ void ctx_free(struct ctx_t *ctx)
 		isa_ctx = NULL;
 	ctx_debug("context %d freed\n", ctx->pid);
 	free(ctx);
-	printf("Destroyed context \n");
+	//printf("Destroyed context \n");
 	
 }
 
