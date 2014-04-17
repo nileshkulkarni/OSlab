@@ -64,6 +64,7 @@ int instr_slice;
 #define MAX_SWAP_PAGES 60000
 #define PAGES_ALLOCATED_IN_RAM 10
 #define RAM_MEM_PAGE_COUNT     100
+#define TLB_SIZE 10
 
 enum mem_access_enum {
 	mem_access_read   = 0x01,
@@ -708,6 +709,15 @@ interrupt_t;
 
 
 
+struct tlb_entry{
+	int valid;
+	struct ctx_t* context;
+	struct mem_page_t* ram_page;
+};
+
+
+
+
 
 /* Kernel */
 
@@ -751,8 +761,11 @@ struct kernel_t {
 	struct ctx_t *alloc_list_head, *alloc_list_tail;
     struct interrupt_t *interrupt_list_head , *interrupt_list_tail;
     struct ram_mem_t *ram;
-     fpos_t fileArea;
+    struct tlb_entry tlb[TLB_SIZE];
+    fpos_t fileArea;
 };
+
+
 
 enum ke_list_enum {
 	ke_list_context = 0,
@@ -763,6 +776,14 @@ enum ke_list_enum {
 	ke_list_alloc,
 	ke_list_interrupt
 };
+
+
+void insert_tlb(struct mem_t* mem, struct mem_page_t* ram_page);
+struct mem_page_t* find_tlb(struct mem_t* mem, uint32_t addr);
+void remove_tlb(struct mem_t* mem, uint32_t addr);
+
+
+
 
 void ke_list_insert_head(enum ke_list_enum list, struct ctx_t *ctx);
 void ke_list_insert_tail(enum ke_list_enum list, struct ctx_t *ctx);
