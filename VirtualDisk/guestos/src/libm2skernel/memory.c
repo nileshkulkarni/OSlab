@@ -96,11 +96,11 @@ void swap_out_process(struct mem_t *mem){
     assert(mem->pages_swapped_out);
     //printf("mem->pages_in_ram: %d \n", mem->pages_in_ram);
     assert(mem->pages_in_ram == 0);
-/*    
+    
     prev = mem_page_get(mem, mem->swapped_pages_addresses[0]); //Jugaad
     assert(prev);
     assert(mem->pages_in_ram == 1);    
-*/ 
+
 }  
 
 
@@ -622,7 +622,7 @@ struct mem_page_t*  ram_get_new_page(struct mem_t * mem){
         }
     }
     
-    
+   /* 
     if(mem->pages_in_ram==0){
 		// hunt for a page to be replaced globally
 		struct ctx_t* iter = ke->context_list_head;
@@ -644,9 +644,10 @@ struct mem_page_t*  ram_get_new_page(struct mem_t * mem){
         mem->pages_in_ram++;
 		return free_ram_page;
 	}
-    
+    */
+    assert(mem->pages_in_ram);
     int rand_page = rand() % mem->pages_in_ram;
-   // rand_page = 7; 
+   // rand_page = 0; 
     //printf("******************************************Swapping out page \n");
                  
     for(j=0;j<MEM_PAGE_COUNT;j++){
@@ -991,6 +992,7 @@ void mem_page_free(struct mem_t *mem, uint32_t addr)
 	
 	/* Find page in swap_space */
 	page = mem->pages[index];
+	prev = NULL;
 	while (page && page->tag != tag) {
 		prev = page;
 		page = page->next;

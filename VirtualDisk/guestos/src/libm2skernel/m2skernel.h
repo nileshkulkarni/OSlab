@@ -60,8 +60,8 @@ int instr_slice;
 #define MEM_PAGESHIFT      MEM_LOGPAGESIZE
 #define MEM_PAGESIZE       (1<<MEM_LOGPAGESIZE)
 #define MEM_PAGEMASK       (~(MEM_PAGESIZE-1))
-#define MEM_PAGE_COUNT    4096
-#define MAX_SWAP_PAGES 40960
+#define MEM_PAGE_COUNT    128
+#define MAX_SWAP_PAGES 60000
 #define PAGES_ALLOCATED_IN_RAM 10
 #define RAM_MEM_PAGE_COUNT     1000
 
