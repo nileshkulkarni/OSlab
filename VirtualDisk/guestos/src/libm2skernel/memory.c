@@ -80,10 +80,10 @@ void swap_out_process(struct mem_t *mem){
                 mem->swapped_pages_addresses[mem->pages_swapped_out] = iter->tag;
                 mem->pages_swapped_out++;
                 mem->pages_in_ram--;
+				remove_tlb(mem, iter->tag);
                 iter->free_flag = 1;
                 iter->dirty = 0;
-                //prev  = iter;
-				iter= iter->next;
+                iter= iter->next;
 				//prev->next = NULL; //remove if doesn't work
        }
        assert(mem->ram_pages[j] == NULL);
@@ -126,8 +126,60 @@ struct mem_page_t* get_free_ram_page(){
 
 
 
+void remove_tlb(struct mem_t* mem, uint32_t addr){
+	int i;
+	uint32_t index, tag;
+	tag = addr & ~(MEM_PAGESIZE - 1);
+	
+	for(i=0;i<TLB_SIZE;i++){
+		if(ke->tlb[i].valid && (ke->tlb[i].context == mem->context) && (ke->tlb[i].ram_page->tag == tag)){
+			ke->tlb[i].valid = 0;
+			ke->tlb[i].context = NULL;
+			ke->tlb[i].ram_page = NULL;
+			return;
+		}
+	}
+	return;
+}	
+	
+	
+	
+void insert_tlb(struct mem_t* mem, struct mem_page_t* ram_page){
+	
+	int i;
+	for(i=0;i<TLB_SIZE;i++){
+		if(!ke->tlb[i].valid){
+			ke->tlb[i].context = mem->context;
+			ke->tlb[i].ram_page = ram_page;
+			ke->tlb[i].valid = 1;
+			return;
+		}
+	}
+	
+	//Replace the first TLB entry
+	ke->tlb[0].context = mem->context;
+	ke->tlb[0].ram_page = ram_page;
+	ke->tlb[0].valid = 1;
+	//check
+}
 
 
+
+struct mem_page_t* find_tlb(struct mem_t* mem, uint32_t addr){
+	
+	int i;
+	uint32_t index, tag;
+	tag = addr & ~(MEM_PAGESIZE - 1);
+
+	for(i=0;i<TLB_SIZE;i++){
+		if(ke->tlb[i].valid && (ke->tlb[i].context == mem->context) && (ke->tlb[i].ram_page->tag == tag)){
+			//printf("Found page %u of Process %d in TLB \n",  tag, mem->context->pid);
+			return ke->tlb[i].ram_page;
+		}
+	}
+	//printf("Didn't find page %u of Process %d in TLB \n",  tag, mem->context->pid);
+	return NULL;
+}
 
 
 
@@ -139,6 +191,14 @@ struct mem_page_t *mem_page_get(struct mem_t *mem, uint32_t addr)
 
 	tag = addr & ~(MEM_PAGESIZE - 1);
 	index = (addr >> MEM_LOGPAGESIZE) % MEM_PAGE_COUNT;
+	
+	
+	page = find_tlb(mem, addr);
+	if(page)
+		return page;
+	
+	
+	
 	page = mem->ram_pages[index];
 	
 	prev = NULL;
@@ -166,6 +226,11 @@ struct mem_page_t *mem_page_get(struct mem_t *mem, uint32_t addr)
 	if(!page){
 	    //printf("COULD NOT FIND A PAGE , EXECUTE PAGE FAULT ROUTINE \n");
 		page = page_fault_routine(mem, addr);		
+	}
+	
+	
+	if(page){
+		insert_tlb(mem, page);
 	}
  
 	/* Return found page */
@@ -667,6 +732,7 @@ struct mem_page_t*  ram_get_new_page(struct mem_t * mem){
                     uint32_t write_back_page_addr = iter->tag;
                     swap_write_back_page(mem,iter, write_back_page_addr); 
                 }
+                remove_tlb(mem, iter->tag);
                 iter->free_flag = 1;
                 iter->dirty = 0;
                 return iter;
@@ -705,6 +771,7 @@ struct mem_page_t* replace_page(struct ctx_t* context){
                     swap_write_back_page(mem,iter, write_back_page_addr); 
                 }
                 mem->pages_in_ram--;
+                remove_tlb(mem, iter->tag);
                 iter->free_flag = 1;
                 iter->dirty = 0;
                 return iter;
@@ -979,6 +1046,7 @@ void mem_page_free(struct mem_t *mem, uint32_t addr)
 			prev->next = page->next;
 		else{
 			mem->ram_pages[index] = page->next;
+			remove_tlb(mem, page->tag);
 			mem->pages_in_ram--;
 		}
 			

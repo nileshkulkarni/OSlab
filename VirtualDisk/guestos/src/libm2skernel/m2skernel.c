@@ -82,6 +82,9 @@ void ke_init(void)
 {
 	uint32_t endian = 0x44332211;
 	unsigned char *pendian = (unsigned char *) &endian;
+	
+	
+
 
 	/* Endian check */
 	if (pendian[0] != 0x11 || pendian[3] != 0x44)
@@ -91,6 +94,14 @@ void ke_init(void)
 	ke = calloc(1, sizeof(struct kernel_t));
 	
 	ke_ram_init();
+	
+	int z;
+	for(z=0;z<TLB_SIZE;z++){
+		printf("comes here \n");
+		ke->tlb[z].valid = 0;
+		ke->tlb[z].ram_page = NULL;
+		ke->tlb[z].context = NULL;
+	}
 	
 	ke->current_pid = 1000;  /* Initial assigned pid */
 	ke->instruction_no = 0;
