@@ -143,7 +143,8 @@ int get_param(const char *param, char *value){
 	if ((fp=fopen(BOOT_FILE,"r"))==0) {
 		perror("boot configuration file couldn't be loaded.\n");
 		return -1;
-	} else {
+	} 
+	else {
 		char str_buf[LINE_MAX + 1];
 		int len = strlen(param);
 		char delim[len+2];
@@ -186,6 +187,8 @@ void set_defaults(void) {
 	
 	sprintf(command,"(dd if=/dev/zero of=Sim_disk bs=%dx%dx%db count=1) 2> /dev/zero",heads,tracks,sectors);
 	system(command);
+	
+	
 }
 
 void install_signals(void){

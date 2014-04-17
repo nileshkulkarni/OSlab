@@ -65,7 +65,6 @@ int instr_slice;
 #define PAGES_ALLOCATED_IN_RAM 1
 #define RAM_MEM_PAGE_COUNT     1
 
-
 enum mem_access_enum {
 	mem_access_read   = 0x01,
 	mem_access_write  = 0x02,
