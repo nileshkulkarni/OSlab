@@ -3,8 +3,3 @@
 Exe = 4
 
 Uid = 1
-
-[ Context 1 ]
-Exe = 4
-
-Uid = 2

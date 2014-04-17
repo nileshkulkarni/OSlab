@@ -28,8 +28,8 @@ int main(){
     
     printf("About to make syscall's  %d\n", (int) a);
       
-    syscall(351,0,sizeof(int)*100,(int)a,15,1);
-	syscall(351,1,sizeof(int)*100,(int)b,15,1);
+    syscall(351,0,sizeof(int)*100,(int)a,10,1);
+	syscall(351,1,sizeof(int)*100,(int)b,10,1);
 
 
     printf("Done with Syscall\n");
