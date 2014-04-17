@@ -58,8 +58,10 @@ void swap_out_process(struct mem_t *mem){
 	mem->pages_swapped_out = 0;
 	struct mem_page_t* iter;
 	struct mem_page_t* prev;
-
 	
+	printf("mem->pages_in_ram befor swap out: %d \n", mem->pages_in_ram);
+   
+    
 	for(j=0;j<MEM_PAGE_COUNT;j++){
         prev =NULL;
         while(mem->ram_pages[j]){
@@ -89,9 +91,10 @@ void swap_out_process(struct mem_t *mem){
        assert(mem->ram_pages[j] == NULL);
     }
     
+	printf("mem->pages_in_ram after swap out: %d \n", mem->pages_in_ram);
+   
     
     assert(mem->pages_swapped_out);
-    //printf("mem->pages_in_ram: %d \n", mem->pages_in_ram);
     assert(mem->pages_in_ram == 0);
     
     prev = mem_page_get(mem, mem->swapped_pages_addresses[0]); //Jugaad
@@ -107,6 +110,9 @@ void swap_in_process(struct mem_t *mem){
 	for(j=0;j<mem->pages_swapped_out;j++){
 		mem_page_get(mem, mem->swapped_pages_addresses[j]);
 	}
+	
+	printf("mem->pages_in_ram after swap in: %d  process id %d\n", mem->pages_in_ram, mem->context->uid);
+   
 }	
 
 
