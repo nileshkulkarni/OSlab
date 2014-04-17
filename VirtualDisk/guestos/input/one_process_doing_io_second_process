@@ -1,0 +1,79 @@
+#define MEM_PAGE_COUNT    128
+#define MAX_SWAP_PAGES 60000
+#define PAGES_ALLOCATED_IN_RAM 10
+#define RAM_MEM_PAGE_COUNT     100
+
+
+I/O Syscall by Process 32, estimated Time for I/O 1015 , current time: 63553
+Swapping out Process 32 at time 63554 
+Swapping in Process 32 at time 64569
+I/O Syscall by Process 32, estimated Time for I/O 1015 , current time: 64808
+Swapping out Process 32 at time 64809 
+I/O Syscall by Process 31, estimated Time for I/O 1015 , current time: 65610
+Block 5 is currently used by some other process. 
+Swapping out Process 31 at time 65611 
+Swapping in Process 32 at time 65824
+YO!!! 2
+Swapping in Process 31 at time 67641
+I/O Syscall by Process 31, estimated Time for I/O 1015 , current time: 67669
+Block 5 is currently used by some other process. 
+Swapping out Process 31 at time 67670 
+Swapping in Process 31 at time 68685
+Hey >>>>>>>>>>>>>>>>>>>>>>>>>> 
+Hey >>>>>>>>>>>>>>>>>>>>>>>>>> 
+YO!!! 2
+Finished Process , destroying context of process 22 
+Freeing Memory for process 22
+Finished Process , destroying context of process 12 
+Freeing Memory for process 12
+Done with syscall  write2
+Done with syscall  write2
+Finished Process , destroying context of process 32 
+Freeing Memory for process 32
+Finished Process , destroying context of process 31 
+Freeing Memory for process 31
+Finished Process , destroying context of process 21 
+Freeing Memory for process 21
+Finished Process , destroying context of process 11 
+Freeing Memory for process 11
+Buf is #include< 
+Buf is #include< 
+I/O Syscall by Process 41, estimated Time for I/O 1025 , current time: 101786
+Swapping out Process 41 at time 101787 
+I/O Syscall by Process 42, estimated Time for I/O 1025 , current time: 102463
+Swapping out Process 42 at time 102464 
+Swapping in Process 41 at time 102812
+I/O Syscall by Process 41, estimated Time for I/O 1025 , current time: 102940
+Swapping out Process 41 at time 102941 
+Swapping in Process 42 at time 104514
+I/O Syscall by Process 42, estimated Time for I/O 1025 , current time: 104542
+Block 15 is currently used by some other process. 
+Swapping out Process 42 at time 104543 
+Swapping in Process 41 at time 104991
+Swapping in Process 42 at time 106593
+Done with syscall  success!
+Finished Process , destroying context of process 42 
+Freeing Memory for process 42
+Finished Process , destroying context of process 41 
+Freeing Memory for process 41
+
+
+
+
+8
+1
+11
+1
+12
+2
+21
+2
+22
+3
+31
+3
+32
+4
+41
+4
+42
