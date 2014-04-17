@@ -161,11 +161,11 @@ void insert_tlb(struct mem_t* mem, struct mem_page_t* ram_page){
 			return;
 		}
 	}
-	
+    int r = rand() % TLB_SIZE;	
 	//Replace the first TLB entry
-	ke->tlb[0].context = mem->context;
-	ke->tlb[0].ram_page = ram_page;
-	ke->tlb[0].valid = 1;
+	ke->tlb[r].context = mem->context;
+	ke->tlb[r].ram_page = ram_page;
+	ke->tlb[r].valid = 1;
 	//check
 }
 
