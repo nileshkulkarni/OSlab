@@ -876,17 +876,20 @@ int handle_guest_syscalls() {
 		
 		
 		
-		struct interrupt_t *newInterrupt = malloc(sizeof(struct interrupt_t));
+		///struct interrupt_t *newInterrupt = malloc(sizeof(struct interrupt_t));
 		
 		/* replace with appropriate function for the proiorty queue */
 		
 		int instructionPenalty = 10 + abs(trackNo - ke->current_track)  + sectorNo +1000;
 		isa_ctx->mem->total_io_penalty += instructionPenalty;
-		newInterrupt->instruction_no = ke->instruction_no + ke->current_io_time + instructionPenalty; 
+		
+		
+		///newInterrupt->instruction_no = ke->instruction_no + ke->current_io_time + instructionPenalty; 
 		ke->current_track = trackNo;	
-		ke->current_io_time= ke->current_io_time+instructionPenalty;
-		newInterrupt->context = isa_ctx;
-		newInterrupt->io_time = instructionPenalty;
+		//ke->current_io_time= ke->current_io_time+instructionPenalty;
+		
+		///newInterrupt->context = isa_ctx;
+		///newInterrupt->io_time = instructionPenalty;
 		
 		
 		printf("I/O Syscall by Process %d, estimated Time for I/O %d , current time: %d\n", 
@@ -898,20 +901,20 @@ int handle_guest_syscalls() {
 		
 		if(op==1){
 			if( instructionPenalty>SWAP_OUT_THRESHOLD ){
-				newInterrupt->type = OUTPUT_SWAP_IN;
+				//newInterrupt->type = OUTPUT_SWAP_IN;
 				isa_ctx->toBeSwappedOut= 1;
 			}
 			else{
-				newInterrupt->type = OUTPUT;
+				//newInterrupt->type = OUTPUT;
 			}
 		}
 		else if(op==0){
 			if(instructionPenalty > SWAP_OUT_THRESHOLD){
-				newInterrupt->type = INPUT_SWAP_IN;
+				//newInterrupt->type = INPUT_SWAP_IN;
 				isa_ctx->toBeSwappedOut= 1;
 			}
 			else{
-				newInterrupt->type = INPUT;
+				//newInterrupt->type = INPUT;
 			}
 		}
 		else{
@@ -942,14 +945,13 @@ int handle_guest_syscalls() {
 		
 		
 		assert(isa_ctx->toBeSwappedOut);
+		/*
 		if((newInterrupt->type == INPUT_SWAP_IN) || (newInterrupt->type == OUTPUT_SWAP_IN)){
 			assert(isa_ctx->toBeSwappedOut);
 		}
+		*/
 		
-		
-		ke_list_remove(ke_list_running,isa_ctx);
-		ke_list_insert_tail(ke_list_suspended,isa_ctx);
-		insertInterrupt(newInterrupt);
+		///insertInterrupt(newInterrupt);
 		//printf("Interrupt inserted for I/O\n");
 		
 		block = BBn;

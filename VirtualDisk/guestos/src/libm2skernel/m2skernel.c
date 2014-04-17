@@ -280,17 +280,23 @@ RUN :
 	    	if (ctx_get_status(ctx, ctx_finished))
                 break;
 			ctx->mem->current_inst_faults=0;
+			ctx->mem->total_io_penalty =0;
 			ctx->toBeSwappedOut = 0;
 			ctx_execute_inst(ctx);
 			ke->instruction_no++;
 			if(ctx->toBeSwappedOut){
-				printf("Swapping out Process %d at time %d \n", ctx->uid, ke->instruction_no);
-			/*	
 				struct interrupt_t *newInterrupt = malloc(sizeof(struct interrupt_t));
 				newInterrupt->context = ctx;
-				newInterrupt->io_time = ctx->total_io_penalty;
-				newInterrupt->instruction_no = ke->instruction_no +  ctx->total_io_penalty;
-			*/	
+				newInterrupt->io_time = ctx->mem->total_io_penalty;
+				newInterrupt->instruction_no = ke->instruction_no + ke->current_io_time + ctx->mem->total_io_penalty;
+				newInterrupt->type = OUTPUT_SWAP_IN; //kuch bhi
+				//printf("%d ************* %d \n", newInterrupt->instruction_no, ke->current_io_time);
+				ke_list_remove(ke_list_running,ctx);
+				ke_list_insert_tail(ke_list_suspended,ctx);
+				insertInterrupt(newInterrupt);
+				
+				ke->current_io_time += ctx->mem->total_io_penalty;
+				printf("Swapping out Process %d at time %d \n", ctx->uid, ke->instruction_no);
 				swap_out_process(ctx->mem);
 				return;
 			}
