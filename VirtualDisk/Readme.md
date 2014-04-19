@@ -13,7 +13,8 @@ Team A2
 Compiling instructions:
 ----------------------
 In the guestos directory
-$:~/../guestos/ make 
+$:~ configure CC=gcc-4.4.3
+$:~ make 
 
 Creating Pranali Compatible Executables:
 ---------------------------------------
