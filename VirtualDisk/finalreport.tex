@@ -1,0 +1,307 @@
+%
+% --------------------------------------------------------------------
+% Preamble
+% --------------------------------------------------------------------
+\documentclass[paper=a4, fontsize=11pt,twoside]{scrartcl}   % KOMA
+
+\usepackage[a4paper,pdftex]{geometry}   % A4paper margins
+\usepackage{setspace}  
+\setlength{\oddsidemargin}{5mm}         % Remove 'twosided' indentation
+\setlength{\evensidemargin}{5mm}
+
+\usepackage[english]{babel}
+\usepackage[protrusion=true,expansion=true]{microtype}  
+\usepackage{amsmath,amsfonts,amsthm,amssymb}
+\usepackage{graphicx}
+
+% --------------------------------------------------------------------
+% Definitions
+% --------------------------------------------------------------------
+\newcommand{\HRule}[1]{\rule{\linewidth}{#1}}   % Horizontal rule
+
+\makeatletter                           % Title
+\def\printtitle{%                       
+    {\centering \@title\par}}
+\makeatother                                    
+
+\makeatletter                           % Author
+\def\printauthor{%                  
+    {\centering \large \@author}}               
+\makeatother                            
+
+% --------------------------------------------------------------------
+% Metadata
+% --------------------------------------------------------------------
+\title{ \normalsize \textsc{OS Project: Theme A }   % Subtitle
+            \\[2.0cm]                               % 2cm spacing
+            \HRule{0.5pt} \\                        % Upper rule
+            \LARGE \textbf{\uppercase{Implementing page swap-in/out in Pranali OS}} % Title
+            \HRule{2pt} \\ [0.5cm]      % Lower rule + 0.5cm spacing
+            \normalsize \today          % Todays date
+        }
+
+\author{
+        Group A2 \\
+        Deepali 11D170020\\
+        Sushant 110050009\\
+        Nilesh 110050007\\
+        Sanchit 110050035\\
+        Vipul 110050034\\
+        Rajlaxmi 110050087\\        
+        Department of Computer Science and Engineering\\
+        IIT Bombay\\
+        INDIA\\
+}
+
+
+\begin{document}
+% ------------------------------------------------------------------------------
+% Maketitle
+% ------------------------------------------------------------------------------
+\thispagestyle{empty}       % Remove page numbering on this page
+
+\printtitle                 % Print the title data as defined above
+    \vfill
+\printauthor                % Print the author data as defined above
+\newpage
+% ------------------------------------------------------------------------------
+% Begin document
+% ------------------------------------------------------------------------------
+\tableofcontents
+\newpage
+\setcounter{page}{1}        % Set page numbering to begin on this page
+\section{Overview}
+
+The current Pranali OS creates the entire address space of a process in host RAM, i.e., it does not provide virtual memory. The project aims at designing and implementing virtual memory for pranali which includes :-
+
+\begin{itemize}
+\item Allocation of swap space to process
+\item Loading pages in swap space
+\item Initial Loading of pages in pranali RAM
+\item Maintain page occupancy list and page free list
+\item Handling Page Faults
+\item Maintaining page replacement using combination of local and global replacement policy
+\item Free Pages when process exits
+\item Block the process during page fault handling
+\item Using TLB to improve the page lookup from RAM.
+\item Implement swap-in/swap-out of processe pages from RAM during IO operations
+\end{itemize}
+
+
+To implement these we implemented interrupt for swap-page-in which is introduced during swap-page-out. More information regarding this in the later sections.
+\newpage
+\section{Data Structures format of main data structures}
+Following new data structures or modications to existing data structures was used to implement Virtual Memory:
+
+\subsection{mem\_t}
+
+This was originally in Pranali and was central for making any memory access by the process. This included a hashtable of pages of the process. It also has the host mapping made with the process if any. The changes we made to it include the following
+\begin{itemize}
+\item \textbf{pages}
+Hash table that stores the pointers to the pages in the swap space 
+\item \textbf{ram\_pages}
+Hash table that stores the pointers to the pages in RAM
+\item \textbf{total\_faults}
+Total number of page faults the process has encountered 
+\item\textbf{current\_instruction\_faults}
+Number of page faults encountered in the execution of the current instruction
+\item\textbf{pages\_in\_ram}
+Count of the pages of this process in the RAM 
+\item\textbf{pages\_swapped\_out}
+Count of the pages of this process which have been swapped out
+\item\textbf{swapped\_pages\_addresses} Stores addresses of the pages that have been swapped out during IO
+
+
+\end{itemize}
+
+\subsection{mem\_page\_t}
+Pranali has implemented the process data space in form of pages. We now use these pages both as pages in RAM and pages in swap space. Hence it includes fields for both. The new fields added are the following
+\begin{itemize}
+\item \textbf{dirty}
+It is used for RAM page. It indictaes that the page needs to be written back to the swap space 
+\item \textbf{free\_flag}
+It is used for RAM page. It indicates that this space in the RAM is free and hence can be used to insert a page
+\item \textbf{bytes\_in\_use}
+This is used for swap page. It indicates the bytes being used in the page
+
+
+\end{itemize}
+
+\subsection{swap\_mem\_t}
+This is our implementation of Swap Space manager. We maintain a free list and an occupancy list. We store the free list's head and tail pointers and occupied list's head and tail pointers
+
+\subsection{ram\_mem\_t}
+This is our implementation of Pranali OS RAM. It contains the pointer to the first mem\_page\_t in the RAM.
+
+\subsection{kernel\_t}
+In the current implementation of kernel\_t, we have added the following functions
+\begin{itemize}
+\item \textbf {loading\_in\_progress} Set when loading of a process is taking place
+\item \textbf{instruction\_no} Instruction number being executed in the current process
+\item \textbf{current\_track} Current track being accessed
+\item \textbf{interrupt\_list\_head , interrupt\_list\_tail} Head and tail of the list of interrupts scheduled
+\item \textbf{ram} Points to the RAM
+\end{itemize}
+
+\subsection{tlb\_entry}
+This is the basic tlb entry which is used for faster access of pages. It includes the following entities:
+\begin{itemize}
+    \item \textbf{valid} Checks whether the entry is valid.
+    \item \textbf{context} The context of the process/
+    \item \textbf{ram\_page} The pointer to RAM Page.
+    \end{itemize}
+
+
+\section{Functions}
+In general, most of the functions were changed to adopt to the Virtual memory
+implementation of Pranali. In addition to altering the existing functions quite a few new ones were also written. Following are the functions implemented in Pranali
+
+\subsection{Swap Space related functions}
+\begin{itemize}
+\item \textbf{swap\_initialize()} Initialises the swap space, allot space to every page of the process in the SimDisk
+\item \textbf{get\_new\_swap\_page()} Returns a new swap page, called when the process is initially loaded onto the swap space
+\item \textbf{free\_a\_swap\_page(struct mem\_page\_t *, struct mem\_t *)} Frees a page from the swap space when the process is completed/swapped out
+\item \textbf{read\_swap\_page(struct mem\_page\_t *)} Reads a page in the swap space
+\item \textbf{swap\_write\_back\_page(struct mem\_t *, struct mem\_page\_t* ram\_page, uint32\_t)} Writes back a page in the memory to the swap space at a specified address
+\item \textbf{swap\_write\_bytes(struct mem\_t, uint32\_t, uint32\_t,void *)} Writes size bytes from the buffer at a specified address in the swap space
+\item \textbf{add\_occupied\_page(struct mem\_page\_t*)} This is used by the Swap space manager to add a page to the occupied list
+
+\item \textbf{swap\_mem\_page\_create(struct mem\_t, uint32\_t, int)} Creates a new page in the swap space
+\item \textbf{swap\_out\_process)} Swaps out all the pages of a process, if the page being replaced is dirty, it is written back to SimDisk
+\item \textbf{open\_swap\_disk()} Opens the SimDisk file in global variable swap\_fd
+\end{itemize}
+
+
+\subsection{RAM related functions}
+\begin{itemize}
+\item \textbf{get\_free\_ram\_page()} Returns the first free page found on RAM
+\item \textbf{ram\_get\_new\_page(struct mem\_t *)} Returns a new page on the RAM
+\item \textbf{get\_page\_to\_be\_replaced(struct mem\_t *)} Returns the page to be replaced in RAM based on the combination of Local amd Global Page replacement policy
+\item \textbf{page\_fault\_routine(struct mem\_t *, uint32\_t )} Handles page faults
+\item \textbf{addInterruptForProcess(struct mem\_t*)} Adds an interrupt set to the current instruction number + [100*(Number of page faults in the current instruction)]
+\end{itemize}
+
+\subsection{mem\_t related functions}
+\begin{itemize}
+\item \textbf{mem\_page\_get(struct mem\_t *, uint32\_t)} Returns the page from RAM in case it is there, else page fault routine is called
+\item \textbf{swap\_mem\_page\_get(struct mem\_t *, uint32\_t)} Returns the page from swap space at the specified address
+\item \textbf{mem\_page\_get\_next(struct mem\_t *, uint32\_t)} Returns the next page from the swap space at the specified address
+\item \textbf{mem\_map(struct mem\_t *, uint32\_t addr, int size, enum mem\_access\_enum)} Allocates space in the swap space when the process is initialised and loads them into RAM if needed, during execution
+\end{itemize}
+
+\subsection{TLB Related functions}
+\begin{itemize}
+\item \textbf{insert\_tlb(struct mem\_t* mem, struct mem\_page\_t* ram\_page)} Inserts into TLB, entry corresponding to the RAM page.
+\item \textbf{find\_tlb(struct mem\_t* mem, uint32\_t addr)} Finds in TLB whether the page corresponding to the address \texttt{addr} exists.
+\item \textbf{remove\_tlb(struct mem\_t* mem, uint32\_t addr)} Removes the page corresponding to address \texttt{addr} from TLB.
+\end{itemize}
+\newpage
+\section{General Code flow}
+\begin{verbatim}
+    Initialise RAM
+    Initialize Swap Space
+    Load process 
+        Create process ctx
+        Create process mem_t 
+        Loads executable
+            for all elf sections
+                Create pages in Swap space
+                Load section onto the Pranali RAM
+                    if TLB fault
+                        read from RAM
+                        if RAM fault 
+                            Replace the page in RAM and TLB
+                
+
+        Loop until the processes are finished
+            Handle interrupts if any
+            Execute Instruction
+                Read instruction from TLB
+                    if TLB fault
+                        read from RAM
+                        if RAM fault 
+                            Replace the page in RAM and TLB
+                Swap out process in case of IO
+                    for all pages
+                        if dirty 
+                            write back
+                Add interrupt in case of Page Fault
+
+\end{verbatim}
+
+\section{RAM and Swap space configuration}
+\begin{itemize}
+
+\item{Page size} 4KB
+\item{Size of the swap space} 240MB (60000 pages)
+\item{Size of the RAM} 4MB (1000 pages)
+\item{Space on RAM per process} 40 KB (10 Pages)
+\end{itemize}
+
+
+\newpage
+\section{High Level Design Overview}
+To make a complete module, we implemented a certain number of sub modules and linked them together, to avoid cluttering by making a single submodule. The following diagram shows a brief interlinking of the various submodules.
+
+\includegraphics[scale=0.34]{flow.png}
+
+
+\newpage
+
+
+
+\section{Submodule Details}
+    \subsection{RAM Management} RAM is implemented as a linked list of constant number of pages which are present in the memory of Pranali. The memory for the RAM is only initially allocated and never again. The RAM has structures to give information of the occupancy of the page, the dirty bit of page. Every process has an upper bound on the constant number of RAM Pages it can use.  
+   
+   \subsection{SWAP Management} SWAP Memory Manager manages the swap disk as a structure of free lists and occupied lists. Every time a new swap page is demanded from the disk, the page from the head of the free list is given.
+    The whole of the swap disk is divided into two sections, one is the classical swap area and the other part is a general purpose disk. The functionality provided here is to write to certain blocks and tracks on the disk.
+   
+   \subsection{PAGE Replacement} Page Replacement policy on a broad scale, has two implementations
+        \begin{itemize}
+            \item \textbf{Local Page Replacement Policy} This is the first preferred technique for replacement. In case all the RAM pages associated with the process are occupied, a randomly chosen page associated with the process is replaced.
+            \item \textbf{Global Page Replacement Policy} This is the second preferred technique for replacement. This comes into picture when the current process has no pages in RAM. A random page associated with the process with the highest number of pages in the RAM is replaced.
+          
+          \end{itemize}
+    \subsection{Interrupt Handling}
+    \begin{itemize}
+    \item \textbf{Process Wake Up Interrupt} This is the interrupt corresponding to the page fault. The interrupt is set to bring the process from suspended list to running list.
+    \item \textbf{Swap In Interrupt} This is the interrupt corresponding to process swap in. All the pages which were earlier swapped out (due to I/O) are swapped in one by one. In case the RAM doesn't have enough space while inserting, then the pages are replaced locally. In the case when RAM had no space when the first page was being swapped in, then global replacement policy is used.
+    \end{itemize}
+    \subsection{Page Fault} On a page fault, the current process is moved into suspended list. An event(interrupt) is inserted at instruction count corresponding to the the number of instructions after which the process is to be brought back to running state. This instruction count is calculated by counting the number of page faults which occurred in the current instruction.
+The correct page is then found in the swap space.
+Finally this page is inserted back into the RAM using appropriate replacement policy.
+
+\subsection{Page Table Implementation}
+The memory object of the process contains the page table.  Page table contains the page table entries (PTE) for all the pages of the process. 
+\subsection{TLB Implementation}
+TLB is fully associative. Even without TLB, the virtual memory system works. However, implementing TLB facilitates faster address translation by avoiding page table lookup. It is implemented to facilitate faster address translation. It is global and contains only a few page table entries along with their process IDs. 
+
+
+\section{Issues}
+\subsection{Using predefined Linked List}
+Quite a few issues turned up, while using the predefined linked list. Importantly inserting into list head/tail and removing from list head/tail. We debugged quite a lot of errors occuring due to this.
+\subsection{Handling page faults}
+We are handling page faults per instruction and not per page. So, multiple page faults can occur in the single instruction. This is handled accordingly. Doing it per page was quite difficult as we would have to change inside isa etal. Also the page faults are handled after instruction occurs.is executed. 
+
+
+\newpage
+\section{Incomplete Work/Future Additions}
+ There is a lot of scope for improvement in the current implementation in terms of both performance and design. Due to time constraints, we could not code all of them.
+ Following are some of the additions that we would have liked to do given more time.
+   
+   \subsection{Replacement Policy}
+   Currently, our version uses random local replacement policy and if need be a global replacement policy(meaning when there are no local pages of the current process to replace). We would like to implement LRU(Least Recently Used), both local and global replacement policies and give the user the choice to choose between the two.
+   
+   \subsection{Storing some part of Page Table in RAM}
+   Currently, the information about where the process pages are present in the swap space is stored on the physical memory. This is a bit inefficient in terms of space. A possible future add-on is to store some parts of it on the disk.
+   
+   \subsection{Shared Memory}
+   Currently our version does not support shared pages between processes. Designing this would be tricky as the page may be updated by two processes simultaneously. It would involve making policy decisions about dealing with this. For example, Pranali might decide to allow only one process to access the page at a time or it might adopt a copy on write policy. It will also involve handling all protection issues pertaining to sharing correctly.
+
+   \subsection{Inverted Page Table}   
+ We would like to code a more efficient Page Table like an inverted Page Table or a multi level Page Table.
+
+% ------------------------------------------------------------------------------
+% End document
+% ------------------------------------------------------------------------------
+\end{document}
